@@ -1,0 +1,43 @@
+package com.kgregorczyk.bank.controllers.dto;
+
+import com.kgregorczyk.bank.utils.JsonUtils;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+/**
+ * Main DTO which is used as a response to every REST request.
+ */
+@Data
+@AllArgsConstructor
+public class APIResponse {
+
+  private Status status;
+  private String message;
+  private Object data;
+
+  @AllArgsConstructor
+  public enum Status {
+    OK("OK"),
+    ERROR("ERROR");
+
+    private String status;
+
+  }
+
+  public APIResponse() {
+    this(Status.OK, "SUCCESS", null);
+  }
+
+  public APIResponse(Object data) {
+    this(Status.OK, "SUCCESS", data);
+  }
+
+  public APIResponse(Status status, String message) {
+    this(status, message, null);
+  }
+
+
+  public String toJson() {
+    return JsonUtils.toJson(this);
+  }
+}

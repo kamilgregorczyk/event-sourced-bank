@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
  * Listener and dispatcher of events in whole system. It contains dependencies between events.
  */
 @Slf4j
-public class EventManager {
+public class AccountEventProcessor {
 
   // Event Handlers
   @Subscribe

@@ -14,7 +14,7 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
 import com.kgregorczyk.bank.aggregates.AccountAggregate;
 import com.kgregorczyk.bank.controllers.dto.APIResponse;
-import com.kgregorczyk.bank.controllers.dto.Account;
+import com.kgregorczyk.bank.controllers.dto.AccountDTO;
 import com.kgregorczyk.bank.controllers.dto.ChangeFullNameRequest;
 import com.kgregorczyk.bank.controllers.dto.CreateAccountRequest;
 import com.kgregorczyk.bank.controllers.dto.TransferMoneyRequest;
@@ -23,7 +23,7 @@ import java.util.UUID;
 import spark.Route;
 
 /**
- * Account Controller.
+ * AccountDTO Controller.
  *
  * <p>During request only basic field validation is done as endpoints are async. Checking for if
  * all requirements/dependencies are met is done later with events.
@@ -43,7 +43,7 @@ public class AccountController {
   public static Route listAccounts() {
     return (request, response) -> new APIResponse(
         ACCOUNT_EVENT_STORAGE.loadAll().stream().map(
-            Account::from).collect(toImmutableList()));
+            AccountDTO::from).collect(toImmutableList()));
   }
 
   public static Route getAccount() {
@@ -61,11 +61,11 @@ public class AccountController {
       // Verifies if requested aggregate exists
       if (ACCOUNT_EVENT_STORAGE.exists(aggregateUUID)) {
         // Issues ChangeFullNameCommand
-        return new APIResponse(Account.from(ACCOUNT_EVENT_STORAGE.loadByUUID(aggregateUUID)));
+        return new APIResponse(AccountDTO.from(ACCOUNT_EVENT_STORAGE.loadByUUID(aggregateUUID)));
       } else {
         response.status(HTTP_NOT_FOUND);
         return new APIResponse(ERROR,
-            String.format("Account with ID: %s was not found", aggregateUUID));
+            String.format("AccountDTO with ID: %s was not found", aggregateUUID));
       }
     };
   }
@@ -89,7 +89,7 @@ public class AccountController {
       // Issues CreateAccountCommand
       createAccountCommand(payload.getFullName());
       response.status(HTTP_CREATED);
-      return new APIResponse("Account was created");
+      return new APIResponse("AccountDTO was created");
     };
   }
 
@@ -124,7 +124,7 @@ public class AccountController {
       } else {
         response.status(HTTP_NOT_FOUND);
         return new APIResponse(ERROR,
-            String.format("Account with ID: %s was not found", aggregateUUID));
+            String.format("AccountDTO with ID: %s was not found", aggregateUUID));
       }
     };
   }
@@ -165,13 +165,13 @@ public class AccountController {
       if (!ACCOUNT_EVENT_STORAGE.exists(fromUUID)) {
         response.status(HTTP_NOT_FOUND);
         return new APIResponse(ERROR,
-            String.format("Account with UUID: %s doesn't exist", fromUUID));
+            String.format("AccountDTO with UUID: %s doesn't exist", fromUUID));
       }
 
       if (!ACCOUNT_EVENT_STORAGE.exists(toUUID)) {
         response.status(HTTP_NOT_FOUND);
         return new APIResponse(ERROR,
-            String.format("Account with UUID: %s doesn't exist", fromUUID));
+            String.format("AccountDTO with UUID: %s doesn't exist", fromUUID));
       }
 
       // Issues money transfer

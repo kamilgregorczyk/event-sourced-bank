@@ -16,6 +16,7 @@ import com.kgregorczyk.bank.aggregates.events.TransferMoneyEvent;
 import io.vavr.API;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * Account model
+ * AccountDTO model
  */
 @ToString
 @Getter
@@ -87,9 +88,20 @@ public class AccountAggregate {
   }
 
   AccountAggregate apply(TransferMoneyEvent event) {
+    BigDecimal value;
+    MoneyTransaction.Type type;
+
+    // Outgoing money transfer
+    if (event.getAggregateUUID().equals(event.getFromUUID())) {
+      value = event.getValue().negate();
+      type = MoneyTransaction.Type.OUTGOING;
+    } else {
+      value = event.getValue();
+      type = MoneyTransaction.Type.INCOMING;
+    }
     transactions.add(
         new MoneyTransaction(event.getTransactionUUID(), event.getFromUUID(), event.getToUUID(),
-            event.getValue(), State.NEW));
+            value, State.NEW, type, new Date(), new Date()));
     return this;
   }
 
@@ -142,5 +154,6 @@ public class AccountAggregate {
         .filter(transaction -> transaction.getTransactionUUID().equals(transactionUUID))
         .findFirst().get();
     moneyTransaction.setState(state);
+    moneyTransaction.setLastUpdatedAt(new Date());
   }
 }

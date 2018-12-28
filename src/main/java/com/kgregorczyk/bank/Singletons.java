@@ -1,8 +1,8 @@
 package com.kgregorczyk.bank;
 
 import com.google.common.eventbus.EventBus;
+import com.kgregorczyk.bank.aggregates.AccountEventProcessor;
 import com.kgregorczyk.bank.aggregates.AccountEventStorage;
-import com.kgregorczyk.bank.aggregates.EventManager;
 
 /**
  * Contains static references to shared dependencies.
@@ -12,7 +12,7 @@ import com.kgregorczyk.bank.aggregates.EventManager;
 public class Singletons {
 
   public static final EventBus EVENT_BUS = new EventBus("account-bus");
-  public static final EventManager EVENT_MANAGER = new EventManager();
+  public static final AccountEventProcessor EVENT_MANAGER = new AccountEventProcessor();
   public static final AccountEventStorage ACCOUNT_EVENT_STORAGE = new AccountEventStorage();
 
 }

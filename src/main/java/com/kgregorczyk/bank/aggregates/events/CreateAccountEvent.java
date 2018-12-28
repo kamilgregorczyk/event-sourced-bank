@@ -2,19 +2,19 @@ package com.kgregorczyk.bank.aggregates.events;
 
 import java.util.Date;
 import java.util.UUID;
-import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
-public class FullNameChangedEvent extends DomainEvent {
+@EqualsAndHashCode(callSuper = true)
+public class CreateAccountEvent extends DomainEvent {
 
   private String fullName;
 
-  public FullNameChangedEvent(UUID uuid, String fullName, Date date) {
-    super(uuid, date);
+  public CreateAccountEvent(UUID aggregateUUID, String fullName) {
+    super(aggregateUUID, new Date());
     this.fullName = fullName;
   }
 }

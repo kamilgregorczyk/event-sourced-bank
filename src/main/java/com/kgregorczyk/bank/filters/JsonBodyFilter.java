@@ -20,6 +20,16 @@ public class JsonBodyFilter implements Filter {
   private static final ImmutableSet<String> HTTP_METHODS_WITH_BODY = ImmutableSet
       .of("POST", "PUT", "PATCH");
 
+  private static boolean isJSONValid(String jsonInString) {
+    try {
+      final ObjectMapper mapper = new ObjectMapper();
+      mapper.readTree(jsonInString);
+      return true;
+    } catch (IOException e) {
+      return false;
+    }
+  }
+
   @Override
   public void handle(Request request, Response response) {
     if (HTTP_METHODS_WITH_BODY.contains(request.requestMethod())) {
@@ -34,15 +44,5 @@ public class JsonBodyFilter implements Filter {
       }
     }
 
-  }
-
-  private static boolean isJSONValid(String jsonInString) {
-    try {
-      final ObjectMapper mapper = new ObjectMapper();
-      mapper.readTree(jsonInString);
-      return true;
-    } catch (IOException e) {
-      return false;
-    }
   }
 }

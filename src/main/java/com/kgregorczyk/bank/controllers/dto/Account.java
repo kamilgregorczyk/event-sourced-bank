@@ -1,7 +1,8 @@
 package com.kgregorczyk.bank.controllers.dto;
 
 import com.kgregorczyk.bank.aggregates.AccountAggregate;
-import com.kgregorczyk.bank.aggregates.Update;
+import com.kgregorczyk.bank.aggregates.MoneyTransaction;
+import com.kgregorczyk.bank.aggregates.events.DomainEvent;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
@@ -17,11 +18,14 @@ public class Account {
   private String fullName;
   private UUID accountNumber;
   private BigDecimal balance;
-  private List<Update> updates;
+  private List<DomainEvent> updates;
+  private List<MoneyTransaction> transactions;
 
   public static Account from(AccountAggregate aggregate) {
     return Account.builder().accountNumber(aggregate.getUuid()).fullName(aggregate.getFullName())
-        .updates(aggregate.getUpdates())
+        .balance(aggregate.getBalance())
+        .updates(aggregate.getDomainEvents())
+        .transactions(aggregate.getTransactions())
         .build();
   }
 }

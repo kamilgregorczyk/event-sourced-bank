@@ -6,13 +6,19 @@ import static com.kgregorczyk.bank.aggregates.AccountAggregate.changeFullNameCom
 import static com.kgregorczyk.bank.aggregates.AccountAggregate.createAccountCommand;
 import static com.kgregorczyk.bank.controllers.dto.APIResponse.Status.ERROR;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.MultimapBuilder;
+import com.kgregorczyk.bank.aggregates.AccountAggregate;
 import com.kgregorczyk.bank.controllers.dto.APIResponse;
 import com.kgregorczyk.bank.controllers.dto.Account;
 import com.kgregorczyk.bank.controllers.dto.ChangeFullNameRequest;
 import com.kgregorczyk.bank.controllers.dto.CreateAccountRequest;
+import com.kgregorczyk.bank.controllers.dto.TransferMoneyRequest;
+import java.math.BigDecimal;
 import java.util.UUID;
 import spark.Route;
 
@@ -24,8 +30,9 @@ import spark.Route;
  *
  * <p>It's possible to: </p>
  * <ul>
- * <li>POST to create account on `/api/account/createAccount`</li>
  * <li>GET to fetch a list of accounts on `/api/account/listAccounts`</li>
+ * <li>GET to fetch a single account on `/api/account/getAccount`</li>
+ * <li>POST to create account on `/api/account/createAccount`</li>
  * <li>POST to Change full name on already existing account on `/api/account/changeFullName/VALID_UUID`</li>
  * </ul>
  */
@@ -33,40 +40,14 @@ public class AccountController {
 
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-  public static Route createAccount() {
-    return (request, response) -> {
-      // Validates request
-      CreateAccountRequest payload = OBJECT_MAPPER
-          .readValue(request.body(), CreateAccountRequest.class);
-
-      if (payload.getFullName() == null || payload.getFullName().isEmpty()) {
-        response.status(HTTP_BAD_REQUEST);
-        return new APIResponse(ERROR, "`fullName` is a required string field");
-      }
-
-      // Issues CreateAccountCommand
-      createAccountCommand(payload.getFullName());
-      return new APIResponse();
-    };
-  }
-
   public static Route listAccounts() {
     return (request, response) -> new APIResponse(
         ACCOUNT_EVENT_STORAGE.loadAll().stream().map(
             Account::from).collect(toImmutableList()));
   }
 
-  public static Route changeFullName() {
+  public static Route getAccount() {
     return (request, response) -> {
-      // Validates request
-      ChangeFullNameRequest payload = OBJECT_MAPPER
-          .readValue(request.body(), ChangeFullNameRequest.class);
-
-      if (payload.getFullName() == null || payload.getFullName().isEmpty()) {
-        response.status(HTTP_BAD_REQUEST);
-        return new APIResponse(ERROR, "`fullName` is a required string field");
-      }
-
       // Extracts UUID from path
       UUID aggregateUUID;
       try {
@@ -80,13 +61,142 @@ public class AccountController {
       // Verifies if requested aggregate exists
       if (ACCOUNT_EVENT_STORAGE.exists(aggregateUUID)) {
         // Issues ChangeFullNameCommand
-        changeFullNameCommand(aggregateUUID, payload.getFullName());
-        return new APIResponse();
+        return new APIResponse(Account.from(ACCOUNT_EVENT_STORAGE.loadByUUID(aggregateUUID)));
       } else {
         response.status(HTTP_NOT_FOUND);
         return new APIResponse(ERROR,
             String.format("Account with ID: %s was not found", aggregateUUID));
       }
     };
+  }
+
+  public static Route createAccount() {
+    return (request, response) -> {
+      CreateAccountRequest payload = OBJECT_MAPPER
+          .readValue(request.body(), CreateAccountRequest.class);
+      ListMultimap<String, String> validationErrors = validationErrorsMap();
+
+      // Validates request
+      if (payload.getFullName() == null || payload.getFullName().isEmpty()) {
+        validationErrors.put("fullName", "Cannot be empty");
+      }
+
+      if (!validationErrors.isEmpty()) {
+        response.status(HTTP_BAD_REQUEST);
+        return new APIResponse(ERROR, "There are validation errors", validationErrors.asMap());
+      }
+
+      // Issues CreateAccountCommand
+      createAccountCommand(payload.getFullName());
+      response.status(HTTP_CREATED);
+      return new APIResponse("Account was created");
+    };
+  }
+
+  public static Route changeFullName() {
+    return (request, response) -> {
+      ChangeFullNameRequest payload = OBJECT_MAPPER
+          .readValue(request.body(), ChangeFullNameRequest.class);
+      ListMultimap<String, String> validationErrors = validationErrorsMap();
+
+      // Validates request
+      if (payload.getFullName() == null || payload.getFullName().isEmpty()) {
+        validationErrors.put("fullName", "Cannot be empty");
+      }
+
+      if (!isUUIDValid(request.params(":id"))) {
+        validationErrors.put("uuid", "UUID provided in path is not valid");
+      }
+
+      if (!validationErrors.isEmpty()) {
+        response.status(HTTP_BAD_REQUEST);
+        return new APIResponse(ERROR, "There are validation errors", validationErrors.asMap());
+      }
+
+      UUID aggregateUUID = UUID.fromString(request.params(":id"));
+
+      // Verifies if requested aggregate exists
+      if (ACCOUNT_EVENT_STORAGE.exists(aggregateUUID)) {
+
+        // Issues ChangeFullNameCommand
+        changeFullNameCommand(aggregateUUID, payload.getFullName());
+        return new APIResponse("Name will be changed");
+      } else {
+        response.status(HTTP_NOT_FOUND);
+        return new APIResponse(ERROR,
+            String.format("Account with ID: %s was not found", aggregateUUID));
+      }
+    };
+  }
+
+  public static Route transferMoney() {
+    return ((request, response) -> {
+      TransferMoneyRequest payload = OBJECT_MAPPER
+          .readValue(request.body(), TransferMoneyRequest.class);
+      ListMultimap<String, String> validationErrors = validationErrorsMap();
+
+      // Validates request
+      if (!isUUIDValid(payload.getFromAccountNumber())) {
+        validationErrors.put("fromAccountNumber", "Is not a valid UUID value");
+      }
+
+      if (!isUUIDValid(payload.getToAccountNumber())) {
+        validationErrors.put("toAccountNumber", "Is not a valid UUID value");
+      }
+
+      if (payload.getFromAccountNumber() != null && payload.getToAccountNumber() != null && payload
+          .getFromAccountNumber().equals(payload.getToAccountNumber())) {
+        validationErrors
+            .put("toAccountNumber", "Is not possible to transfer money to the same account");
+      }
+
+      if (payload.getValue() == null || payload.getValue().compareTo(BigDecimal.ZERO) <= 0) {
+        validationErrors.put("value", "Must be provided & be greater than 0");
+      }
+
+      if (!validationErrors.isEmpty()) {
+        response.status(HTTP_BAD_REQUEST);
+        return new APIResponse(ERROR, "There are validation errors", validationErrors.asMap());
+      }
+
+      // Validates existence
+      UUID fromUUID = UUID.fromString(payload.getFromAccountNumber());
+      UUID toUUID = UUID.fromString(payload.getToAccountNumber());
+      if (!ACCOUNT_EVENT_STORAGE.exists(fromUUID)) {
+        response.status(HTTP_NOT_FOUND);
+        return new APIResponse(ERROR,
+            String.format("Account with UUID: %s doesn't exist", fromUUID));
+      }
+
+      if (!ACCOUNT_EVENT_STORAGE.exists(toUUID)) {
+        response.status(HTTP_NOT_FOUND);
+        return new APIResponse(ERROR,
+            String.format("Account with UUID: %s doesn't exist", fromUUID));
+      }
+
+      // Issues money transfer
+      AccountAggregate.transferMoneyCommand(fromUUID, toUUID, payload.getValue());
+      response.status(HTTP_CREATED);
+      return new APIResponse("Money will be transferred");
+
+    });
+
+  }
+
+  private static boolean isUUIDValid(String value) {
+    if (value == null || value.isEmpty()) {
+      return false;
+    }
+    try {
+      UUID.fromString(value);
+      return true;
+    } catch (IllegalArgumentException e) {
+      return false;
+    }
+  }
+
+  private static ListMultimap<String, String> validationErrorsMap() {
+    return MultimapBuilder.hashKeys().arrayListValues()
+        .build();
   }
 }

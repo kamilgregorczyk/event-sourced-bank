@@ -11,6 +11,7 @@ import static spark.Spark.path;
 import static spark.Spark.port;
 import static spark.Spark.post;
 
+import com.kgregorczyk.bank.aggregates.AccountAggregate;
 import com.kgregorczyk.bank.controllers.AccountController;
 import com.kgregorczyk.bank.controllers.IndexController;
 import com.kgregorczyk.bank.controllers.dto.APIResponse;
@@ -43,9 +44,11 @@ public class BankServer {
     path("", () -> {
       get("/", IndexController.healthCheck());
       path("/api", () -> path("/account", () -> {
-        post("/createAccount", AccountController.createAccount(), JsonUtils::toJson);
-        post("/changeFullName/:id", AccountController.changeFullName(), JsonUtils::toJson);
+        get("/getAccount/:id", AccountController.getAccount(), JsonUtils::toJson);
         get("/listAccounts", AccountController.listAccounts(), JsonUtils::toJson);
+        post("/createAccount", AccountController.createAccount(), JsonUtils::toJson);
+        post("/changeFullName", AccountController.changeFullName(), JsonUtils::toJson);
+        post("/transferMoney", AccountController.transferMoney(), JsonUtils::toJson);
       }));
     });
 
@@ -60,6 +63,9 @@ public class BankServer {
 
     awaitInitialization();
     logMessage();
+
+    AccountAggregate.createAccountCommand("Kamil Gregorczyk");
+    AccountAggregate.createAccountCommand("Noemi Gregorczyk");
   }
 
   private static void logMessage() {

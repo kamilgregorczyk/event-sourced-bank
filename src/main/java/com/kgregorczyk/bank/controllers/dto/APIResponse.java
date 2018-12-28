@@ -15,6 +15,23 @@ public class APIResponse {
   private String message;
   private Object data;
 
+  public APIResponse(Object data) {
+    this(Status.OK, "SUCCESS", data);
+  }
+
+  public APIResponse(String message) {
+    this(Status.OK, message, null);
+  }
+
+  public APIResponse(Status status, String message) {
+    this(status, message, null);
+  }
+
+  public String toJson() {
+    return JsonUtils.toJson(this);
+  }
+
+
   @AllArgsConstructor
   public enum Status {
     OK("OK"),
@@ -22,22 +39,5 @@ public class APIResponse {
 
     private String status;
 
-  }
-
-  public APIResponse() {
-    this(Status.OK, "SUCCESS", null);
-  }
-
-  public APIResponse(Object data) {
-    this(Status.OK, "SUCCESS", data);
-  }
-
-  public APIResponse(Status status, String message) {
-    this(status, message, null);
-  }
-
-
-  public String toJson() {
-    return JsonUtils.toJson(this);
   }
 }

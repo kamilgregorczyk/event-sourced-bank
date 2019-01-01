@@ -1,9 +1,6 @@
 package com.kgregorczyk.bank.controllers;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static com.kgregorczyk.bank.Singletons.ACCOUNT_EVENT_STORAGE;
-import static com.kgregorczyk.bank.aggregates.AccountAggregate.changeFullNameCommand;
-import static com.kgregorczyk.bank.aggregates.AccountAggregate.createAccountCommand;
 import static com.kgregorczyk.bank.controllers.dto.APIResponse.Status.ERROR;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_CREATED;
@@ -12,7 +9,8 @@ import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
-import com.kgregorczyk.bank.aggregates.AccountAggregate;
+import com.kgregorczyk.bank.aggregates.AccountEventStorage;
+import com.kgregorczyk.bank.aggregates.AccountService;
 import com.kgregorczyk.bank.controllers.dto.APIResponse;
 import com.kgregorczyk.bank.controllers.dto.AccountDTO;
 import com.kgregorczyk.bank.controllers.dto.ChangeFullNameRequest;
@@ -34,19 +32,45 @@ import spark.Route;
  * <li>GET to fetch a single account on `/api/account/getAccount`</li>
  * <li>POST to create account on `/api/account/createAccount`</li>
  * <li>POST to Change full name on already existing account on `/api/account/changeFullName/VALID_UUID`</li>
+ * <li>POST to transfer money on `/api/account/transferMoney`</li>
  * </ul>
  */
 public class AccountController {
 
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+  private final AccountService accountService;
+  private final AccountEventStorage eventStorage;
 
-  public static Route listAccounts() {
+  public AccountController(AccountService accountService,
+      AccountEventStorage eventStorage) {
+    this.accountService = accountService;
+    this.eventStorage = eventStorage;
+  }
+
+  private static boolean isUUIDValid(String value) {
+    if (value == null || value.isEmpty()) {
+      return false;
+    }
+    try {
+      UUID.fromString(value);
+      return true;
+    } catch (IllegalArgumentException e) {
+      return false;
+    }
+  }
+
+  private static ListMultimap<String, String> validationErrorsMap() {
+    return MultimapBuilder.hashKeys().arrayListValues()
+        .build();
+  }
+
+  public Route listAccounts() {
     return (request, response) -> new APIResponse(
-        ACCOUNT_EVENT_STORAGE.loadAll().stream().map(
+        eventStorage.loadAll().stream().map(
             AccountDTO::from).collect(toImmutableList()));
   }
 
-  public static Route getAccount() {
+  public Route getAccount() {
     return (request, response) -> {
       // Extracts UUID from path
       UUID aggregateUUID;
@@ -59,9 +83,9 @@ public class AccountController {
       }
 
       // Verifies if requested aggregate exists
-      if (ACCOUNT_EVENT_STORAGE.exists(aggregateUUID)) {
+      if (eventStorage.exists(aggregateUUID)) {
         // Issues ChangeFullNameCommand
-        return new APIResponse(AccountDTO.from(ACCOUNT_EVENT_STORAGE.loadByUUID(aggregateUUID)));
+        return new APIResponse(AccountDTO.from(eventStorage.loadByUUID(aggregateUUID)));
       } else {
         response.status(HTTP_NOT_FOUND);
         return new APIResponse(ERROR,
@@ -70,7 +94,7 @@ public class AccountController {
     };
   }
 
-  public static Route createAccount() {
+  public Route createAccount() {
     return (request, response) -> {
       CreateAccountRequest payload = OBJECT_MAPPER
           .readValue(request.body(), CreateAccountRequest.class);
@@ -87,13 +111,13 @@ public class AccountController {
       }
 
       // Issues CreateAccountCommand
-      createAccountCommand(payload.getFullName());
+      accountService.asyncCreateAccountCommand(payload.getFullName());
       response.status(HTTP_CREATED);
       return new APIResponse("AccountDTO was created");
     };
   }
 
-  public static Route changeFullName() {
+  public Route changeFullName() {
     return (request, response) -> {
       ChangeFullNameRequest payload = OBJECT_MAPPER
           .readValue(request.body(), ChangeFullNameRequest.class);
@@ -116,10 +140,10 @@ public class AccountController {
       UUID aggregateUUID = UUID.fromString(request.params(":id"));
 
       // Verifies if requested aggregate exists
-      if (ACCOUNT_EVENT_STORAGE.exists(aggregateUUID)) {
+      if (eventStorage.exists(aggregateUUID)) {
 
         // Issues ChangeFullNameCommand
-        changeFullNameCommand(aggregateUUID, payload.getFullName());
+        accountService.asyncChangeFullNameCommand(aggregateUUID, payload.getFullName());
         return new APIResponse("Name will be changed");
       } else {
         response.status(HTTP_NOT_FOUND);
@@ -129,7 +153,7 @@ public class AccountController {
     };
   }
 
-  public static Route transferMoney() {
+  public Route transferMoney() {
     return ((request, response) -> {
       TransferMoneyRequest payload = OBJECT_MAPPER
           .readValue(request.body(), TransferMoneyRequest.class);
@@ -162,41 +186,24 @@ public class AccountController {
       // Validates existence
       UUID fromUUID = UUID.fromString(payload.getFromAccountNumber());
       UUID toUUID = UUID.fromString(payload.getToAccountNumber());
-      if (!ACCOUNT_EVENT_STORAGE.exists(fromUUID)) {
+      if (!eventStorage.exists(fromUUID)) {
         response.status(HTTP_NOT_FOUND);
         return new APIResponse(ERROR,
             String.format("AccountDTO with UUID: %s doesn't exist", fromUUID));
       }
 
-      if (!ACCOUNT_EVENT_STORAGE.exists(toUUID)) {
+      if (!eventStorage.exists(toUUID)) {
         response.status(HTTP_NOT_FOUND);
         return new APIResponse(ERROR,
             String.format("AccountDTO with UUID: %s doesn't exist", fromUUID));
       }
 
       // Issues money transfer
-      AccountAggregate.transferMoneyCommand(fromUUID, toUUID, payload.getValue());
+      accountService.asyncTransferMoneyCommand(fromUUID, toUUID, payload.getValue());
       response.status(HTTP_CREATED);
       return new APIResponse("Money will be transferred");
 
     });
 
-  }
-
-  private static boolean isUUIDValid(String value) {
-    if (value == null || value.isEmpty()) {
-      return false;
-    }
-    try {
-      UUID.fromString(value);
-      return true;
-    } catch (IllegalArgumentException e) {
-      return false;
-    }
-  }
-
-  private static ListMultimap<String, String> validationErrorsMap() {
-    return MultimapBuilder.hashKeys().arrayListValues()
-        .build();
   }
 }

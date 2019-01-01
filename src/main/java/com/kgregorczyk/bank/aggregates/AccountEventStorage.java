@@ -33,7 +33,6 @@ public class AccountEventStorage {
     return null;
   }
 
-
   public boolean exists(UUID uuid) {
     return events.containsKey(uuid);
   }

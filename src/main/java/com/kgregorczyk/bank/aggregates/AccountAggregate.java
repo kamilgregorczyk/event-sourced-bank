@@ -1,32 +1,38 @@
 package com.kgregorczyk.bank.aggregates;
 
-import static com.kgregorczyk.bank.Singletons.EVENT_BUS;
 import static io.vavr.API.Case;
 import static io.vavr.API.Match.Pattern0.of;
 
 import com.kgregorczyk.bank.aggregates.MoneyTransaction.State;
-import com.kgregorczyk.bank.aggregates.events.CancelMoneyTransfer;
-import com.kgregorczyk.bank.aggregates.events.ChangeFullNameEvent;
-import com.kgregorczyk.bank.aggregates.events.CreateAccountEvent;
-import com.kgregorczyk.bank.aggregates.events.CreditAccountEvent;
-import com.kgregorczyk.bank.aggregates.events.DebitAccountEvent;
+import com.kgregorczyk.bank.aggregates.events.AccountCreatedEvent;
+import com.kgregorczyk.bank.aggregates.events.AccountCreditedEvent;
+import com.kgregorczyk.bank.aggregates.events.AccountDebitedEvent;
 import com.kgregorczyk.bank.aggregates.events.DomainEvent;
-import com.kgregorczyk.bank.aggregates.events.SuccessMoneyTransfer;
-import com.kgregorczyk.bank.aggregates.events.TransferMoneyEvent;
+import com.kgregorczyk.bank.aggregates.events.FullNameChangedEvent;
+import com.kgregorczyk.bank.aggregates.events.MoneyTransferCancelled;
+import com.kgregorczyk.bank.aggregates.events.MoneyTransferSucceeded;
+import com.kgregorczyk.bank.aggregates.events.MoneyTransferredEvent;
 import io.vavr.API;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
 /**
- * AccountDTO model
+ * AccountAggregate is constructed based on events that are stored in {@link AccountEventStorage}.
+ * Each stored event mutates the state which eventually leads into final object.
+ *
+ * <p>All operations that modify the aggregate from external packages must use commands which then
+ * validate the input and asynchronously trigger event handlers which will store the mutation event
+ * {@link DomainEvent} and trigger other actions if needed.
+ *
+ * <p>Each {@link DomainEvent} related to AccountAggregate mutates it in a specific order therefore
+ * events must be stored in order and must be emitted by FIFO PubSub/EventBus for each aggregate.
  */
 @ToString
 @Getter
@@ -39,23 +45,10 @@ public class AccountAggregate {
   private BigDecimal balance;
   private Map<UUID, BigDecimal> transactionToReservedBalance;
   private List<DomainEvent> domainEvents;
-  private List<MoneyTransaction> transactions;
+  private Map<UUID, MoneyTransaction> transactions;
 
-  public AccountAggregate(List<DomainEvent> domainEvents) {
+  AccountAggregate(List<DomainEvent> domainEvents) {
     this.domainEvents = domainEvents;
-  }
-
-  // Command Handlers - entry points for interactions with aggregates from external classes
-  public static void createAccountCommand(String fullName) {
-    EVENT_BUS.post(new CreateAccountEvent(UUID.randomUUID(), fullName));
-  }
-
-  public static void changeFullNameCommand(UUID uuid, String fullName) {
-    EVENT_BUS.post(new ChangeFullNameEvent(uuid, fullName));
-  }
-
-  public static void transferMoneyCommand(UUID fromUUID, UUID toUUID, BigDecimal value) {
-    EVENT_BUS.post(new TransferMoneyEvent(fromUUID, fromUUID, toUUID, UUID.randomUUID(), value));
   }
 
   /**
@@ -63,65 +56,70 @@ public class AccountAggregate {
    */
   AccountAggregate apply(DomainEvent event) {
     return API.Match(event)
-        .of(Case(of(CreateAccountEvent.class), this::apply),
-            Case(of(ChangeFullNameEvent.class), this::apply),
-            Case(of(TransferMoneyEvent.class), this::apply),
-            Case(of(DebitAccountEvent.class), this::apply),
-            Case(of(CreditAccountEvent.class), this::apply),
-            Case(of(CancelMoneyTransfer.class), this::apply),
-            Case(of(SuccessMoneyTransfer.class), this::apply)
+        .of(Case(of(AccountCreatedEvent.class), this::apply),
+            Case(of(FullNameChangedEvent.class), this::apply),
+            Case(of(MoneyTransferredEvent.class), this::apply),
+            Case(of(AccountDebitedEvent.class), this::apply),
+            Case(of(AccountCreditedEvent.class), this::apply),
+            Case(of(MoneyTransferCancelled.class), this::apply),
+            Case(of(MoneyTransferSucceeded.class), this::apply)
         );
   }
 
-  AccountAggregate apply(CreateAccountEvent event) {
+  AccountAggregate apply(AccountCreatedEvent event) {
     uuid = event.getAggregateUUID();
-    transactionToReservedBalance = new HashMap<>();
+    transactionToReservedBalance = new TreeMap<>(); // TreeMap because it keeps the order
     balance = BigDecimal.valueOf(INITIAL_BALANCE).setScale(2, BigDecimal.ROUND_HALF_EVEN);
     fullName = event.getFullName();
-    transactions = new ArrayList<>();
+    transactions = new TreeMap<>(); // TreeMap because it keeps the order
     return this;
   }
 
-  AccountAggregate apply(ChangeFullNameEvent event) {
+  AccountAggregate apply(FullNameChangedEvent event) {
     fullName = event.getFullName();
     return this;
   }
 
-  AccountAggregate apply(TransferMoneyEvent event) {
+  AccountAggregate apply(MoneyTransferredEvent event) {
     BigDecimal value;
     MoneyTransaction.Type type;
 
-    // Outgoing money transfer
     if (event.getAggregateUUID().equals(event.getFromUUID())) {
+      // Outgoing money transfer
       value = event.getValue().negate();
       type = MoneyTransaction.Type.OUTGOING;
     } else {
+      // Incoming money transfer
       value = event.getValue();
       type = MoneyTransaction.Type.INCOMING;
     }
-    transactions.add(
+    transactions.put(event.getTransactionUUID(),
         new MoneyTransaction(event.getTransactionUUID(), event.getFromUUID(), event.getToUUID(),
             value, State.NEW, type, new Date(), new Date()));
     return this;
   }
 
-  AccountAggregate apply(DebitAccountEvent event) {
-    // Reserves balance for receiver
-    balance = balance.subtract(event.getValue());
-    transactionToReservedBalance.put(event.getTransactionUUID(), event.getValue().negate());
-    changeTransactionState(event.getTransactionUUID(), State.PENDING);
-    return this;
+  AccountAggregate apply(AccountDebitedEvent event) {
+    if (balance.subtract(event.getValue()).compareTo(BigDecimal.ZERO) >= 0) {
+      // Reserves balance for receiver
+      balance = balance.subtract(event.getValue());
+      transactionToReservedBalance.put(event.getTransactionUUID(), event.getValue().negate());
+      changeTransactionState(event.getTransactionUUID(), State.PENDING);
+      return this;
+    } else {
+      throw new BalanceTooLowException();
+    }
+
   }
 
-  AccountAggregate apply(CreditAccountEvent event) {
+  AccountAggregate apply(AccountCreditedEvent event) {
     // Adds a temp. balance
     transactionToReservedBalance.put(event.getTransactionUUID(), event.getValue());
     changeTransactionState(event.getTransactionUUID(), State.PENDING);
     return this;
   }
 
-
-  AccountAggregate apply(SuccessMoneyTransfer event) {
+  AccountAggregate apply(MoneyTransferSucceeded event) {
     transactionToReservedBalance.remove(event.getTransactionUUID());
     changeTransactionState(event.getTransactionUUID(), State.SUCCEEDED);
 
@@ -132,7 +130,7 @@ public class AccountAggregate {
     return this;
   }
 
-  AccountAggregate apply(CancelMoneyTransfer event) {
+  AccountAggregate apply(MoneyTransferCancelled event) {
 
     if (event.getToUUID().equals(event.getAggregateUUID())) {
       // Cancelling money transfer for receiver receiver
@@ -150,10 +148,8 @@ public class AccountAggregate {
   }
 
   private void changeTransactionState(UUID transactionUUID, State state) {
-    MoneyTransaction moneyTransaction = transactions.stream()
-        .filter(transaction -> transaction.getTransactionUUID().equals(transactionUUID))
-        .findFirst().get();
-    moneyTransaction.setState(state);
-    moneyTransaction.setLastUpdatedAt(new Date());
+    MoneyTransaction transaction = transactions.get(transactionUUID);
+    transaction.setState(state);
+    transaction.setLastUpdatedAt(new Date());
   }
 }

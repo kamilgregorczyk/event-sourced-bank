@@ -7,17 +7,19 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * Base event for all the other events that mutate aggregates and that should be stored.
  */
 @Getter
+@ToString
 @AllArgsConstructor
 @EqualsAndHashCode
 @NoArgsConstructor
 public abstract class DomainEvent {
 
-  // Converts for e.g. CreateAccountEvent -> ACCOUNT_CREATED_EVENT
+  // Converts for e.g. AccountCreatedEvent -> ACCOUNT_CREATED_EVENT
   private final String eventType = CaseFormat.UPPER_CAMEL
       .to(CaseFormat.UPPER_UNDERSCORE, this.getClass().getSimpleName());
   private UUID aggregateUUID;

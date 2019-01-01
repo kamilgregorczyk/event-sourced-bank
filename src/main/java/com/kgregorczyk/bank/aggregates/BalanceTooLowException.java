@@ -1,5 +1,8 @@
 package com.kgregorczyk.bank.aggregates;
 
-public class BalanceTooLowException {
+/**
+ * Exception that's thrown when {@link AccountAggregate} cannot be debited.
+ */
+class BalanceTooLowException extends RuntimeException {
 
 }

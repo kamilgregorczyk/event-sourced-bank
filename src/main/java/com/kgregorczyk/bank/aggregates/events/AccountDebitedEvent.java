@@ -6,11 +6,13 @@ import java.util.UUID;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
+@ToString
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class AccountDebitedEvent extends Event {
+public class AccountDebitedEvent extends DomainEvent {
 
   private UUID transactionUUID;
   private UUID fromUUID;

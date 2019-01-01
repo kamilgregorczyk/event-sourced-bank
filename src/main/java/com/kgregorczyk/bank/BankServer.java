@@ -1,6 +1,5 @@
 package com.kgregorczyk.bank;
 
-import static com.kgregorczyk.bank.Singletons.EVENT_MANAGER;
 import static spark.Spark.afterAfter;
 import static spark.Spark.awaitInitialization;
 import static spark.Spark.before;
@@ -11,7 +10,10 @@ import static spark.Spark.path;
 import static spark.Spark.port;
 import static spark.Spark.post;
 
-import com.kgregorczyk.bank.aggregates.AccountAggregate;
+import com.google.common.eventbus.EventBus;
+import com.kgregorczyk.bank.aggregates.AccountEventStorage;
+import com.kgregorczyk.bank.aggregates.AccountService;
+import com.kgregorczyk.bank.aggregates.EventManager;
 import com.kgregorczyk.bank.controllers.AccountController;
 import com.kgregorczyk.bank.controllers.IndexController;
 import com.kgregorczyk.bank.controllers.dto.APIResponse;
@@ -28,13 +30,22 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class BankServer {
 
+  //TODO: Replace these containers with proper DI tool like Guice
+  private static final EventBus EVENT_BUS = new EventBus();
+  private static final AccountEventStorage ACCOUNT_EVENT_STORAGE = new AccountEventStorage();
+  private static final EventManager EVENT_MANAGER = new EventManager(EVENT_BUS,
+      ACCOUNT_EVENT_STORAGE);
+  private static final AccountService ACCOUNT_SERVICE = new AccountService(EVENT_BUS);
+  private static final AccountController ACCOUNT_CONTROLLER = new AccountController(ACCOUNT_SERVICE,
+      ACCOUNT_EVENT_STORAGE);
+
   private static final int PORT = 8000;
 
   public static void main(String[] args) {
     port(PORT);
 
     // Registers event listener to EventBus
-    Singletons.EVENT_BUS.register(EVENT_MANAGER);
+    EVENT_BUS.register(EVENT_MANAGER);
 
     // Before filter
     before(new LoggingFilter());
@@ -44,11 +55,11 @@ public class BankServer {
     path("", () -> {
       get("/", IndexController.healthCheck());
       path("/api", () -> path("/account", () -> {
-        get("/getAccount/:id", AccountController.getAccount(), JsonUtils::toJson);
-        get("/listAccounts", AccountController.listAccounts(), JsonUtils::toJson);
-        post("/createAccount", AccountController.createAccount(), JsonUtils::toJson);
-        post("/changeFullName", AccountController.changeFullName(), JsonUtils::toJson);
-        post("/transferMoney", AccountController.transferMoney(), JsonUtils::toJson);
+        get("/getAccount/:id", ACCOUNT_CONTROLLER.getAccount(), JsonUtils::toJson);
+        get("/listAccounts", ACCOUNT_CONTROLLER.listAccounts(), JsonUtils::toJson);
+        post("/createAccount", ACCOUNT_CONTROLLER.createAccount(), JsonUtils::toJson);
+        post("/changeFullName/:id", ACCOUNT_CONTROLLER.changeFullName(), JsonUtils::toJson);
+        post("/transferMoney", ACCOUNT_CONTROLLER.transferMoney(), JsonUtils::toJson);
       }));
     });
 
@@ -64,8 +75,8 @@ public class BankServer {
     awaitInitialization();
     logMessage();
 
-    AccountAggregate.createAccountCommand("Kamil Gregorczyk");
-    AccountAggregate.createAccountCommand("Noemi Gregorczyk");
+    ACCOUNT_SERVICE.asyncCreateAccountCommand("Kamil Gregorczyk");
+    ACCOUNT_SERVICE.asyncCreateAccountCommand("Noemi Gregorczyk");
   }
 
   private static void logMessage() {

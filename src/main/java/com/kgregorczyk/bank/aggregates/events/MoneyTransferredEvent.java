@@ -6,18 +6,20 @@ import java.util.UUID;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
+@ToString
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class TransferMoneyEvent extends DomainEvent {
+public class MoneyTransferredEvent extends DomainEvent {
 
   private UUID transactionUUID;
   private UUID fromUUID;
   private UUID toUUID;
   private BigDecimal value;
 
-  public TransferMoneyEvent(UUID aggregateUUID, UUID fromUUID, UUID toUUID, UUID transactionUUID,
+  public MoneyTransferredEvent(UUID aggregateUUID, UUID fromUUID, UUID toUUID, UUID transactionUUID,
       BigDecimal value) {
     super(aggregateUUID, new Date());
     this.transactionUUID = transactionUUID;

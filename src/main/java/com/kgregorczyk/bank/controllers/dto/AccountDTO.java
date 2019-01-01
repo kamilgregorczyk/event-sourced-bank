@@ -25,7 +25,7 @@ public class AccountDTO {
   private BigDecimal balance;
   private Map<UUID, BigDecimal> transactionToReservedBalance;
   private List<DomainEvent> events;
-  private List<MoneyTransactionDTO> transactions;
+  private Map<UUID, MoneyTransactionDTO> transactions;
 
   public static AccountDTO from(AccountAggregate aggregate) {
     return AccountDTO.builder().accountNumber(aggregate.getUuid()).fullName(aggregate.getFullName())
@@ -33,21 +33,23 @@ public class AccountDTO {
         .transactionToReservedBalance(aggregate.getTransactionToReservedBalance())
         .events(aggregate.getDomainEvents())
         .transactions(aggregate.getTransactions()
+            .entrySet()
             .stream()
             .map(
-                transaction -> MoneyTransactionDTO
+                uuidToTransaction -> MoneyTransactionDTO
                     .builder()
-                    .transactionUUID(transaction.getTransactionUUID())
-                    .fromAccountUUID(transaction.getFromUUID())
-                    .toAccountUUID(transaction.getToUUID())
-                    .value(transaction.getValue())
-                    .state(transaction.getState())
-                    .type(transaction.getType())
-                    .lastUpdatedAt(transaction.getLastUpdatedAt())
-                    .createdAt(transaction.getCreatedAt())
+                    .transactionUUID(uuidToTransaction.getValue().getTransactionUUID())
+                    .fromAccountUUID(uuidToTransaction.getValue().getFromUUID())
+                    .toAccountUUID(uuidToTransaction.getValue().getToUUID())
+                    .value(uuidToTransaction.getValue().getValue())
+                    .state(uuidToTransaction.getValue().getState())
+                    .type(uuidToTransaction.getValue().getType())
+                    .lastUpdatedAt(uuidToTransaction.getValue().getLastUpdatedAt())
+                    .createdAt(uuidToTransaction.getValue().getCreatedAt())
                     .build()
             )
-            .collect(Collectors.toList()))
+            .collect(Collectors.toMap(MoneyTransactionDTO::getTransactionUUID,
+                moneyTransactionDTO -> moneyTransactionDTO)))
         .build();
   }
 

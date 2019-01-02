@@ -55,8 +55,8 @@ public class AccountControllerEndToEndTest extends AbstractEndToEndTest {
     assertThat(accountAsJson.get("fullName").asText()).isEqualTo("Tony Stark");
     assertThat(accountAsJson.get("accountNumber").asText()).isEqualTo(aggregateUUID.toString());
     assertThat(accountAsJson.get("balance").asDouble()).isEqualTo(1000.0);
-    assertThat(((ArrayNode) accountAsJson.get("events")).size()).isEqualTo(1);
-    JsonNode accountCreatedEvent = ((ArrayNode) accountAsJson.get("events")).get(0);
+    assertThat(accountAsJson.get("events").size()).isEqualTo(1);
+    JsonNode accountCreatedEvent = accountAsJson.get("events").get(0);
     assertThat(accountCreatedEvent.get("aggregateUUID").asText())
         .isEqualTo(aggregateUUID.toString());
     assertThat(accountCreatedEvent.get("fullName").asText()).isEqualTo("Tony Stark");
@@ -113,8 +113,8 @@ public class AccountControllerEndToEndTest extends AbstractEndToEndTest {
     assertThat(getAccountJson.get("status").asText()).isEqualTo("OK");
     JsonNode accountAsJson = getAccountJson.get("data");
     assertThat(accountAsJson.get("fullName").asText()).isEqualTo("Iron Man");
-    assertThat(((ArrayNode) accountAsJson.get("events")).size()).isEqualTo(2);
-    JsonNode accountCreatedEvent = ((ArrayNode) accountAsJson.get("events")).get(1);
+    assertThat(accountAsJson.get("events").size()).isEqualTo(2);
+    JsonNode accountCreatedEvent = accountAsJson.get("events").get(1);
     assertThat(accountCreatedEvent.get("aggregateUUID").asText())
         .isEqualTo(aggregateUUID.toString());
     assertThat(accountCreatedEvent.get("fullName").asText()).isEqualTo("Iron Man");

@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
  * transfer money from one account to another.
  */
 @Slf4j
-public class BankServer {
+class BankServer {
 
   //TODO: Replace these containers with proper DI tool like Guice
   private static final EventBus EVENT_BUS = new EventBus();

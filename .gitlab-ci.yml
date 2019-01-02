@@ -33,5 +33,6 @@ build:
     - echo $DOCKER_PASSWORD | docker login -u $DOCKER_LOGIN --password-stdin
     - ./build.sh
     - ./push.sh
+    - curl -X POST https://hooks.microbadger.com/images/uniqe15/event-sourced-bank/qAYbnGd4JHMW8TYFCtdrx8OBySM=
   only:
     - master

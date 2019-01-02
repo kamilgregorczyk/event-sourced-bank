@@ -1,0 +1,31 @@
+stages:
+  - test
+  - analyze
+  - build
+
+services:
+  - docker:dind
+
+test:
+  stage: test
+  image: maven:3.6.0-jdk-8-alpine
+  artifacts:
+    paths:
+      - target/*.jar
+  script:
+    - mvn test
+
+analyze:
+  stage: analyze
+  image: maven:3.6.0-jdk-8-alpine
+  artifacts:
+    paths:
+      - target/*.jar
+  script:
+    - ./sonar.sh
+
+build:
+  stage: build
+  image: docker:stable
+  script:
+    - docker info

@@ -9,6 +9,9 @@ import spark.Route;
  */
 public class IndexController {
 
+  private IndexController() {
+  }
+
   public static Route healthCheck() {
     return (request, response) -> new APIResponse("System is OK");
   }

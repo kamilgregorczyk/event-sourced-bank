@@ -39,7 +39,7 @@ public class APIResponse {
     OK("OK"),
     ERROR("ERROR");
 
-    private String status;
+    private String value;
 
   }
 }

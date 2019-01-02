@@ -7,6 +7,9 @@ public class JsonUtils {
 
   private static final Gson GSON = new Gson();
 
+  private JsonUtils() {
+  }
+
   /**
    * Translates any {@code} model to JSON formatted string.
    */

@@ -38,6 +38,7 @@ import spark.Route;
  */
 public class AccountController {
 
+  private static final String VALIDATION_ERROR_MESSAGE = "There are validation errors";
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
   private final AccountService accountService;
   private final AccountEventStorage eventStorage;
@@ -163,7 +164,7 @@ public class AccountController {
 
       if (!validationErrors.isEmpty()) {
         response.status(HTTP_BAD_REQUEST);
-        return new APIResponse(ERROR, "There are validation errors", validationErrors.asMap());
+        return new APIResponse(ERROR, VALIDATION_ERROR_MESSAGE, validationErrors.asMap());
       }
 
       UUID aggregateUUID = UUID.fromString(request.params(":id"));
@@ -225,7 +226,7 @@ public class AccountController {
 
       if (!validationErrors.isEmpty()) {
         response.status(HTTP_BAD_REQUEST);
-        return new APIResponse(ERROR, "There are validation errors", validationErrors.asMap());
+        return new APIResponse(ERROR, VALIDATION_ERROR_MESSAGE, validationErrors.asMap());
       }
 
       // Validates existence

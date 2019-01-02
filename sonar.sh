@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 mvn sonar:sonar \
   -Dsonar.projectKey=kamilgregorczyk_event-sourced-bank \
   -Dsonar.organization=kamilgregorczyk-github \

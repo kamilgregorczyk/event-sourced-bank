@@ -31,7 +31,7 @@ build:
   image: docker:stable
   script:
     - docker info
-    - docker login registry.gitlab.com -u $DOCKER_LOGIN -p $DOCKER_PASSWORD
+    - docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD
     - ./build.sh
     - ./push.sh
   only:

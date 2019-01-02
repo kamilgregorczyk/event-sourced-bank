@@ -12,6 +12,7 @@ import com.google.common.collect.MultimapBuilder;
 import com.kgregorczyk.bank.aggregates.AccountEventStorage;
 import com.kgregorczyk.bank.aggregates.AccountService;
 import com.kgregorczyk.bank.controllers.dto.APIResponse;
+import com.kgregorczyk.bank.controllers.dto.APIResponse.Status;
 import com.kgregorczyk.bank.controllers.dto.AccountDTO;
 import com.kgregorczyk.bank.controllers.dto.ChangeFullNameRequest;
 import com.kgregorczyk.bank.controllers.dto.CreateAccountRequest;
@@ -98,7 +99,7 @@ public class AccountController {
       } else {
         response.status(HTTP_NOT_FOUND);
         return new APIResponse(ERROR,
-            String.format("AccountDTO with ID: %s was not found", aggregateUUID));
+            String.format("Account with ID: %s was not found", aggregateUUID));
       }
     };
   }
@@ -129,9 +130,9 @@ public class AccountController {
       }
 
       // Issues CreateAccountCommand
-      accountService.asyncCreateAccountCommand(payload.getFullName());
+      UUID aggregateUUID = accountService.asyncCreateAccountCommand(payload.getFullName());
       response.status(HTTP_CREATED);
-      return new APIResponse("AccountDTO was created");
+      return new APIResponse(Status.OK, "Account will be created", aggregateUUID);
     };
   }
 
@@ -176,7 +177,7 @@ public class AccountController {
       } else {
         response.status(HTTP_NOT_FOUND);
         return new APIResponse(ERROR,
-            String.format("AccountDTO with ID: %s was not found", aggregateUUID));
+            String.format("Account with ID: %s was not found", aggregateUUID));
       }
     };
   }
@@ -233,13 +234,13 @@ public class AccountController {
       if (!eventStorage.exists(fromUUID)) {
         response.status(HTTP_NOT_FOUND);
         return new APIResponse(ERROR,
-            String.format("AccountDTO with UUID: %s doesn't exist", fromUUID));
+            String.format("Account with UUID: %s doesn't exist", fromUUID));
       }
 
       if (!eventStorage.exists(toUUID)) {
         response.status(HTTP_NOT_FOUND);
         return new APIResponse(ERROR,
-            String.format("AccountDTO with UUID: %s doesn't exist", fromUUID));
+            String.format("Account with UUID: %s doesn't exist", fromUUID));
       }
 
       // Issues money transfer

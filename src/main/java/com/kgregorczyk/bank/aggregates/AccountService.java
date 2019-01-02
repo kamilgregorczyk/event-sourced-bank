@@ -19,8 +19,10 @@ public class AccountService {
    * Command which initializes  {@link AccountAggregate} by emitting {@link AccountCreatedEvent}
    * with only {@code fullName}. This event is then received {@link EventManager}.
    */
-  public void asyncCreateAccountCommand(String fullName) {
-    eventBus.post(new AccountCreatedEvent(UUID.randomUUID(), fullName));
+  public UUID asyncCreateAccountCommand(String fullName) {
+    UUID aggregateUUID = UUID.randomUUID();
+    eventBus.post(new AccountCreatedEvent(aggregateUUID, fullName));
+    return aggregateUUID;
   }
 
   /**

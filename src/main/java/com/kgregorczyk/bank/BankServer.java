@@ -56,7 +56,7 @@ public class BankServer {
 
     // Controllers
     path("", () -> {
-      get("/", IndexController.healthCheck());
+      get("/", IndexController.healthCheck(), JsonUtils::toJson);
       path("/api", () -> path("/account", () -> {
         get("/getAccount/:id", ACCOUNT_CONTROLLER.getAccount(), JsonUtils::toJson);
         get("/listAccounts", ACCOUNT_CONTROLLER.listAccounts(), JsonUtils::toJson);
@@ -77,9 +77,6 @@ public class BankServer {
 
     awaitInitialization();
     logMessage();
-
-    ACCOUNT_SERVICE.asyncCreateAccountCommand("Kamil Gregorczyk");
-    ACCOUNT_SERVICE.asyncCreateAccountCommand("Noemi Gregorczyk");
   }
 
   private static void logMessage() {

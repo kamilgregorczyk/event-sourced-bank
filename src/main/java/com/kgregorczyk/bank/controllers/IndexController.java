@@ -1,6 +1,7 @@
 package com.kgregorczyk.bank.controllers;
 
 
+import com.kgregorczyk.bank.controllers.dto.APIResponse;
 import spark.Route;
 
 /**
@@ -9,9 +10,6 @@ import spark.Route;
 public class IndexController {
 
   public static Route healthCheck() {
-    return (request, response) -> {
-      response.status(200);
-      return "System is OK";
-    };
+    return (request, response) -> new APIResponse("System is OK");
   }
 }

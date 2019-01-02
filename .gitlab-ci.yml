@@ -31,7 +31,7 @@ build:
   image: docker:stable
   script:
     - docker info
-    - docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD
+    - echo $DOCKER_PASSWORD | docker login -u $DOCKER_LOGIN --password-stdin
     - ./build.sh
     - ./push.sh
   only:

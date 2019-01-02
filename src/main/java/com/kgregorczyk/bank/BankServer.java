@@ -26,6 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Runs HTTP server on port 8000;
+ *
+ * <p>This service allows to create and list and get given account, change account's name and
+ * transfer money from one account to another.
  */
 @Slf4j
 public class BankServer {

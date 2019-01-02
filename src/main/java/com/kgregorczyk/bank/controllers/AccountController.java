@@ -47,15 +47,15 @@ public class AccountController {
     this.eventStorage = eventStorage;
   }
 
-  private static boolean isUUIDValid(String value) {
+  private static boolean isUUIDNotValid(String value) {
     if (value == null || value.isEmpty()) {
-      return false;
+      return true;
     }
     try {
       UUID.fromString(value);
-      return true;
-    } catch (IllegalArgumentException e) {
       return false;
+    } catch (IllegalArgumentException e) {
+      return true;
     }
   }
 
@@ -64,12 +64,22 @@ public class AccountController {
         .build();
   }
 
+  /**
+   * Handles GET requests on `/api/account/listAccounts`
+   *
+   * @return A list of {@link AccountDTO} of all registered accounts.
+   */
   public Route listAccounts() {
     return (request, response) -> new APIResponse(
         eventStorage.loadAll().stream().map(
             AccountDTO::from).collect(toImmutableList()));
   }
 
+  /**
+   * Handles GET requests on `/api/account/getAccount/VALID_UUID`
+   *
+   * @return {@link AccountDTO} for specified account.
+   */
   public Route getAccount() {
     return (request, response) -> {
       // Extracts UUID from path
@@ -79,7 +89,6 @@ public class AccountController {
       } catch (IllegalArgumentException e) {
         response.status(HTTP_BAD_REQUEST);
         return new APIResponse(ERROR, "UUID provided in path is not valid");
-
       }
 
       // Verifies if requested aggregate exists
@@ -94,6 +103,15 @@ public class AccountController {
     };
   }
 
+  /**
+   * Handles POST requests on `/api/account/createAccount`.
+   *
+   * <p>This endpoint issues {@link  AccountService#asyncCreateAccountCommand}.
+   * <p> {@link CreateAccountRequest} is used as a request DTO with {@code fullName} as a required
+   * field.
+   *
+   * @return ACK if command was issued properly, HTTP 400 in case of validation errors.
+   */
   public Route createAccount() {
     return (request, response) -> {
       CreateAccountRequest payload = OBJECT_MAPPER
@@ -117,6 +135,16 @@ public class AccountController {
     };
   }
 
+  /**
+   * Handles POST requests on `/api/account/changeFullName/VALID_UUID`.
+   *
+   * <p>This endpoint issues {@link  AccountService#asyncChangeFullNameCommand}}.
+   * <p> {@link ChangeFullNameRequest} is used as a request DTO with {@code fullName} as a required
+   * field.
+   *
+   * @return ACK if command was issued properly, HTTP 404 when aggregate is not found, HTTP 400 in
+   * case of validation errors.
+   */
   public Route changeFullName() {
     return (request, response) -> {
       ChangeFullNameRequest payload = OBJECT_MAPPER
@@ -128,7 +156,7 @@ public class AccountController {
         validationErrors.put("fullName", "Cannot be empty");
       }
 
-      if (!isUUIDValid(request.params(":id"))) {
+      if (isUUIDNotValid(request.params(":id"))) {
         validationErrors.put("uuid", "UUID provided in path is not valid");
       }
 
@@ -153,6 +181,22 @@ public class AccountController {
     };
   }
 
+  /**
+   * Handles POST requests on `/api/account/transferMoney`.
+   *
+   * <p>This endpoint issues {@link  AccountService#asyncTransferMoneyCommand}}.
+   * <p> {@link TransferMoneyRequest} is used as a request DTO with these fields:
+   *
+   * <ul>
+   * <li>{@code fromAccountNumber} - Valid UUID of issuer aggregate</li>
+   * <li>{@code toAccountNumber} - Valid UUID of receiver aggregate</li>
+   * <li>{@code value} - Valid, positive double which represent amount of money to transfer.</li>
+   * </ul>
+   * </p>
+   *
+   * @return ACK if command was issued properly, HTTP 404 when aggregate is not found, HTTP 400 in
+   * case of validation errors.
+   */
   public Route transferMoney() {
     return ((request, response) -> {
       TransferMoneyRequest payload = OBJECT_MAPPER
@@ -160,11 +204,11 @@ public class AccountController {
       ListMultimap<String, String> validationErrors = validationErrorsMap();
 
       // Validates request
-      if (!isUUIDValid(payload.getFromAccountNumber())) {
+      if (isUUIDNotValid(payload.getFromAccountNumber())) {
         validationErrors.put("fromAccountNumber", "Is not a valid UUID value");
       }
 
-      if (!isUUIDValid(payload.getToAccountNumber())) {
+      if (isUUIDNotValid(payload.getToAccountNumber())) {
         validationErrors.put("toAccountNumber", "Is not a valid UUID value");
       }
 

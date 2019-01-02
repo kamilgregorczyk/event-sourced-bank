@@ -17,7 +17,7 @@ public class AccountService {
 
   /**
    * Command which initializes  {@link AccountAggregate} by emitting {@link AccountCreatedEvent}
-   * with only {@code fullName}.
+   * with only {@code fullName}. This event is then received {@link EventManager}.
    */
   public void asyncCreateAccountCommand(String fullName) {
     eventBus.post(new AccountCreatedEvent(UUID.randomUUID(), fullName));
@@ -25,7 +25,7 @@ public class AccountService {
 
   /**
    * Command which updates aggregate's {@code fullName} field by emitting {@link
-   * FullNameChangedEvent}.
+   * FullNameChangedEvent}. This event is then received {@link EventManager}.
    */
   public void asyncChangeFullNameCommand(UUID uuid, String fullName) {
     eventBus.post(new FullNameChangedEvent(uuid, fullName));
@@ -33,7 +33,7 @@ public class AccountService {
 
   /**
    * Command which initializes money transfer between two aggregates by emitting {@link
-   * MoneyTransferredEvent}
+   * MoneyTransferredEvent}. This event is then received {@link EventManager}.
    */
   public void asyncTransferMoneyCommand(UUID fromUUID, UUID toUUID, BigDecimal value) {
     eventBus.post(new MoneyTransferredEvent(fromUUID, fromUUID, toUUID, UUID.randomUUID(), value));

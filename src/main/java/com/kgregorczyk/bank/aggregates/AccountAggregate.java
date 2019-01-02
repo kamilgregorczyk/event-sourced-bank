@@ -66,20 +66,37 @@ public class AccountAggregate {
         );
   }
 
+  /**
+   * Event that initializes aggregate.
+   *
+   * <p>Sets balance to {@link AccountAggregate#INITIAL_BALANCE} for simplicity.
+   */
   AccountAggregate apply(AccountCreatedEvent event) {
     uuid = event.getAggregateUUID();
     transactionToReservedBalance = new TreeMap<>(); // TreeMap because it keeps the order
+    //TODO: Replace with 0 initial balance.
     balance = BigDecimal.valueOf(INITIAL_BALANCE).setScale(2, BigDecimal.ROUND_HALF_EVEN);
     fullName = event.getFullName();
     transactions = new TreeMap<>(); // TreeMap because it keeps the order
     return this;
   }
 
+  /**
+   * Updates {@link AccountAggregate#fullName}.
+   */
   AccountAggregate apply(FullNameChangedEvent event) {
     fullName = event.getFullName();
     return this;
   }
 
+  /**
+   * Appends new transaction to {@link AccountAggregate#transactions} with {@link
+   * MoneyTransaction.State#NEW}.
+   *
+   * <p>If the event is applied on the issuer aggregate (account from money should be subtracted)
+   * then the transaction is set to {@link MoneyTransaction.Type#OUTGOING} with negated value,
+   * otherwise it's set to {@link MoneyTransaction.Type#INCOMING} with raw value.
+   */
   AccountAggregate apply(MoneyTransferredEvent event) {
     BigDecimal value;
     MoneyTransaction.Type type;
@@ -99,12 +116,23 @@ public class AccountAggregate {
     return this;
   }
 
+  /**
+   * Reserves balance on account that's about to have it's balance transferred and subtracts that
+   * amount from the main balance.
+   *
+   * <p>If the event was followed by {@link MoneyTransferredEvent} (there's a transaction)
+   * then it also updates the transaction state to {@link MoneyTransaction.State#PENDING}.
+   *
+   * @throws BalanceTooLowException when {@link AccountAggregate#balance} is not sufficient.
+   */
   AccountAggregate apply(AccountDebitedEvent event) {
     if (balance.subtract(event.getValue()).compareTo(BigDecimal.ZERO) >= 0) {
       // Reserves balance for receiver
       balance = balance.subtract(event.getValue());
       transactionToReservedBalance.put(event.getTransactionUUID(), event.getValue().negate());
-      changeTransactionState(event.getTransactionUUID(), State.PENDING);
+      if (transactions.containsKey(event.getTransactionUUID())) {
+        changeTransactionState(event.getTransactionUUID(), State.PENDING);
+      }
       return this;
     } else {
       throw new BalanceTooLowException();
@@ -112,28 +140,48 @@ public class AccountAggregate {
 
   }
 
+  /**
+   * Reserves balance on account that's about to have it's balance increased (receiver or the money
+   * transfer).
+   *
+   * <p>If the event was followed by {@link MoneyTransferredEvent} (there's a transaction)
+   * then it also updates the transaction state to {@link MoneyTransaction.State#PENDING}.
+   */
   AccountAggregate apply(AccountCreditedEvent event) {
     // Adds a temp. balance
     transactionToReservedBalance.put(event.getTransactionUUID(), event.getValue());
-    changeTransactionState(event.getTransactionUUID(), State.PENDING);
-    return this;
-  }
-
-  AccountAggregate apply(MoneyTransferSucceeded event) {
-    transactionToReservedBalance.remove(event.getTransactionUUID());
-    changeTransactionState(event.getTransactionUUID(), State.SUCCEEDED);
-
-    // Increments receiver's account
-    if (event.getToUUID().equals(event.getAggregateUUID())) {
-      balance = balance.add(event.getValue());
+    if (transactions.containsKey(event.getTransactionUUID())) {
+      changeTransactionState(event.getTransactionUUID(), State.PENDING);
     }
     return this;
   }
 
+  /**
+   * Marks transaction as {@link MoneyTransaction.State#SUCCEEDED}. Releases reserved balance and
+   * increments it for receiver of the money transfer.
+   */
+  AccountAggregate apply(MoneyTransferSucceeded event) {
+    changeTransactionState(event.getTransactionUUID(), State.SUCCEEDED);
+    if (transactionToReservedBalance.containsKey(event.getTransactionUUID())) {
+      BigDecimal reservedMoney = transactionToReservedBalance.remove(event.getTransactionUUID());
+      // Increments receiver's account
+      if (event.getToUUID().equals(event.getAggregateUUID())) {
+        balance = balance.add(reservedMoney);
+      }
+    }
+    return this;
+  }
+
+  /**
+   * Cancels ongoing transaction.
+   *
+   * <p>This event cannot be called once {@link  MoneyTransferSucceeded} has been called for the
+   * same {@link MoneyTransaction#getTransactionUUID()}</p>
+   */
   AccountAggregate apply(MoneyTransferCancelled event) {
 
     if (event.getToUUID().equals(event.getAggregateUUID())) {
-      // Cancelling money transfer for receiver receiver
+      // Cancelling money transfer for receiver
       transactionToReservedBalance.remove(event.getTransactionUUID());
     } else {
       // Cancelling money transfer for issuer

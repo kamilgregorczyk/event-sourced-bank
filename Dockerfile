@@ -6,8 +6,8 @@ ADD pom.xml pom.xml
 RUN mvn verify
 
 ADD src src
-RUN mvn clean package
+RUN mvn package
 
 EXPOSE 8000
 RUN ls /app/target
-CMD ["/bin/bash"]
+ENTRYPOINT ["java", "-jar", "target/bank-1.0-SNAPSHOT-jar-with-dependencies.jar"]

@@ -29,3 +29,5 @@ build:
   image: docker:stable
   script:
     - docker info
+  only:
+    - master

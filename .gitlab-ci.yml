@@ -13,7 +13,7 @@ test:
     paths:
       - target/*.jar
   script:
-    - mvn clean package
+    - mvn package
     - mvn test
 
 analyze:
@@ -23,7 +23,7 @@ analyze:
     paths:
       - target/*.jar
   script:
-    - mvn clean package
+    - mvn package
     - ./sonar.sh
 
 build:

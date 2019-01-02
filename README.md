@@ -2,3 +2,7 @@
 [![qualitygate](https://sonarcloud.io/api/project_badges/measure?project=kamilgregorczyk_event-sourced-bank&metric=alert_status)](https://sonarcloud.io/dashboard?id=kamilgregorczyk_event-sourced-bank)
 [![coverage](https://sonarcloud.io/api/project_badges/measure?project=kamilgregorczyk_event-sourced-bank&metric=coverage)](https://sonarcloud.io/dashboard?id=kamilgregorczyk_event-sourced-bank)
 [![grade](https://sonarcloud.io/api/project_badges/measure?project=kamilgregorczyk_event-sourced-bank&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=kamilgregorczyk_event-sourced-bank)
+
+
+POC of a bank which runs in-memory. It allows to create accounts, change names and transfer money between two accounts. Consistency between two models is  achieved with event sourcing (no CQRS so far) as storage is a simple concurrent map.
+There is no mechanism for rolling back (or continuing) transactions which failed because of a hardware error (service got restarted etc.) as everything is in-memory anyway.

@@ -32,6 +32,7 @@ build:
   script:
     - apk update
     - apk add curl
+    - apk add git
     - echo $DOCKER_PASSWORD | docker login -u $DOCKER_LOGIN --password-stdin
     - git rev-parse --short HEAD
     - ./build.sh

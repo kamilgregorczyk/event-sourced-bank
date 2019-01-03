@@ -6,9 +6,9 @@ import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
+import com.google.gson.Gson;
 import com.kgregorczyk.bank.aggregates.AccountEventStorage;
 import com.kgregorczyk.bank.aggregates.AccountService;
 import com.kgregorczyk.bank.controllers.dto.APIResponse;
@@ -39,7 +39,7 @@ import spark.Route;
 public class AccountController {
 
   private static final String VALIDATION_ERROR_MESSAGE = "There are validation errors";
-  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+  private static final Gson GSON = new Gson();
   private final AccountService accountService;
   private final AccountEventStorage eventStorage;
 
@@ -130,8 +130,7 @@ public class AccountController {
    */
   public Route createAccount() {
     return (request, response) -> {
-      CreateAccountRequest payload = OBJECT_MAPPER
-          .readValue(request.body(), CreateAccountRequest.class);
+      CreateAccountRequest payload = GSON.fromJson(request.body(), CreateAccountRequest.class);
       ListMultimap<String, String> validationErrors = validationErrorsMap();
 
       // Validates request
@@ -161,8 +160,7 @@ public class AccountController {
    */
   public Route changeFullName() {
     return (request, response) -> {
-      ChangeFullNameRequest payload = OBJECT_MAPPER
-          .readValue(request.body(), ChangeFullNameRequest.class);
+      ChangeFullNameRequest payload = GSON.fromJson(request.body(), ChangeFullNameRequest.class);
       ListMultimap<String, String> validationErrors = validationErrorsMap();
 
       // Validates request
@@ -181,7 +179,7 @@ public class AccountController {
 
         // Issues ChangeFullNameCommand
         accountService.asyncChangeFullNameCommand(aggregateUUID, payload.getFullName());
-        return new APIResponse("Name will be changed");
+        return new APIResponse("Full Name will be changed");
       } else {
         response.status(HTTP_NOT_FOUND);
         return new APIResponse(ERROR,
@@ -208,8 +206,7 @@ public class AccountController {
    */
   public Route transferMoney() {
     return ((request, response) -> {
-      TransferMoneyRequest payload = OBJECT_MAPPER
-          .readValue(request.body(), TransferMoneyRequest.class);
+      TransferMoneyRequest payload = GSON.fromJson(request.body(), TransferMoneyRequest.class);
       ListMultimap<String, String> validationErrors = validationErrorsMap();
 
       // Validates request

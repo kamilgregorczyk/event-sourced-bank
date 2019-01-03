@@ -47,6 +47,8 @@ public class AccountAggregate {
   private Map<UUID, BigDecimal> transactionToReservedBalance;
   private List<DomainEvent> domainEvents;
   private Map<UUID, MoneyTransaction> transactions;
+  private Date createdAt;
+  private Date lastUpdatedAt;
 
   AccountAggregate(List<DomainEvent> domainEvents) {
     this.domainEvents = domainEvents;
@@ -79,6 +81,8 @@ public class AccountAggregate {
     balance = BigDecimal.valueOf(INITIAL_BALANCE).setScale(2, RoundingMode.HALF_EVEN);
     fullName = event.getFullName();
     transactions = new TreeMap<>(); // TreeMap because it keeps the order
+    createdAt = event.getCreatedAt();
+    lastUpdatedAt = event.getCreatedAt();
     return this;
   }
 
@@ -86,6 +90,7 @@ public class AccountAggregate {
    * Updates {@link AccountAggregate#fullName}.
    */
   AccountAggregate apply(FullNameChangedEvent event) {
+    lastUpdatedAt = event.getCreatedAt();
     fullName = event.getFullName();
     return this;
   }
@@ -101,7 +106,7 @@ public class AccountAggregate {
   AccountAggregate apply(MoneyTransferredEvent event) {
     BigDecimal value;
     MoneyTransaction.Type type;
-
+    lastUpdatedAt = event.getCreatedAt();
     if (event.getAggregateUUID().equals(event.getFromUUID())) {
       // Outgoing money transfer
       value = event.getValue().negate();
@@ -114,6 +119,7 @@ public class AccountAggregate {
     transactions.put(event.getTransactionUUID(),
         new MoneyTransaction(event.getTransactionUUID(), event.getFromUUID(), event.getToUUID(),
             value, State.NEW, type, new Date(), new Date()));
+
     return this;
   }
 
@@ -128,6 +134,7 @@ public class AccountAggregate {
    */
   AccountAggregate apply(AccountDebitedEvent event) {
     if (balance.subtract(event.getValue()).compareTo(BigDecimal.ZERO) >= 0) {
+      lastUpdatedAt = event.getCreatedAt();
       // Reserves balance for receiver
       balance = balance.subtract(event.getValue());
       transactionToReservedBalance.put(event.getTransactionUUID(), event.getValue().negate());
@@ -149,6 +156,7 @@ public class AccountAggregate {
    * then it also updates the transaction state to {@link MoneyTransaction.State#PENDING}.
    */
   AccountAggregate apply(AccountCreditedEvent event) {
+    lastUpdatedAt = event.getCreatedAt();
     // Adds a temp. balance
     transactionToReservedBalance.put(event.getTransactionUUID(), event.getValue());
     if (transactions.containsKey(event.getTransactionUUID())) {
@@ -162,6 +170,7 @@ public class AccountAggregate {
    * increments it for receiver of the money transfer.
    */
   AccountAggregate apply(MoneyTransferSucceeded event) {
+    lastUpdatedAt = event.getCreatedAt();
     changeTransactionState(event.getTransactionUUID(), State.SUCCEEDED);
     if (transactionToReservedBalance.containsKey(event.getTransactionUUID())) {
       BigDecimal reservedMoney = transactionToReservedBalance.remove(event.getTransactionUUID());
@@ -180,7 +189,7 @@ public class AccountAggregate {
    * same {@link MoneyTransaction#getTransactionUUID()}</p>
    */
   AccountAggregate apply(MoneyTransferCancelled event) {
-
+    lastUpdatedAt = event.getCreatedAt();
     if (event.getToUUID().equals(event.getAggregateUUID())) {
       // Cancelling money transfer for receiver
       transactionToReservedBalance.remove(event.getTransactionUUID());

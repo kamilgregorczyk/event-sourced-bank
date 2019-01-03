@@ -26,6 +26,8 @@ public class AccountDTO {
   private Map<UUID, BigDecimal> transactionToReservedBalance;
   private List<DomainEvent> events;
   private Map<UUID, MoneyTransactionDTO> transactions;
+  private Date createdAt;
+  private Date lastUpdatedAt;
 
   public static AccountDTO from(AccountAggregate aggregate) {
     return AccountDTO.builder().accountNumber(aggregate.getUuid()).fullName(aggregate.getFullName())
@@ -50,6 +52,8 @@ public class AccountDTO {
             )
             .collect(Collectors.toMap(MoneyTransactionDTO::getTransactionUUID,
                 moneyTransactionDTO -> moneyTransactionDTO)))
+        .createdAt(aggregate.getCreatedAt())
+        .lastUpdatedAt(aggregate.getLastUpdatedAt())
         .build();
   }
 

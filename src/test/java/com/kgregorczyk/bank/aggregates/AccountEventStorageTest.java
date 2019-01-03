@@ -1,4 +1,4 @@
-package com.kgregorczyk.bank;
+package com.kgregorczyk.bank.aggregates;
 
 
 import static com.google.common.truth.Truth.assertThat;

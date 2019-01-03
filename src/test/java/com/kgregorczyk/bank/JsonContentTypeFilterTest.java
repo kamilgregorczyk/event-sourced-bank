@@ -1,4 +1,4 @@
-package com.kgregorczyk.bank.filters;
+package com.kgregorczyk.bank;
 
 
 import static com.google.common.truth.Truth.assertThat;

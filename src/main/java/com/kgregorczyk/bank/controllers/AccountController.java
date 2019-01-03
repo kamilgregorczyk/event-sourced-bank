@@ -5,6 +5,7 @@ import static com.kgregorczyk.bank.controllers.dto.APIResponse.Status.ERROR;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
+import static java.net.HttpURLConnection.HTTP_OK;
 
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
@@ -98,15 +99,16 @@ public class AccountController {
    */
   public Route getAccount() {
     return (request, response) -> {
-      // Extracts UUID from path
-      UUID aggregateUUID;
-      try {
-        aggregateUUID = UUID.fromString(request.params(":id"));
-      } catch (IllegalArgumentException e) {
+      ListMultimap<String, String> validationErrors = validationErrorsMap();
+
+      validateUUID("uuid", request.params(":id"), validationErrors);
+
+      if (!validationErrors.isEmpty()) {
         response.status(HTTP_BAD_REQUEST);
-        return new APIResponse(ERROR, "UUID provided in path is not valid");
+        return new APIResponse(ERROR, VALIDATION_ERROR_MESSAGE, validationErrors.asMap());
       }
 
+      UUID aggregateUUID = UUID.fromString(request.params(":id"));
       // Verifies if requested aggregate exists
       if (eventStorage.exists(aggregateUUID)) {
         // Issues ChangeFullNameCommand
@@ -240,12 +242,12 @@ public class AccountController {
       if (!eventStorage.exists(toUUID)) {
         response.status(HTTP_NOT_FOUND);
         return new APIResponse(ERROR,
-            String.format("Account with UUID: %s doesn't exist", fromUUID));
+            String.format("Account with UUID: %s doesn't exist", toUUID));
       }
 
       // Issues money transfer
       accountService.asyncTransferMoneyCommand(fromUUID, toUUID, payload.getValue());
-      response.status(HTTP_CREATED);
+      response.status(HTTP_OK);
       return new APIResponse("Money will be transferred");
 
     });

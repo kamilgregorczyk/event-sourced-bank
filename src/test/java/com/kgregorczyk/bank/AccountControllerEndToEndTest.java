@@ -5,9 +5,8 @@ import static com.kgregorczyk.bank.utils.JsonUtils.toJson;
 import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_OK;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.kgregorczyk.bank.AbstractSparkTest;
 import com.kgregorczyk.bank.controllers.dto.ChangeFullNameRequest;
 import com.kgregorczyk.bank.controllers.dto.CreateAccountRequest;
 import com.kgregorczyk.bank.controllers.dto.TransferMoneyRequest;
@@ -21,9 +20,6 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
 public class AccountControllerEndToEndTest extends AbstractSparkTest {
-
-  private static final Gson GSON = new Gson();
-  private static final JsonParser JSON_PARSER = new JsonParser();
 
   private static String createAndAssertAccount(String fullName) throws Exception {
     // given
@@ -54,8 +50,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
         .put("status", "OK")
         .put("message", "Account will be created")
         .put("data", aggregateUUID).toString();
-    assertThat(JSON_PARSER.parse(expectedResponse)).isEqualTo(GSON.fromJson(createAccountJson,
-        JsonObject.class));
+    assertResponses(expectedResponse, createAccountJson);
   }
 
   private static String getAccount(String aggregateUUID) throws Exception {
@@ -69,11 +64,6 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
     // assert
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_OK);
     return getResponseBodyAndClose(response);
-  }
-
-  private static String getFieldFromEvents(String json, int index, String fieldName) {
-    return GSON.fromJson(json, JsonObject.class).getAsJsonObject("data").getAsJsonArray(
-        "events").get(index).getAsJsonObject().get(fieldName).getAsString();
   }
 
   /**
@@ -106,8 +96,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
             .put("transactions", new JSONObject())
         ).toString();
 
-    assertThat(JSON_PARSER.parse(expectedResponse))
-        .isEqualTo(GSON.fromJson(getAccountJson, JsonObject.class));
+    assertResponses(expectedResponse, getAccountJson);
   }
 
   @Test
@@ -129,8 +118,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
     String changeFullNameExpectedResponse = new JSONObject()
         .put("status", "OK")
         .put("message", "Full Name will be changed").toString();
-    assertThat(JSON_PARSER.parse(changeFullNameExpectedResponse))
-        .isEqualTo(GSON.fromJson(changeFullNameJson, JsonObject.class));
+    assertResponses(changeFullNameExpectedResponse, changeFullNameJson);
 
     /*
       Verifies if change was properly made by fetching account.
@@ -167,8 +155,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
             .put("lastUpdatedAt", lastUpdatedAt)
             .put("transactions", new JSONObject())
         ).toString();
-    assertThat(JSON_PARSER.parse(expectedResponse))
-        .isEqualTo(GSON.fromJson(getAccountJson, JsonObject.class));
+    assertResponses(expectedResponse, getAccountJson);
   }
 
   @Test
@@ -251,8 +238,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
                 ))
 
         ).toString();
-    assertThat(JSON_PARSER.parse(expectedResponse1)).isEqualTo(GSON.fromJson(getAccountJson1,
-        JsonObject.class));
+    assertResponses(expectedResponse1, getAccountJson1);
 
     /*
       Verifies Receiver's account
@@ -327,8 +313,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
                 ))
 
         ).toString();
-    assertThat(JSON_PARSER.parse(expectedResponse2)).isEqualTo(GSON.fromJson(getAccountJson2,
-        JsonObject.class));
+    assertResponses(expectedResponse2, getAccountJson2);
   }
 
   @Test
@@ -402,8 +387,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
                 ))
 
         ).toString();
-    assertThat(JSON_PARSER.parse(expectedResponse1)).isEqualTo(GSON.fromJson(getAccountJson1,
-        JsonObject.class));
+    assertResponses(expectedResponse1, getAccountJson1);
 
     /*
       Verifies Receiver's account
@@ -436,8 +420,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
             .put("lastUpdatedAt", createdAt2)
             .put("transactions", new JSONObject())
         ).toString();
-    assertThat(JSON_PARSER.parse(expectedResponse2)).isEqualTo(GSON.fromJson(getAccountJson2,
-        JsonObject.class));
+    assertResponses(expectedResponse2, getAccountJson2);
 
 
   }
@@ -457,8 +440,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
     String transferMoneyExpectedResponse = new JSONObject()
         .put("status", "OK")
         .put("message", "Money will be transferred").toString();
-    assertThat(JSON_PARSER.parse(transferMoneyExpectedResponse))
-        .isEqualTo(GSON.fromJson(getResponseBodyAndClose(transferMoneyResponse), JsonObject.class));
+    assertResponses(transferMoneyExpectedResponse, getResponseBodyAndClose(transferMoneyResponse));
   }
 
 

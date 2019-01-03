@@ -1,7 +1,9 @@
-package com.kgregorczyk.bank.utils;
+package com.kgregorczyk.bank;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import com.google.common.truth.Truth;
+import com.kgregorczyk.bank.utils.JsonUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +13,7 @@ class JsonUtilsTest {
 
   @Test
   public void toJson() {
-    assertThat(JsonUtils.toJson(new DummyModel("Avengers")))
+    Truth.assertThat(JsonUtils.toJson(new DummyModel("Avengers")))
         .isEqualTo("{\"niceValue\":\"Avengers\"}");
   }
 

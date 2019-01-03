@@ -1,4 +1,4 @@
-package com.kgregorczyk.bank;
+package com.kgregorczyk.bank.controllers;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.kgregorczyk.bank.utils.JsonUtils.toJson;
@@ -6,6 +6,7 @@ import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_OK;
 
 import com.google.gson.JsonObject;
+import com.kgregorczyk.bank.AbstractSparkTest;
 import com.kgregorczyk.bank.controllers.dto.ChangeFullNameRequest;
 import com.kgregorczyk.bank.controllers.dto.CreateAccountRequest;
 import com.kgregorczyk.bank.controllers.dto.TransferMoneyRequest;

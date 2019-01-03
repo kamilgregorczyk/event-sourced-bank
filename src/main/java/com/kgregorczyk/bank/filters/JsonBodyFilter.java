@@ -1,11 +1,10 @@
 package com.kgregorczyk.bank.filters;
 
+import static com.kgregorczyk.bank.utils.JsonUtils.isJSONValid;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static spark.Spark.halt;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.kgregorczyk.bank.controllers.dto.APIResponse;
 import com.kgregorczyk.bank.controllers.dto.APIResponse.Status;
 import spark.Filter;
@@ -17,22 +16,12 @@ import spark.Response;
  */
 public class JsonBodyFilter implements Filter {
 
-  private static final Gson GSON = new Gson();
   private static final ImmutableSet<String> HTTP_METHODS_WITH_BODY = ImmutableSet
       .of("POST", "PUT", "PATCH");
 
-  private static boolean isJSONValid(String jsonInString) {
-    try {
-
-      GSON.fromJson(jsonInString, Object.class);
-      return true;
-    } catch (JsonSyntaxException e) {
-      return false;
-    }
-  }
-
   @Override
   public void handle(Request request, Response response) {
+
     if (HTTP_METHODS_WITH_BODY.contains(request.requestMethod())) {
       if (request.body().isEmpty()) {
         halt(HTTP_BAD_REQUEST,

@@ -67,7 +67,7 @@ class BankServer {
     });
 
     // After filters
-    afterAfter("/api/*", new JsonContentTypeFilter());
+    afterAfter(new JsonContentTypeFilter());
 
     // Other handlers
     notFound((request, response) ->

@@ -9,14 +9,14 @@ import org.junit.jupiter.api.BeforeAll;
 import spark.Spark;
 import spark.utils.IOUtils;
 
-public abstract class AbstractEndToEndTest {
+public abstract class SparkTest {
 
-  static final String SERVER_URL = "http://localhost:8000";
-  static final CloseableHttpClient client = HttpClients.custom().build();
+  protected static final String SERVER_URL = "http://localhost:8000";
+  protected static final CloseableHttpClient client = HttpClients.custom().build();
   private static boolean isRunning = false;
 
   @BeforeAll
-  public static void setUp() {
+  public synchronized static void setUp() {
     if (!isRunning) {
       BankServer.main(null);
       isRunning = true;
@@ -29,7 +29,10 @@ public abstract class AbstractEndToEndTest {
   }
 
 
-  static String getResponseBody(CloseableHttpResponse response) throws IOException {
-    return IOUtils.toString(response.getEntity().getContent());
+  protected static String getResponseBodyAndClose(CloseableHttpResponse response)
+      throws IOException {
+    String value = IOUtils.toString(response.getEntity().getContent());
+    response.close();
+    return value;
   }
 }

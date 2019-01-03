@@ -9,7 +9,7 @@ import spark.Route;
  */
 public class IndexController {
 
-  private IndexController() {
+  public IndexController() {
   }
 
   public static Route healthCheck() {

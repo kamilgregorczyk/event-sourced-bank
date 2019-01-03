@@ -1,20 +1,18 @@
-package com.kgregorczyk.bank;
+package com.kgregorczyk.bank.filters;
+
 
 import static com.google.common.truth.Truth.assertThat;
 import static java.net.HttpURLConnection.HTTP_OK;
 
-import com.kgregorczyk.bank.controllers.dto.APIResponse;
-import com.kgregorczyk.bank.utils.JsonUtils;
+import com.kgregorczyk.bank.SparkTest;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.junit.jupiter.api.Test;
 
-
-public class IndexControllerEndToEndTest extends SparkTest {
+class JsonContentTypeFilterTest extends SparkTest {
 
   @Test
-  public void testIndexController() throws Exception {
-    // given
+  public void postMethodWithNoBodyShouldFail() throws Exception {
     HttpGet request = new HttpGet(SERVER_URL + "/");
 
     // when
@@ -22,7 +20,8 @@ public class IndexControllerEndToEndTest extends SparkTest {
 
     // assert
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_OK);
-    assertThat(getResponseBodyAndClose(response))
-        .isEqualTo(JsonUtils.toJson(new APIResponse("System is OK")));
+    assertThat(response.getFirstHeader("Content-Type").toString()).isEqualTo(
+        "Content-Type: application/json");
+    response.close();
   }
 }

@@ -1,6 +1,7 @@
 package com.kgregorczyk.bank.utils;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 
 public class JsonUtils {
@@ -15,5 +16,17 @@ public class JsonUtils {
    */
   public static String toJson(Object model) {
     return GSON.toJson(model);
+  }
+
+  /**
+   * Checks whether {@code jsonInString} is a valid JSON formatted string.
+   */
+  public static boolean isJSONValid(String jsonInString) {
+    try {
+      GSON.fromJson(jsonInString, Object.class);
+      return true;
+    } catch (JsonSyntaxException e) {
+      return false;
+    }
   }
 }

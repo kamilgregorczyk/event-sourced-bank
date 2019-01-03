@@ -20,7 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
-public class AccountControllerEndToEndTest extends AbstractEndToEndTest {
+public class AccountControllerEndToEndTest extends SparkTest {
 
   private static final Gson GSON = new Gson();
   private static final JsonParser JSON_PARSER = new JsonParser();
@@ -30,11 +30,11 @@ public class AccountControllerEndToEndTest extends AbstractEndToEndTest {
     HttpPost createAccountRequest = createAccountRequest(fullName);
 
     // when
-    CloseableHttpResponse createAccountResponse = client.execute(createAccountRequest);
+    CloseableHttpResponse response = client.execute(createAccountRequest);
 
     // assert
-    assertThat(createAccountResponse.getStatusLine().getStatusCode()).isEqualTo(HTTP_CREATED);
-    String createAccountJson = getResponseBody(createAccountResponse);
+    assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_CREATED);
+    String createAccountJson = getResponseBodyAndClose(response);
     String aggregateUUID =
         GSON.fromJson(createAccountJson, JsonObject.class).get("data").getAsString();
     assertCreateAccountResponse(createAccountJson, aggregateUUID);
@@ -64,11 +64,11 @@ public class AccountControllerEndToEndTest extends AbstractEndToEndTest {
         SERVER_URL + "/api/account/getAccount/" + aggregateUUID);
 
     // when
-    CloseableHttpResponse getAccountResponse = client.execute(getAccountRequest);
+    CloseableHttpResponse response = client.execute(getAccountRequest);
 
     // assert
-    assertThat(getAccountResponse.getStatusLine().getStatusCode()).isEqualTo(HTTP_OK);
-    return getResponseBody(getAccountResponse);
+    assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_OK);
+    return getResponseBodyAndClose(response);
   }
 
   private static String getFieldFromEvents(String json, int index, String fieldName) {
@@ -125,7 +125,7 @@ public class AccountControllerEndToEndTest extends AbstractEndToEndTest {
 
     // assert
     assertThat(changeFullNameResponse.getStatusLine().getStatusCode()).isEqualTo(HTTP_OK);
-    String changeFullNameJson = getResponseBody(changeFullNameResponse);
+    String changeFullNameJson = getResponseBodyAndClose(changeFullNameResponse);
     String changeFullNameExpectedResponse = new JSONObject()
         .put("status", "OK")
         .put("message", "Full Name will be changed").toString();
@@ -458,7 +458,7 @@ public class AccountControllerEndToEndTest extends AbstractEndToEndTest {
         .put("status", "OK")
         .put("message", "Money will be transferred").toString();
     assertThat(JSON_PARSER.parse(transferMoneyExpectedResponse))
-        .isEqualTo(GSON.fromJson(getResponseBody(transferMoneyResponse), JsonObject.class));
+        .isEqualTo(GSON.fromJson(getResponseBodyAndClose(transferMoneyResponse), JsonObject.class));
   }
 
 

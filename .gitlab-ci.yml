@@ -30,10 +30,11 @@ build:
   stage: build
   image: docker:stable
   script:
+    - apk update
+    - apk add curl
     - echo $DOCKER_PASSWORD | docker login -u $DOCKER_LOGIN --password-stdin
     - ./build.sh
     - ./push.sh
-    - apt-get install curl
     - curl -X POST https://hooks.microbadger.com/images/uniqe15/event-sourced-bank/qAYbnGd4JHMW8TYFCtdrx8OBySM=
   only:
     - master

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeAll;
 import spark.Spark;
 import spark.utils.IOUtils;
 
-public abstract class SparkTest {
+public abstract class AbstractSparkTest {
 
   protected static final String SERVER_URL = "http://localhost:8000";
   protected static final CloseableHttpClient client = HttpClients.custom().build();

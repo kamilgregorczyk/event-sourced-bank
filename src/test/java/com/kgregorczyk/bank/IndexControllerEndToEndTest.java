@@ -10,7 +10,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.junit.jupiter.api.Test;
 
 
-public class IndexControllerEndToEndTest extends SparkTest {
+public class IndexControllerEndToEndTest extends AbstractSparkTest {
 
   @Test
   public void testIndexController() throws Exception {

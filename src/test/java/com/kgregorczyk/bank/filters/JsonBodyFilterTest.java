@@ -7,7 +7,7 @@ import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_OK;
 
 import com.google.gson.Gson;
-import com.kgregorczyk.bank.SparkTest;
+import com.kgregorczyk.bank.AbstractSparkTest;
 import com.kgregorczyk.bank.controllers.dto.APIResponse;
 import com.kgregorczyk.bank.controllers.dto.APIResponse.Status;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -18,7 +18,7 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.junit.jupiter.api.Test;
 
-class JsonBodyFilterTest extends SparkTest {
+class JsonBodyFilterTest extends AbstractSparkTest {
 
   private static final Gson GSON = new Gson();
 

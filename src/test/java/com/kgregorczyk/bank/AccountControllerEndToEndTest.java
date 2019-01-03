@@ -20,7 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
-public class AccountControllerEndToEndTest extends SparkTest {
+public class AccountControllerEndToEndTest extends AbstractSparkTest {
 
   private static final Gson GSON = new Gson();
   private static final JsonParser JSON_PARSER = new JsonParser();

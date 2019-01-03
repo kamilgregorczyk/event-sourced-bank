@@ -66,6 +66,20 @@ public class AccountController {
         .build();
   }
 
+  private static void validateString(String fieldName, String value,
+      ListMultimap<String, String> validationErrors) {
+    if (value == null || value.isEmpty()) {
+      validationErrors.put(fieldName, "Cannot be empty");
+    }
+  }
+
+  private static void validateUUID(String fieldName, String value,
+      ListMultimap<String, String> validationErrors) {
+    if (isUUIDNotValid(value)) {
+      validationErrors.put(fieldName, "Is not a valid UUID value");
+    }
+  }
+
   /**
    * Handles GET requests on `/api/account/listAccounts`
    *
@@ -121,13 +135,11 @@ public class AccountController {
       ListMultimap<String, String> validationErrors = validationErrorsMap();
 
       // Validates request
-      if (payload.getFullName() == null || payload.getFullName().isEmpty()) {
-        validationErrors.put("fullName", "Cannot be empty");
-      }
+      validateString("fullName", payload.getFullName(), validationErrors);
 
       if (!validationErrors.isEmpty()) {
         response.status(HTTP_BAD_REQUEST);
-        return new APIResponse(ERROR, "There are validation errors", validationErrors.asMap());
+        return new APIResponse(ERROR, VALIDATION_ERROR_MESSAGE, validationErrors.asMap());
       }
 
       // Issues CreateAccountCommand
@@ -154,13 +166,8 @@ public class AccountController {
       ListMultimap<String, String> validationErrors = validationErrorsMap();
 
       // Validates request
-      if (payload.getFullName() == null || payload.getFullName().isEmpty()) {
-        validationErrors.put("fullName", "Cannot be empty");
-      }
-
-      if (isUUIDNotValid(request.params(":id"))) {
-        validationErrors.put("uuid", "UUID provided in path is not valid");
-      }
+      validateString("fullName", payload.getFullName(), validationErrors);
+      validateUUID("uuid", request.params(":id"), validationErrors);
 
       if (!validationErrors.isEmpty()) {
         response.status(HTTP_BAD_REQUEST);
@@ -206,13 +213,8 @@ public class AccountController {
       ListMultimap<String, String> validationErrors = validationErrorsMap();
 
       // Validates request
-      if (isUUIDNotValid(payload.getFromAccountNumber())) {
-        validationErrors.put("fromAccountNumber", "Is not a valid UUID value");
-      }
-
-      if (isUUIDNotValid(payload.getToAccountNumber())) {
-        validationErrors.put("toAccountNumber", "Is not a valid UUID value");
-      }
+      validateUUID("fromAccountNumber", payload.getFromAccountNumber(), validationErrors);
+      validateUUID("toAccountNumber", payload.getToAccountNumber(), validationErrors);
 
       if (payload.getFromAccountNumber() != null && payload.getToAccountNumber() != null && payload
           .getFromAccountNumber().equals(payload.getToAccountNumber())) {
@@ -250,6 +252,5 @@ public class AccountController {
       return new APIResponse("Money will be transferred");
 
     });
-
   }
 }

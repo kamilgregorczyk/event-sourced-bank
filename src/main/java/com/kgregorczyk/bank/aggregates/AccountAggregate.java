@@ -14,6 +14,7 @@ import com.kgregorczyk.bank.aggregates.events.MoneyTransferSucceeded;
 import com.kgregorczyk.bank.aggregates.events.MoneyTransferredEvent;
 import io.vavr.API;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -75,7 +76,7 @@ public class AccountAggregate {
     uuid = event.getAggregateUUID();
     transactionToReservedBalance = new TreeMap<>(); // TreeMap because it keeps the order
     //TODO: Replace with 0 initial balance.
-    balance = BigDecimal.valueOf(INITIAL_BALANCE).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+    balance = BigDecimal.valueOf(INITIAL_BALANCE).setScale(2, RoundingMode.HALF_EVEN);
     fullName = event.getFullName();
     transactions = new TreeMap<>(); // TreeMap because it keeps the order
     return this;

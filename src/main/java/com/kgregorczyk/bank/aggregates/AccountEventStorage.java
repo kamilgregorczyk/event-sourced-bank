@@ -38,13 +38,13 @@ public class AccountEventStorage {
   }
 
 
-  void save(DomainEvent domainEvent) {
+  public void save(DomainEvent domainEvent) {
     List<DomainEvent> currentEvents = events
         .computeIfAbsent(domainEvent.getAggregateUUID(), uuid2 -> new ArrayList<>());
     currentEvents.add(domainEvent);
   }
 
-  private AccountAggregate recreate(List<DomainEvent> events) {
+  public static AccountAggregate recreate(List<DomainEvent> events) {
     return ofAll(events).foldLeft(new AccountAggregate(events),
         (AccountAggregate::apply));
   }

@@ -7,7 +7,6 @@ import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_OK;
 
 import com.google.gson.Gson;
-import com.kgregorczyk.bank.AbstractSparkTest;
 import com.kgregorczyk.bank.controllers.dto.APIResponse;
 import com.kgregorczyk.bank.controllers.dto.APIResponse.Status;
 import org.apache.http.client.methods.CloseableHttpResponse;

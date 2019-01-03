@@ -6,7 +6,6 @@ import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_OK;
 
 import com.google.gson.JsonObject;
-import com.kgregorczyk.bank.AbstractSparkTest;
 import com.kgregorczyk.bank.controllers.dto.ChangeFullNameRequest;
 import com.kgregorczyk.bank.controllers.dto.CreateAccountRequest;
 import com.kgregorczyk.bank.controllers.dto.TransferMoneyRequest;

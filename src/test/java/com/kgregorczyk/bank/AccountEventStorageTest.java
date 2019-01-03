@@ -25,11 +25,9 @@ class AccountEventStorageTest {
     // when
     ImmutableList<AccountAggregate> aggregates = storage.loadAll();
     // assert
-    assertThat(aggregates).hasSize(2);
-    assertThat(aggregates.get(0))
-        .isEqualTo(AccountEventStorage.recreate(ImmutableList.of(event1)));
-    assertThat(aggregates.get(1))
-        .isEqualTo(AccountEventStorage.recreate(ImmutableList.of(event2)));
+    assertThat(aggregates).containsExactly(
+        AccountEventStorage.recreate(ImmutableList.of(event1)), AccountEventStorage
+            .recreate(ImmutableList.of(event2)));
 
   }
 

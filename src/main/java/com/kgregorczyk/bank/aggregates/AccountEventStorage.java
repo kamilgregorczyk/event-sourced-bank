@@ -17,6 +17,10 @@ public class AccountEventStorage {
 
   private final Map<UUID, List<DomainEvent>> events = new ConcurrentHashMap<>();
 
+  public static AccountAggregate recreate(List<DomainEvent> events) {
+    return ofAll(events).foldLeft(new AccountAggregate(events),
+        (AccountAggregate::apply));
+  }
 
   public ImmutableList<AccountAggregate> loadAll() {
     return events.entrySet()
@@ -37,15 +41,9 @@ public class AccountEventStorage {
     return events.containsKey(uuid);
   }
 
-
   public void save(DomainEvent domainEvent) {
     List<DomainEvent> currentEvents = events
         .computeIfAbsent(domainEvent.getAggregateUUID(), uuid2 -> new ArrayList<>());
     currentEvents.add(domainEvent);
-  }
-
-  public static AccountAggregate recreate(List<DomainEvent> events) {
-    return ofAll(events).foldLeft(new AccountAggregate(events),
-        (AccountAggregate::apply));
   }
 }

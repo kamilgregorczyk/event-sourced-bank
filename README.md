@@ -11,7 +11,12 @@ It requires no external dependencies as everything is in-memory (event bus, stor
 There is no mechanism for rolling back (or continuing) transactions which failed because of a hardware error (service got restarted etc.) as everything is in-memory anyway. It could be easily implemented with a cron which would need to find all the unsucceeded and uncancelled transactions that were not modified in last 30 minutes and call CancelTransactionCommand.
 
 ## Endpoints
+### Metric Endpoints
+| Endpoint                           | Method | URL |
+|------------------------------------|--------|-----|
+| [Health Check](doc/healthcheck.md) | `GET`  | `/` |
 
+### Account Endpoints
 | Endpoint                                  | Method | URL                               |
 |-------------------------------------------|--------|-----------------------------------|
 | [List Accounts](doc/listaccounts.md)      | `GET`  | `/api/account/listAccounts`       |

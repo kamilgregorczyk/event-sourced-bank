@@ -24,7 +24,7 @@ public class AccountDTO {
   private UUID accountNumber;
   private BigDecimal balance;
   private Map<UUID, BigDecimal> transactionToReservedBalance;
-  private List<? extends DomainEvent> events;
+  private List<DomainEvent> events;
   private Map<UUID, MoneyTransactionDTO> transactions;
   private Date createdAt;
   private Date lastUpdatedAt;

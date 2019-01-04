@@ -17,7 +17,7 @@ public class AccountEventStorage {
 
   private final Map<UUID, List<DomainEvent>> events = new ConcurrentHashMap<>();
 
-  public static AccountAggregate recreate(List<? extends DomainEvent> events) {
+  public static AccountAggregate recreate(List<DomainEvent> events) {
     return ofAll(events).foldLeft(new AccountAggregate(events),
         (AccountAggregate::apply));
   }

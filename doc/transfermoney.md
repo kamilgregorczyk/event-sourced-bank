@@ -1,0 +1,60 @@
+# Transfer Money Endpoint
+
+**URL** : `/api/account/transferMoney`
+
+**Method** : `POST`
+
+**Required Body** :
+```
+{
+    "fromAccountNumber": "117e7ec8-80b4-4bcf-ba01-10d6f3ef63be",
+    "toAccountNumber": "27b803d3-25df-4a36-a838-2482383f8c99",
+    "value": 500
+}
+```
+
+## Success Response
+
+**Condition** : No validation errors
+
+**Code** : `200`
+```
+
+{
+    "status": "OK",
+    "message": "Money will be transferred"
+}
+```
+
+## Error Response
+
+**Condition** : Validation Errors
+
+**Code** : `400`
+```
+{
+    "status": "ERROR",
+    "message": "There are validation errors",
+    "data": {
+        "fromAccountNumber": [
+            "Is not a valid UUID value"
+        ],
+        "toAccountNumber": [
+            "Is not a valid UUID value"
+        ],
+        "value": [
+            "Must be provided & be greater than 0"
+        ]
+    }
+}
+```
+
+**Condition** : Account is not found
+
+**Code** : `404`
+```
+{
+    "status": "ERROR",
+    "message": "Account with ID: 5c6c3d72-2be9-4bcd-aac8-15cd4dd58ba5 was not found"
+}
+```

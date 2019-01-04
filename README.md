@@ -8,7 +8,7 @@ POC of a bank which runs in-memory. It allows to create accounts, change names a
 
 It requires no external dependencies as everything is in-memory (event bus, storage etc.)
 
-There is no mechanism for rolling back (or continuing) transactions which failed because of a hardware error (service got restarted etc.) as everything is in-memory anyway. It could be easily implemented with a cron which would need to find all the unsucceeded and uncancelled transactions that were not modified in last 30 minutes and call CancelTransactionCommand.
+Rolling back of unfinished transaction is implemented with a cron that finds unfinished transactions which were not modified within last 30 minutes and cancels them.
 
 ## Endpoints
 ### Metric Endpoints

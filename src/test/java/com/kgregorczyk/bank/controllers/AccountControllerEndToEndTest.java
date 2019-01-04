@@ -397,7 +397,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
     String getAccountJson2 = getAccount(aggregateUUID2);
 
     // assert
-    String createdAt2 = getFieldFromEvents(getAccountJson1, 0, "createdAt");
+    String createdAt2 = getFieldFromEvents(getAccountJson2, 0, "createdAt");
     String expectedResponse2 = new JSONObject()
         .put("status", "OK")
         .put("message", "SUCCESS")

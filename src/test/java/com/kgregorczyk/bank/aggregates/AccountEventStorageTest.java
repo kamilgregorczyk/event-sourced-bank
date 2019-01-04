@@ -4,12 +4,11 @@ package com.kgregorczyk.bank.aggregates;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.collect.ImmutableList;
-import com.kgregorczyk.bank.AbstractSparkTest;
 import com.kgregorczyk.bank.aggregates.events.AccountCreatedEvent;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
-class AccountEventStorageTest extends AbstractSparkTest {
+class AccountEventStorageTest {
 
 
   @Test

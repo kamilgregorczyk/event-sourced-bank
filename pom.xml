@@ -68,9 +68,15 @@
         </configuration>
         <executions>
           <execution>
-            <id>agent</id>
             <goals>
               <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>report</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>report</goal>
             </goals>
           </execution>
         </executions>
@@ -122,10 +128,12 @@
     </dependency>
 
     <!-- Testing -->
+
     <dependency>
-      <groupId>com.despegar</groupId>
-      <artifactId>spark-test</artifactId>
-      <version>1.1.8</version>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <version>2.23.4</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>

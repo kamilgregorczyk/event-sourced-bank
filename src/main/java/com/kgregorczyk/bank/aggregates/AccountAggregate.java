@@ -193,14 +193,12 @@ public class AccountAggregate {
     if (event.getToUUID().equals(event.getAggregateUUID())) {
       // Cancelling money transfer for receiver
       transactionToReservedBalance.remove(event.getTransactionUUID());
-    } else {
-      // Cancelling money transfer for issuer
-      if (transactionToReservedBalance.containsKey(event.getTransactionUUID())) {
-        BigDecimal reservedBalance = transactionToReservedBalance.get(event.getTransactionUUID());
-        balance = balance.add(reservedBalance);
-        transactionToReservedBalance.remove(event.getTransactionUUID());
-      }
+    } else if (transactionToReservedBalance.containsKey(event.getTransactionUUID())) {
+      BigDecimal reservedBalance = transactionToReservedBalance.get(event.getTransactionUUID());
+      balance = balance.add(reservedBalance.negate());
+      transactionToReservedBalance.remove(event.getTransactionUUID());
     }
+
     changeTransactionState(event.getTransactionUUID(), State.CANCELLED, event.getCreatedAt());
     return this;
   }

@@ -216,6 +216,29 @@ class AccountAggregateTest {
   }
 
   @Test
+  public void accountDebitedEventNoTransaction() {
+    // given
+    ImmutableList<DomainEvent> events = ImmutableList
+        .of(ACCOUNT_CREATED, ACCOUNT_DEBITED);
+
+    // when
+    AccountAggregate aggregate = AccountEventStorage.recreate(events);
+
+    // assert
+    assertThat(aggregate.getFullName()).isEqualTo(ACCOUNT_CREATED.getFullName());
+    assertThat(aggregate.getUuid()).isEqualTo(ACCOUNT_CREATED.getAggregateUUID());
+    assertThat(aggregate.getBalance())
+        .isEqualTo(BigDecimal.valueOf(990).setScale(2, RoundingMode.HALF_EVEN));
+    assertThat(aggregate.getTransactions()).isEmpty();
+    assertThat(aggregate.getTransactionToReservedBalance()).isEqualTo(
+        ImmutableMap.of(ACCOUNT_DEBITED.getTransactionUUID(), ACCOUNT_DEBITED.getValue().negate())
+    );
+    assertThat(aggregate.getCreatedAt()).isEqualTo(ACCOUNT_CREATED.getCreatedAt());
+    assertThat(aggregate.getLastUpdatedAt()).isEqualTo(ACCOUNT_DEBITED.getCreatedAt());
+    assertThat(aggregate.getDomainEvents()).isEqualTo(events);
+  }
+
+  @Test
   public void accountCreditedEvent() {
     // given
     ImmutableList<DomainEvent> events = ImmutableList
@@ -246,6 +269,63 @@ class AccountAggregateTest {
     );
     assertThat(aggregate.getCreatedAt()).isEqualTo(ACCOUNT_CREATED.getCreatedAt());
     assertThat(aggregate.getLastUpdatedAt()).isEqualTo(ACCOUNT_DEBITED.getCreatedAt());
+    assertThat(aggregate.getDomainEvents()).isEqualTo(events);
+  }
+
+  @Test
+  public void accountCreditedEventWithNoTransaction() {
+    // given
+    ImmutableList<DomainEvent> events = ImmutableList
+        .of(ACCOUNT_CREATED, ACCOUNT_CREDITED);
+
+    // when
+    AccountAggregate aggregate = AccountEventStorage.recreate(events);
+
+    // assert
+    assertThat(aggregate.getFullName()).isEqualTo(ACCOUNT_CREATED.getFullName());
+    assertThat(aggregate.getUuid()).isEqualTo(ACCOUNT_CREATED.getAggregateUUID());
+    assertThat(aggregate.getBalance())
+        .isEqualTo(BigDecimal.valueOf(1000).setScale(2, RoundingMode.HALF_EVEN));
+    assertThat(aggregate.getTransactions()).isEmpty();
+    assertThat(aggregate.getTransactionToReservedBalance()).isEqualTo(
+        ImmutableMap.of(ACCOUNT_CREDITED.getTransactionUUID(), ACCOUNT_CREDITED.getValue())
+    );
+    assertThat(aggregate.getCreatedAt()).isEqualTo(ACCOUNT_CREATED.getCreatedAt());
+    assertThat(aggregate.getLastUpdatedAt()).isEqualTo(ACCOUNT_DEBITED.getCreatedAt());
+    assertThat(aggregate.getDomainEvents()).isEqualTo(events);
+  }
+
+  @Test
+  public void moneyTransferSucceededNoReservedMoney() {
+    // given
+    ImmutableList<DomainEvent> events = ImmutableList
+        .of(ACCOUNT_CREATED, ISSUER_MONEY_TRANSFERRED,
+            ISSUER_MONEY_TRANSFER_SUCCEEDED);
+
+    // when
+    AccountAggregate aggregate = AccountEventStorage.recreate(events);
+
+    // assert
+    assertThat(aggregate.getFullName()).isEqualTo(ACCOUNT_CREATED.getFullName());
+    assertThat(aggregate.getUuid()).isEqualTo(ACCOUNT_CREATED.getAggregateUUID());
+    assertThat(aggregate.getBalance())
+        .isEqualTo(BigDecimal.valueOf(1000).setScale(2, RoundingMode.HALF_EVEN));
+    assertThat(aggregate.getTransactions()).isEqualTo(
+        ImmutableMap.of(ISSUER_MONEY_TRANSFERRED.getTransactionUUID(), MoneyTransaction.builder()
+            .fromUUID(ISSUER_MONEY_TRANSFERRED.getFromUUID())
+            .toUUID(ISSUER_MONEY_TRANSFERRED.getToUUID())
+            .transactionUUID(ISSUER_MONEY_TRANSFERRED.getTransactionUUID())
+            .state(State.SUCCEEDED)
+            .type(MoneyTransaction.Type.OUTGOING)
+            .value(ISSUER_MONEY_TRANSFERRED.getValue().negate())
+            .createdAt(ISSUER_MONEY_TRANSFERRED.getCreatedAt())
+            .lastUpdatedAt(ISSUER_MONEY_TRANSFER_SUCCEEDED.getCreatedAt())
+            .build())
+    );
+    assertThat(aggregate.getTransactionToReservedBalance()).isEmpty();
+    assertThat(aggregate.getCreatedAt()).isEqualTo(ACCOUNT_CREATED.getCreatedAt());
+    assertThat(aggregate.getLastUpdatedAt())
+        .isEqualTo(ISSUER_MONEY_TRANSFER_SUCCEEDED.getCreatedAt());
     assertThat(aggregate.getDomainEvents()).isEqualTo(events);
   }
 
@@ -322,6 +402,40 @@ class AccountAggregateTest {
     // given
     ImmutableList<DomainEvent> events = ImmutableList
         .of(ACCOUNT_CREATED, ISSUER_MONEY_TRANSFERRED, ISSUER_MONEY_TRANSFER_CANCELLED);
+
+    // when
+    AccountAggregate aggregate = AccountEventStorage.recreate(events);
+
+    // assert
+    assertThat(aggregate.getFullName()).isEqualTo(ACCOUNT_CREATED.getFullName());
+    assertThat(aggregate.getUuid()).isEqualTo(ACCOUNT_CREATED.getAggregateUUID());
+    assertThat(aggregate.getBalance())
+        .isEqualTo(BigDecimal.valueOf(1000).setScale(2, RoundingMode.HALF_EVEN));
+    assertThat(aggregate.getTransactions()).isEqualTo(
+        ImmutableMap.of(ISSUER_MONEY_TRANSFERRED.getTransactionUUID(), MoneyTransaction.builder()
+            .fromUUID(ISSUER_MONEY_TRANSFERRED.getFromUUID())
+            .toUUID(ISSUER_MONEY_TRANSFERRED.getToUUID())
+            .transactionUUID(ISSUER_MONEY_TRANSFERRED.getTransactionUUID())
+            .state(State.CANCELLED)
+            .type(MoneyTransaction.Type.OUTGOING)
+            .value(ISSUER_MONEY_TRANSFERRED.getValue().negate())
+            .createdAt(ISSUER_MONEY_TRANSFERRED.getCreatedAt())
+            .lastUpdatedAt(ISSUER_MONEY_TRANSFER_CANCELLED.getCreatedAt())
+            .build())
+    );
+    assertThat(aggregate.getTransactionToReservedBalance()).isEmpty();
+    assertThat(aggregate.getCreatedAt()).isEqualTo(ACCOUNT_CREATED.getCreatedAt());
+    assertThat(aggregate.getLastUpdatedAt())
+        .isEqualTo(ISSUER_MONEY_TRANSFER_CANCELLED.getCreatedAt());
+    assertThat(aggregate.getDomainEvents()).isEqualTo(events);
+  }
+
+  @Test
+  public void moneyTransferCancelledEventIssuerWhenAccountWasDebited() {
+    // given
+    ImmutableList<DomainEvent> events = ImmutableList
+        .of(ACCOUNT_CREATED, ISSUER_MONEY_TRANSFERRED, ACCOUNT_DEBITED,
+            ISSUER_MONEY_TRANSFER_CANCELLED);
 
     // when
     AccountAggregate aggregate = AccountEventStorage.recreate(events);

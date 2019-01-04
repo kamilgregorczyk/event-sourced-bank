@@ -27,7 +27,13 @@ public class MoneyTransferCancelled extends DomainEvent {
   public MoneyTransferCancelled(UUID aggregateUUID, UUID fromUUID, UUID toUUID,
       UUID transactionUUID,
       BigDecimal value, Reason reason) {
-    super(aggregateUUID, new Date());
+    this(aggregateUUID, fromUUID, toUUID, transactionUUID, value, reason, new Date());
+  }
+
+  public MoneyTransferCancelled(UUID aggregateUUID, UUID fromUUID, UUID toUUID,
+      UUID transactionUUID,
+      BigDecimal value, Reason reason, Date date) {
+    super(aggregateUUID, date);
     this.transactionUUID = transactionUUID;
     this.fromUUID = fromUUID;
     this.toUUID = toUUID;

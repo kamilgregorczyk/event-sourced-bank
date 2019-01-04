@@ -3,6 +3,7 @@ package com.kgregorczyk.bank.aggregates.events;
 import com.google.common.base.CaseFormat;
 import java.util.Date;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -12,12 +13,13 @@ import lombok.ToString;
  */
 @Getter
 @ToString
+@AllArgsConstructor
 @EqualsAndHashCode(exclude = {"createdAt"})
 public abstract class DomainEvent {
 
+  Date createdAt;
   private String eventType;
   private UUID aggregateUUID;
-  private Date createdAt;
 
   DomainEvent(UUID aggregateUUID, Date createdAt) {
     this.aggregateUUID = aggregateUUID;

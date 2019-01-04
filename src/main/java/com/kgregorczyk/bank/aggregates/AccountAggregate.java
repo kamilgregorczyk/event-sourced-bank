@@ -184,9 +184,6 @@ public class AccountAggregate {
 
   /**
    * Cancels ongoing transaction.
-   *
-   * <p>This event cannot be called once {@link  MoneyTransferSucceeded} has been called for the
-   * same {@link MoneyTransaction#getTransactionUUID()}</p>
    */
   AccountAggregate apply(MoneyTransferCancelled event) {
     lastUpdatedAt = event.getCreatedAt();

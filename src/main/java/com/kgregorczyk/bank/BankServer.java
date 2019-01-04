@@ -18,10 +18,14 @@ import com.kgregorczyk.bank.controllers.AccountController;
 import com.kgregorczyk.bank.controllers.IndexController;
 import com.kgregorczyk.bank.controllers.dto.APIResponse;
 import com.kgregorczyk.bank.controllers.dto.APIResponse.Status;
+import com.kgregorczyk.bank.cron.TransactionRollbackCron;
 import com.kgregorczyk.bank.filters.JsonBodyFilter;
 import com.kgregorczyk.bank.filters.JsonContentTypeFilter;
 import com.kgregorczyk.bank.filters.LoggingFilter;
 import com.kgregorczyk.bank.utils.JsonUtils;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -41,6 +45,10 @@ class BankServer {
   private static final AccountService ACCOUNT_SERVICE = new AccountService(EVENT_BUS);
   private static final AccountController ACCOUNT_CONTROLLER = new AccountController(ACCOUNT_SERVICE,
       ACCOUNT_EVENT_STORAGE);
+  private static final TransactionRollbackCron TRANSACTION_ROLLBACK_CRON = new TransactionRollbackCron(
+      ACCOUNT_SERVICE, ACCOUNT_EVENT_STORAGE);
+  private static final ScheduledExecutorService cronExecutorService = Executors
+      .newScheduledThreadPool(1);
 
   private static final int PORT = 8000;
 
@@ -49,6 +57,9 @@ class BankServer {
 
     // Registers event listener to EventBus
     EVENT_BUS.register(EVENT_MANAGER);
+
+    // Schedules TransactionRollbackCron
+    cronExecutorService.scheduleAtFixedRate(TRANSACTION_ROLLBACK_CRON, 0, 10, TimeUnit.SECONDS);
 
     // Before filter
     before(new LoggingFilter());

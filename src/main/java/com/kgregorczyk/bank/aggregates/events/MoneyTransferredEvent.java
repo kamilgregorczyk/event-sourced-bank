@@ -21,7 +21,12 @@ public class MoneyTransferredEvent extends DomainEvent {
 
   public MoneyTransferredEvent(UUID aggregateUUID, UUID fromUUID, UUID toUUID, UUID transactionUUID,
       BigDecimal value) {
-    super(aggregateUUID, new Date());
+    this(aggregateUUID, fromUUID, toUUID, transactionUUID, value, new Date());
+  }
+
+  public MoneyTransferredEvent(UUID aggregateUUID, UUID fromUUID, UUID toUUID, UUID transactionUUID,
+      BigDecimal value, Date date) {
+    super(aggregateUUID, date);
     this.transactionUUID = transactionUUID;
     this.fromUUID = fromUUID;
     this.toUUID = toUUID;

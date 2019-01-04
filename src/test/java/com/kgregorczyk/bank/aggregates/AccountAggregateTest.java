@@ -268,7 +268,7 @@ class AccountAggregateTest {
         ImmutableMap.of(ACCOUNT_CREDITED.getTransactionUUID(), ACCOUNT_CREDITED.getValue())
     );
     assertThat(aggregate.getCreatedAt()).isEqualTo(ACCOUNT_CREATED.getCreatedAt());
-    assertThat(aggregate.getLastUpdatedAt()).isEqualTo(ACCOUNT_DEBITED.getCreatedAt());
+    assertThat(aggregate.getLastUpdatedAt()).isEqualTo(ACCOUNT_CREDITED.getCreatedAt());
     assertThat(aggregate.getDomainEvents()).isEqualTo(events);
   }
 
@@ -291,7 +291,7 @@ class AccountAggregateTest {
         ImmutableMap.of(ACCOUNT_CREDITED.getTransactionUUID(), ACCOUNT_CREDITED.getValue())
     );
     assertThat(aggregate.getCreatedAt()).isEqualTo(ACCOUNT_CREATED.getCreatedAt());
-    assertThat(aggregate.getLastUpdatedAt()).isEqualTo(ACCOUNT_DEBITED.getCreatedAt());
+    assertThat(aggregate.getLastUpdatedAt()).isEqualTo(ACCOUNT_CREDITED.getCreatedAt());
     assertThat(aggregate.getDomainEvents()).isEqualTo(events);
   }
 

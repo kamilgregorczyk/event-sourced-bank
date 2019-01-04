@@ -3,6 +3,8 @@ package com.kgregorczyk.bank.aggregates;
 import com.google.common.eventbus.EventBus;
 import com.kgregorczyk.bank.aggregates.events.AccountCreatedEvent;
 import com.kgregorczyk.bank.aggregates.events.FullNameChangedEvent;
+import com.kgregorczyk.bank.aggregates.events.MoneyTransferCancelled;
+import com.kgregorczyk.bank.aggregates.events.MoneyTransferCancelled.Reason;
 import com.kgregorczyk.bank.aggregates.events.MoneyTransferredEvent;
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -39,5 +41,16 @@ public class AccountService {
    */
   public void asyncTransferMoneyCommand(UUID fromUUID, UUID toUUID, BigDecimal value) {
     eventBus.post(new MoneyTransferredEvent(fromUUID, fromUUID, toUUID, UUID.randomUUID(), value));
+  }
+
+  /**
+   * Command which cancels money transfer on a single aggregate by emitting {@link
+   * MoneyTransferCancelled}. This event is then received {@link EventManager}.
+   */
+  public void asyncCancelTransactionCommand(UUID aggregateUUID, UUID fromUUID, UUID toUUID,
+      UUID transactionUUID, BigDecimal value, Reason reason) {
+    eventBus.post(
+        new MoneyTransferCancelled(aggregateUUID, fromUUID, toUUID, transactionUUID, value,
+            reason));
   }
 }

@@ -1,0 +1,220 @@
+{
+	"info": {
+		"_postman_id": "fe9cbb3a-61e9-4ad5-93b4-861adc28f8f7",
+		"name": "BANK",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8000",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000"
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Accounts",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/account/listAccounts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"account",
+						"listAccounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Account",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "9e4ea754-201d-48b5-ac6a-bbb580c9d3f0",
+						"exec": [
+							"pm.sendRequest(\"http://localhost:8000/api/account/listAccounts\", function (err, response) {",
+							"pm.globals.set(\"account_1\", response.json()[\"data\"][0][\"accountNumber\"]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/account/getAccount/{{account_1}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"account",
+						"getAccount",
+						"{{account_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Account",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n \"fullName\": \"John Doe\"\t\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/account/createAccount",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"account",
+						"createAccount"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change Full Name",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "18059171-53d9-423c-b709-7ee4547c310d",
+						"exec": [
+							"pm.sendRequest(\"http://localhost:8000/api/account/listAccounts\", function (err, response) {",
+							"pm.globals.set(\"account_1\", response.json()[\"data\"][0][\"accountNumber\"]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n \"fullName\": \"Marcin AAA\"\t\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/account/changeFullName/{{account_1}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"account",
+						"changeFullName",
+						"{{account_1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Transfer Money",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c402efc0-4d6c-4849-a0dd-3a60de88a819",
+						"exec": [
+							"pm.sendRequest(\"http://localhost:8000/api/account/listAccounts\", function (err, response) {",
+							"pm.globals.set(\"account_1\", response.json()[\"data\"][0][\"accountNumber\"]);",
+							"pm.globals.set(\"account_2\", response.json()[\"data\"][1][\"accountNumber\"]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"fromAccountNumber\": \"{{account_1}}\",\n    \"toAccountNumber\": \"{{account_2}}\",\n    \"value\": 500\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/account/transferMoney",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"account",
+						"transferMoney"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

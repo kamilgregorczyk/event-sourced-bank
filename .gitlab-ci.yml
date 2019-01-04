@@ -1,6 +1,5 @@
 stages:
   - test
-  - analyze
   - build
 
 services:
@@ -9,21 +8,8 @@ services:
 test:
   stage: test
   image: maven:3.6.0-jdk-8-alpine
-  artifacts:
-    paths:
-      - target/*
   script:
-    - mvn package
     - mvn test
-
-analyze:
-  stage: analyze
-  image: maven:3.6.0-jdk-8-alpine
-  artifacts:
-    paths:
-      - target/*
-  script:
-    - mvn package
     - ./sonar.sh
 
 build:

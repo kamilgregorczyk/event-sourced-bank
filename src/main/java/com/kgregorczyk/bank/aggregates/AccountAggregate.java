@@ -118,7 +118,7 @@ public class AccountAggregate {
     }
     transactions.put(event.getTransactionUUID(),
         new MoneyTransaction(event.getTransactionUUID(), event.getFromUUID(), event.getToUUID(),
-            value, State.NEW, type, new Date(), new Date()));
+            value, State.NEW, type, event.getCreatedAt(), event.getCreatedAt()));
 
     return this;
   }
@@ -139,7 +139,7 @@ public class AccountAggregate {
       balance = balance.subtract(event.getValue());
       transactionToReservedBalance.put(event.getTransactionUUID(), event.getValue().negate());
       if (transactions.containsKey(event.getTransactionUUID())) {
-        changeTransactionState(event.getTransactionUUID(), State.PENDING);
+        changeTransactionState(event.getTransactionUUID(), State.PENDING, event.getCreatedAt());
       }
       return this;
     } else {
@@ -160,7 +160,7 @@ public class AccountAggregate {
     // Adds a temp. balance
     transactionToReservedBalance.put(event.getTransactionUUID(), event.getValue());
     if (transactions.containsKey(event.getTransactionUUID())) {
-      changeTransactionState(event.getTransactionUUID(), State.PENDING);
+      changeTransactionState(event.getTransactionUUID(), State.PENDING, event.getCreatedAt());
     }
     return this;
   }
@@ -171,7 +171,7 @@ public class AccountAggregate {
    */
   AccountAggregate apply(MoneyTransferSucceeded event) {
     lastUpdatedAt = event.getCreatedAt();
-    changeTransactionState(event.getTransactionUUID(), State.SUCCEEDED);
+    changeTransactionState(event.getTransactionUUID(), State.SUCCEEDED, event.getCreatedAt());
     if (transactionToReservedBalance.containsKey(event.getTransactionUUID())) {
       BigDecimal reservedMoney = transactionToReservedBalance.remove(event.getTransactionUUID());
       // Increments receiver's account
@@ -201,13 +201,13 @@ public class AccountAggregate {
       }
       transactionToReservedBalance.remove(event.getTransactionUUID());
     }
-    changeTransactionState(event.getTransactionUUID(), State.CANCELLED);
+    changeTransactionState(event.getTransactionUUID(), State.CANCELLED, event.getCreatedAt());
     return this;
   }
 
-  private void changeTransactionState(UUID transactionUUID, State state) {
+  private void changeTransactionState(UUID transactionUUID, State state, Date lastUpdatedAt) {
     MoneyTransaction transaction = transactions.get(transactionUUID);
     transaction.setState(state);
-    transaction.setLastUpdatedAt(new Date());
+    transaction.setLastUpdatedAt(lastUpdatedAt);
   }
 }

@@ -15,7 +15,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @AllArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = {"createdAt"})
 @NoArgsConstructor
 public abstract class DomainEvent {
 

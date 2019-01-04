@@ -86,6 +86,9 @@ public class EventManager {
   void handle(AccountDebitedEvent event) {
     logEvent(event);
     AccountAggregate dirtyAggregate = eventStorage.loadByUUID(event.getFromUUID());
+    if (dirtyAggregate == null) {
+      throw new AggregateDoesNotExist(event.toString());
+    }
     try {
       dirtyAggregate.apply(event);
     } catch (BalanceTooLowException e) {
@@ -98,11 +101,13 @@ public class EventManager {
     }
     // When there's enough money we persist event and progress further
     persistIfAggregateExists(event);
+
     // Saves MoneyTransferredEvent in receiver's aggregate
     persistIfAggregateExists(
         new MoneyTransferredEvent(event.getToUUID(), event.getFromUUID(), event.getToUUID(),
             event.getTransactionUUID(),
             event.getValue()));
+
     // Requests crediting receiver's aggregate
     eventBus.post(
         new AccountCreditedEvent(event.getToUUID(), event.getFromUUID(), event.getToUUID(),

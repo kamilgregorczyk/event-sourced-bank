@@ -4,13 +4,17 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
 @EqualsAndHashCode
 @ToString
+@NoArgsConstructor
+@Builder
 @AllArgsConstructor
 public class MoneyTransaction {
 

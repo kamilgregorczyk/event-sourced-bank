@@ -45,12 +45,12 @@ public class AccountAggregate {
   private String fullName;
   private BigDecimal balance;
   private Map<UUID, BigDecimal> transactionToReservedBalance;
-  private List<DomainEvent> domainEvents;
+  private List<? extends DomainEvent> domainEvents;
   private Map<UUID, MoneyTransaction> transactions;
   private Date createdAt;
   private Date lastUpdatedAt;
 
-  AccountAggregate(List<DomainEvent> domainEvents) {
+  AccountAggregate(List<? extends DomainEvent> domainEvents) {
     this.domainEvents = domainEvents;
   }
 

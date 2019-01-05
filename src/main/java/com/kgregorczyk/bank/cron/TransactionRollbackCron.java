@@ -2,7 +2,6 @@ package com.kgregorczyk.bank.cron;
 
 import static com.google.common.collect.ImmutableListMultimap.toImmutableListMultimap;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ListMultimap;
 import com.kgregorczyk.bank.aggregates.AccountEventStorage;
 import com.kgregorczyk.bank.aggregates.AccountService;
@@ -29,8 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TransactionRollbackCron implements Runnable {
 
-  private static final ImmutableList<MoneyTransaction.State> FINISHED_STATES = ImmutableList
-      .of(State.SUCCEEDED, State.CANCELLED);
   private static final int TRANSACTION_TIMEOUT_IN_MINUTES = 30;
 
   private final AccountService accountService;
@@ -106,15 +103,14 @@ public class TransactionRollbackCron implements Runnable {
         State.CANCELLED)) {
 
       // Otherwise we have two transactions where one is not finished.
-      if (!FINISHED_STATES.contains(issuerTransaction.getState())) {
+      if (!issuerTransaction.getState().equals(State.CANCELLED)) {
         cancelTransactionForIssuer(issuerTransaction);
       }
-      if (!FINISHED_STATES.contains(receiverTransaction.getState())) {
+      if (!receiverTransaction.getState().equals(State.CANCELLED)) {
         cancelTransactionForReceiver(receiverTransaction);
       }
     }
   }
-
 
   private void cancelTransactionForIssuer(MoneyTransaction transaction) {
     log.info("Cancelling transaction: {}", transaction);

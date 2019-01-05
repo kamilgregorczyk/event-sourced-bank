@@ -159,7 +159,7 @@ class TransactionRollbackCronTest {
   }
 
   @Test
-  public void completedTransactionsNotModifiedRecentlyShouldNotBeProcessed() {
+  public void succeededTransactionsNotModifiedRecentlyShouldNotBeProcessed() {
     // given
     when(accountEventStorage.loadAll()).thenReturn(ImmutableList.of(
         aggregate(ACCOUNT_CREATED_1, MONEY_TRANSFERRED_1_IN_PAST, MONEY_TRANSFER_SUCCEEDED_1),
@@ -228,4 +228,56 @@ class TransactionRollbackCronTest {
     verifyNoMoreInteractions(accountService);
   }
 
+  @Test
+  public void transactionsWithMixedStatuesNotModifiedRecentlyShouldBeProcessed2() {
+    // given
+    when(accountEventStorage.loadAll()).thenReturn(ImmutableList.of(
+        aggregate(ACCOUNT_CREATED_1, MONEY_TRANSFERRED_1_IN_PAST),
+        aggregate(ACCOUNT_CREATED_2, MONEY_TRANSFERRED_2_IN_PAST, MONEY_TRANSFER_CANCELLED_2),
+        aggregate(ACCOUNT_CREATED_3, MONEY_TRANSFERRED_3_IN_PAST, MONEY_TRANSFER_CANCELLED_3)
+    ));
+
+    // when
+    cron.run();
+
+    // assert
+    verify(accountService)
+        .asyncCancelTransactionCommand(MONEY_TRANSFERRED_1_IN_PAST.getAggregateUUID(),
+            MONEY_TRANSFERRED_1_IN_PAST.getFromUUID(),
+            MONEY_TRANSFERRED_1_IN_PAST.getToUUID(),
+            MONEY_TRANSFERRED_1_IN_PAST.getTransactionUUID(),
+            MONEY_TRANSFERRED_1_IN_PAST.getValue(),
+            Reason.INTERNAL_SERVER_ERROR);
+    verifyNoMoreInteractions(accountService);
+  }
+
+  @Test
+  public void transactionWithSucceededStateAndCancelledShouldBeProcessed() {
+    // given
+    when(accountEventStorage.loadAll()).thenReturn(ImmutableList.of(
+        aggregate(ACCOUNT_CREATED_1, MONEY_TRANSFERRED_1_IN_PAST, MONEY_TRANSFER_SUCCEEDED_1),
+        aggregate(ACCOUNT_CREATED_2, MONEY_TRANSFERRED_2_IN_PAST, MONEY_TRANSFER_CANCELLED_2),
+        aggregate(ACCOUNT_CREATED_3, MONEY_TRANSFERRED_3_IN_PAST, MONEY_TRANSFER_SUCCEEDED_3)
+    ));
+
+    // when
+    cron.run();
+
+    // assert
+    verify(accountService)
+        .asyncCancelTransactionCommand(MONEY_TRANSFERRED_1_IN_PAST.getAggregateUUID(),
+            MONEY_TRANSFERRED_1_IN_PAST.getFromUUID(),
+            MONEY_TRANSFERRED_1_IN_PAST.getToUUID(),
+            MONEY_TRANSFERRED_1_IN_PAST.getTransactionUUID(),
+            MONEY_TRANSFERRED_1_IN_PAST.getValue(),
+            Reason.INTERNAL_SERVER_ERROR);
+    verify(accountService)
+        .asyncCancelTransactionCommand(MONEY_TRANSFERRED_3_IN_PAST.getAggregateUUID(),
+            MONEY_TRANSFERRED_3_IN_PAST.getFromUUID(),
+            MONEY_TRANSFERRED_3_IN_PAST.getToUUID(),
+            MONEY_TRANSFERRED_3_IN_PAST.getTransactionUUID(),
+            MONEY_TRANSFERRED_3_IN_PAST.getValue(),
+            Reason.INTERNAL_SERVER_ERROR);
+    verifyNoMoreInteractions(accountService);
+  }
 }

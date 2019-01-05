@@ -138,6 +138,34 @@ public class AccountControllerTransferMoneyTest extends AbstractSparkTest {
   }
 
   @Test
+  public void transferMoneyNotValidAccountNumbersAreNulls() throws Exception {
+    // given
+    HttpPost request = new HttpPost(SERVER_URL + "/api/account/transferMoney");
+    request.setEntity(new StringEntity(toJson(new TransferMoneyRequest(null,
+        null, BigDecimal.TEN))));
+
+    // when
+    CloseableHttpResponse response = client.execute(request);
+
+    // assert
+    assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_BAD_REQUEST);
+    String expectedResponse =
+        new JSONObject()
+            .put("status", "ERROR")
+            .put("message", "There are validation errors")
+            .put("data", new JSONObject()
+                .put("fromAccountNumber", new JSONArray()
+                    .put("Is not a valid UUID value")
+                )
+                .put("toAccountNumber", new JSONArray()
+                    .put("Is not a valid UUID value")
+                )
+            )
+            .toString();
+    assertResponses(expectedResponse, getResponseBodyAndClose(response));
+  }
+
+  @Test
   public void transferMoneyNotValidNotExistingFromAccount() throws Exception {
     // given
     String randomUUID = UUID.randomUUID().toString();

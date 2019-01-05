@@ -11,7 +11,7 @@
 **Condition** : Account is found
 
 **Code** : `200`
-```
+```json
 {
     "status": "OK",
     "message": "SUCCESS",
@@ -40,7 +40,7 @@
 **Condition** : UUID in path is not valid
 
 **Code** : `400`
-```
+```json
 {
     "status": "ERROR",
     "message": "There are validation errors",
@@ -55,7 +55,7 @@
 **Condition** : Account is not found
 
 **Code** : `404`
-```
+```json
 {
     "status": "ERROR",
     "message": "Account with ID: 5c6c3d72-2be9-4bcd-aac8-15cd4dd58ba5 was not found"

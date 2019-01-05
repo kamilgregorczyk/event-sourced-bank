@@ -4,14 +4,19 @@
 
 **Method** : `POST`
 
-**Required Body** : `{"fullName": "Kamil Gregorczyk"}`
+**Required Body** :
+```json
+{
+    "fullName": "Kamil Gregorczyk",
+}
+```
 
 ## Success Response
 
 **Condition** : Account is created
 
 **Code** : `201`
-```
+```json
 {
     "status": "OK",
     "message": "Account will be created",
@@ -24,7 +29,7 @@
 **Condition** : Empty `fullName`
 
 **Code** : `400`
-```
+```json
 {
     "status": "ERROR",
     "message": "There are validation errors",

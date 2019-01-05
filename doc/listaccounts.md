@@ -11,7 +11,7 @@
 **Condition** : Only one account is registered
 
 **Code** : `200`
-```
+```json
 {
     "status": "OK",
     "message": "SUCCESS",
@@ -40,7 +40,7 @@
 **Condition** : No accounts are registered
 
 **Code** : `200`
-```
+```json
 {
     "status": "OK",
     "message": "SUCCESS",

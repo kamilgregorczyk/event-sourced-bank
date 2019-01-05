@@ -25,7 +25,7 @@ public class AccountControllerChangeFullNameTest extends AbstractSparkTest {
 
   private static CloseableHttpResponse createAccount() throws Exception {
     HttpPost request = new HttpPost(SERVER_URL + "/api/account/createAccount");
-    request.setEntity(new StringEntity(toJson(new CreateAccountRequest("Kamil Gregorczyk"))));
+    request.setEntity(new StringEntity(toJson(new CreateAccountRequest("Tony Stark"))));
     return client.execute(request);
   }
 

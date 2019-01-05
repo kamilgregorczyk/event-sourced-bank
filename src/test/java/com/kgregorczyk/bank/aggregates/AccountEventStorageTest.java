@@ -14,8 +14,8 @@ class AccountEventStorageTest {
   @Test
   void loadAll() {
     // given
-    AccountCreatedEvent event1 = new AccountCreatedEvent(UUID.randomUUID(), "Kamil Gregorczyk");
-    AccountCreatedEvent event2 = new AccountCreatedEvent(UUID.randomUUID(), "Jan Kowalski");
+    AccountCreatedEvent event1 = new AccountCreatedEvent(UUID.randomUUID(), "Tony Stark");
+    AccountCreatedEvent event2 = new AccountCreatedEvent(UUID.randomUUID(), "Black Widow");
     AccountEventStorage storage = new AccountEventStorage();
     storage.save(event1);
     storage.save(event2);
@@ -32,7 +32,7 @@ class AccountEventStorageTest {
   @Test
   void loadByUUIDExistingAggregate() {
     // given
-    AccountCreatedEvent event = new AccountCreatedEvent(UUID.randomUUID(), "Kamil Gregorczyk");
+    AccountCreatedEvent event = new AccountCreatedEvent(UUID.randomUUID(), "Tony Stark");
     AccountEventStorage storage = new AccountEventStorage();
     storage.save(event);
 
@@ -57,7 +57,7 @@ class AccountEventStorageTest {
   @Test
   void existsExistingAggregate() {
     // given
-    AccountCreatedEvent event = new AccountCreatedEvent(UUID.randomUUID(), "Kamil Gregorczyk");
+    AccountCreatedEvent event = new AccountCreatedEvent(UUID.randomUUID(), "Tony Stark");
     AccountEventStorage storage = new AccountEventStorage();
     storage.save(event);
 

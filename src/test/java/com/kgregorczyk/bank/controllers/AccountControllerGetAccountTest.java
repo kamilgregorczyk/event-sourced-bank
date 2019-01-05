@@ -25,7 +25,7 @@ public class AccountControllerGetAccountTest extends AbstractSparkTest {
 
   private static CloseableHttpResponse createAccount() throws Exception {
     HttpPost request = new HttpPost(SERVER_URL + "/api/account/createAccount");
-    request.setEntity(new StringEntity(toJson(new CreateAccountRequest("Kamil Gregorczyk"))));
+    request.setEntity(new StringEntity(toJson(new CreateAccountRequest("Tony Stark"))));
     return client.execute(request);
   }
 
@@ -54,12 +54,12 @@ public class AccountControllerGetAccountTest extends AbstractSparkTest {
         .put("status", "OK")
         .put("message", "SUCCESS")
         .put("data", new JSONObject()
-            .put("fullName", "Kamil Gregorczyk")
+            .put("fullName", "Tony Stark")
             .put("accountNumber", aggregateUUID)
             .put("balance", 1000.0)
             .put("transactionToReservedBalance", new JSONObject())
             .put("events",
-                new JSONArray().put(new JSONObject().put("fullName", "Kamil Gregorczyk")
+                new JSONArray().put(new JSONObject().put("fullName", "Tony Stark")
                     .put("eventType", "ACCOUNT_CREATED_EVENT").put("aggregateUUID",
                         aggregateUUID).put("createdAt", createdAt)))
             .put("createdAt", createdAt)

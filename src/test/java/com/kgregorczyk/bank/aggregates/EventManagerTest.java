@@ -35,9 +35,9 @@ class EventManagerTest {
   private static final UUID TO_UUID = UUID.randomUUID();
   private static final AccountCreatedEvent ACCOUNT_CREATED = new AccountCreatedEvent(
       UUID.randomUUID(),
-      "Kamil Gregorczyk");
+      "Tony Stark");
   private static final FullNameChangedEvent FULL_NAME_CHANGED =
-      new FullNameChangedEvent(UUID.randomUUID(), "Kamil Gregorczyk");
+      new FullNameChangedEvent(UUID.randomUUID(), "Tony Stark");
   private static final MoneyTransferredEvent ISSUER_MONEY_TRANSFERRED = new MoneyTransferredEvent(
       FROM_UUID, FROM_UUID,
       TO_UUID, UUID.randomUUID(), BigDecimal.TEN);

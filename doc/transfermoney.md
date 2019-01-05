@@ -49,6 +49,21 @@
 }
 ```
 
+**Condition** : `fromAccountNumber` is the same as `toAccountNumber`
+
+**Code** : `400`
+```
+{
+    "status": "ERROR",
+    "message": "There are validation errors",
+    "data": {
+        "toAccountNumber": [
+            "Is not possible to transfer money to the same account"
+        ]
+    }
+}
+```
+
 **Condition** : Account is not found
 
 **Code** : `404`

@@ -26,6 +26,10 @@ Rolling back of unfinished transaction is implemented with a cron that finds unf
 | [Create Account](doc/createaccount.md)    | `POST` | `/api/account/createAccount`      |
 | [Transfer Money](doc/transfermoney.md)    | `POST` | `/api/account/transferMoney`      |
 
+## Notes
+
+In order to develop it use the error prone intellij plugin with `-Xep:ParameterName:OFF` 
+as a command line argument because of [this bug](https://github.com/google/error-prone/issues/780)
 
 ## Links
 

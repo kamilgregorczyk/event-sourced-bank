@@ -27,6 +27,15 @@ Rolling back of unfinished transaction is implemented with a cron that finds unf
 | [Transfer Money](doc/transfermoney.md)    | `POST` | `/api/account/transferMoney`      |
 
 
+## Notes
+
+---
+**NOTE**
+
+In order to develop it use the error prone intellij plugin with `-Xep:ParameterName:OFF` 
+as a command line argument because of [this bug](https://github.com/google/error-prone/issues/780)
+---
+
 ## Links
 
 * [GitLab Pipelines](https://gitlab.com/kamilgregorczyk/event-sourced-bank/pipelines)

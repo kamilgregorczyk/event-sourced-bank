@@ -19,6 +19,7 @@ import com.kgregorczyk.bank.controllers.IndexController;
 import com.kgregorczyk.bank.controllers.dto.APIResponse;
 import com.kgregorczyk.bank.controllers.dto.APIResponse.Status;
 import com.kgregorczyk.bank.cron.TransactionRollbackCron;
+import com.kgregorczyk.bank.filters.CORSFilter;
 import com.kgregorczyk.bank.filters.JsonBodyFilter;
 import com.kgregorczyk.bank.filters.JsonContentTypeFilter;
 import com.kgregorczyk.bank.filters.LoggingFilter;
@@ -67,6 +68,10 @@ class BankServer {
     before(new LoggingFilter());
     before("/api/*", new JsonBodyFilter());
 
+    // After filters
+    afterAfter(new JsonContentTypeFilter());
+    afterAfter(new CORSFilter());
+
     // Controllers
     path("", () -> {
       get("/", IndexController.healthCheck(), JsonUtils::toJson);
@@ -78,9 +83,6 @@ class BankServer {
         post("/transferMoney", ACCOUNT_CONTROLLER.transferMoney(), JsonUtils::toJson);
       }));
     });
-
-    // After filters
-    afterAfter(new JsonContentTypeFilter());
 
     // Other handlers
     notFound((request, response) ->

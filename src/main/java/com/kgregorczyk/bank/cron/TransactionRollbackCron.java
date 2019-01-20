@@ -79,7 +79,9 @@ public class TransactionRollbackCron implements Runnable {
   }
 
   private ListMultimap<UUID, MoneyTransaction> findOutDatedTransactions(Date thresholdDate) {
-    return eventStorage.loadAll().stream()
+    return eventStorage
+        .loadAll()
+        .stream()
         .flatMap(accountAggregate -> accountAggregate.getTransactions().entrySet().stream())
         .map(Map.Entry::getValue)
         .filter(transaction -> transaction.getLastUpdatedAt().before(thresholdDate))

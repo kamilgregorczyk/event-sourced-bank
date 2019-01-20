@@ -40,7 +40,10 @@ public class AccountDTO {
         .transactionToReservedBalance(aggregate.getTransactionToReservedBalance())
         .events(aggregate.getDomainEvents())
         .transactions(
-            aggregate.getTransactions().entrySet().stream()
+            aggregate
+                .getTransactions()
+                .entrySet()
+                .stream()
                 .map(
                     uuidToTransaction ->
                         MoneyTransactionDTO.builder()

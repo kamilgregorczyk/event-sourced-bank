@@ -133,7 +133,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
     assertResponses(changeFullNameExpectedResponse, changeFullNameJson);
 
     /*
-     Verifies if change was properly made by fetching account.
+    Verifies if change was properly made by fetching account.
     */
 
     // when
@@ -185,7 +185,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
     transferMoney(aggregateUUID1, aggregateUUID2, 25.01);
 
     /*
-     Verifies Issuer's account
+    Verifies Issuer's account
     */
 
     // when
@@ -281,7 +281,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
     assertResponses(expectedResponse1, getAccountJson1);
 
     /*
-     Verifies Receiver's account
+    Verifies Receiver's account
     */
 
     // when
@@ -385,7 +385,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
     transferMoney(aggregateUUID1, aggregateUUID2, 2600.01);
 
     /*
-     Verifies Issuer's account
+    Verifies Issuer's account
     */
 
     // when
@@ -469,7 +469,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
     assertResponses(expectedResponse1, getAccountJson1);
 
     /*
-     Verifies Receiver's account
+    Verifies Receiver's account
     */
 
     // when

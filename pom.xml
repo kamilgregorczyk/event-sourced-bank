@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns="http://maven.apache.org/POM/4.0.0"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.kgregorczyk.bank</groupId>
@@ -43,6 +43,19 @@
 
   <build>
     <plugins>
+      <!-- Formatting Plugin -->
+      <plugin>
+        <groupId>com.cosium.code</groupId>
+        <artifactId>maven-git-code-format</artifactId>
+        <version>1.20</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>install-hooks</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -53,7 +66,7 @@
           <compilerArgs>
             <arg>-XDcompilePolicy=simple</arg>
             <!-- temporary disable until https://github.com/google/error-prone/issues/780 is resolved -->
-            <arg>-Xplugin:ErrorProne -Xep:ParameterName:OFF </arg>
+            <arg>-Xplugin:ErrorProne -Xep:ParameterName:OFF</arg>
           </compilerArgs>
           <annotationProcessorPaths>
             <path>

@@ -31,7 +31,7 @@
         "transactions": {},
         "createdAt": "Jan 4, 2019 12:35:54 PM",
         "lastUpdatedAt": "Jan 4, 2019 12:35:54 PM",
-        "_links": [
+        "links": [
                 {
                     "rel": "self",
                     "href": "/api/account/5074d966-8887-4453-ac98-62755f426c64",
@@ -44,7 +44,7 @@
                 }
       ]
     },
-    "_links": [
+    "links": [
             {
                 "rel": "self",
                 "href": "/api/account/5074d966-8887-4453-ac98-62755f426c64",

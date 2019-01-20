@@ -52,7 +52,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
             .put("status", "OK")
             .put("message", "Account will be created")
             .put("data", aggregateUUID)
-            .put("_links", Link.getLinksForAccount(aggregateUUID))
+            .put("links", Link.getLinksForAccount(aggregateUUID))
             .toString();
     assertResponses(expectedResponse, createAccountJson);
   }
@@ -84,7 +84,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
         new JSONObject()
             .put("status", "OK")
             .put("message", "SUCCESS")
-            .put("_links", Link.getLinksForAccount(aggregateUUID))
+            .put("links", Link.getLinksForAccount(aggregateUUID))
             .put(
                 "data",
                 new JSONObject()
@@ -103,7 +103,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
                                     .put("createdAt", createdAt)))
                     .put("createdAt", createdAt)
                     .put("lastUpdatedAt", createdAt)
-                    .put("_links", Link.getLinksForAccount(aggregateUUID))
+                    .put("links", Link.getLinksForAccount(aggregateUUID))
                     .put("transactions", new JSONObject()))
             .toString();
     assertResponses(expectedResponse, getAccountJson);
@@ -128,7 +128,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
         new JSONObject()
             .put("status", "OK")
             .put("message", "Full Name will be changed")
-            .put("_links", Link.getLinksForAccount(aggregateUUID))
+            .put("links", Link.getLinksForAccount(aggregateUUID))
             .toString();
     assertResponses(changeFullNameExpectedResponse, changeFullNameJson);
 
@@ -146,7 +146,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
         new JSONObject()
             .put("status", "OK")
             .put("message", "SUCCESS")
-            .put("_links", Link.getLinksForAccount(aggregateUUID))
+            .put("links", Link.getLinksForAccount(aggregateUUID))
             .put(
                 "data",
                 new JSONObject()
@@ -172,7 +172,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
                     .put("createdAt", createdAt)
                     .put("lastUpdatedAt", lastUpdatedAt)
                     .put("transactions", new JSONObject())
-                    .put("_links", Link.getLinksForAccount(aggregateUUID)))
+                    .put("links", Link.getLinksForAccount(aggregateUUID)))
             .toString();
     assertResponses(expectedResponse, getAccountJson);
   }
@@ -198,7 +198,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
         new JSONObject()
             .put("status", "OK")
             .put("message", "SUCCESS")
-            .put("_links", Link.getLinksForAccount(aggregateUUID1))
+            .put("links", Link.getLinksForAccount(aggregateUUID1))
             .put(
                 "data",
                 new JSONObject()
@@ -206,7 +206,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
                     .put("accountNumber", aggregateUUID1)
                     .put("balance", 974.99)
                     .put("transactionToReservedBalance", new JSONObject())
-                    .put("_links", Link.getLinksForAccount(aggregateUUID1))
+                    .put("links", Link.getLinksForAccount(aggregateUUID1))
                     .put(
                         "events",
                         new JSONArray()
@@ -294,7 +294,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
         new JSONObject()
             .put("status", "OK")
             .put("message", "SUCCESS")
-            .put("_links", Link.getLinksForAccount(aggregateUUID2))
+            .put("links", Link.getLinksForAccount(aggregateUUID2))
             .put(
                 "data",
                 new JSONObject()
@@ -352,7 +352,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
                                         getFieldFromEvents(getAccountJson2, 3, "createdAt"))))
                     .put("createdAt", createdAt2)
                     .put("lastUpdatedAt", lastUpdatedAt2)
-                    .put("_links", Link.getLinksForAccount(aggregateUUID2))
+                    .put("links", Link.getLinksForAccount(aggregateUUID2))
                     .put(
                         "transactions",
                         new JSONObject()
@@ -398,7 +398,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
         new JSONObject()
             .put("status", "OK")
             .put("message", "SUCCESS")
-            .put("_links", Link.getLinksForAccount(aggregateUUID1))
+            .put("links", Link.getLinksForAccount(aggregateUUID1))
             .put(
                 "data",
                 new JSONObject()
@@ -406,7 +406,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
                     .put("accountNumber", aggregateUUID1)
                     .put("balance", 1000)
                     .put("transactionToReservedBalance", new JSONObject())
-                    .put("_links", Link.getLinksForAccount(aggregateUUID1))
+                    .put("links", Link.getLinksForAccount(aggregateUUID1))
                     .put(
                         "events",
                         new JSONArray()
@@ -481,11 +481,11 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
         new JSONObject()
             .put("status", "OK")
             .put("message", "SUCCESS")
-            .put("_links", Link.getLinksForAccount(aggregateUUID2))
+            .put("links", Link.getLinksForAccount(aggregateUUID2))
             .put(
                 "data",
                 new JSONObject()
-                    .put("_links", Link.getLinksForAccount(aggregateUUID2))
+                    .put("links", Link.getLinksForAccount(aggregateUUID2))
                     .put("fullName", "Black Widow")
                     .put("accountNumber", aggregateUUID2)
                     .put("balance", 1000.0)
@@ -526,7 +526,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
         new JSONObject()
             .put("status", "OK")
             .put("message", "Money will be transferred")
-            .put("_links", Link.getLinksForAccounts())
+            .put("links", Link.getLinksForAccounts())
             .toString();
     assertResponses(transferMoneyExpectedResponse, getResponseBodyAndClose(transferMoneyResponse));
   }

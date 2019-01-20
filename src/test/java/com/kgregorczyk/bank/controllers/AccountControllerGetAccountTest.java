@@ -52,11 +52,11 @@ public class AccountControllerGetAccountTest extends AbstractSparkTest {
         new JSONObject()
             .put("status", "OK")
             .put("message", "SUCCESS")
-            .put("_links", Link.getLinksForAccount(aggregateUUID))
+            .put("links", Link.getLinksForAccount(aggregateUUID))
             .put(
                 "data",
                 new JSONObject()
-                    .put("_links", Link.getLinksForAccount(aggregateUUID))
+                    .put("links", Link.getLinksForAccount(aggregateUUID))
                     .put("fullName", "Tony Stark")
                     .put("accountNumber", aggregateUUID)
                     .put("balance", 1000.0)

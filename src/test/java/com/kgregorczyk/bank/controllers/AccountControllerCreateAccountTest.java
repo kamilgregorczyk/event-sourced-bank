@@ -40,7 +40,7 @@ public class AccountControllerCreateAccountTest extends AbstractSparkTest {
         new JSONObject()
             .put("status", "OK")
             .put("message", "Account will be created")
-            .put("_links", Link.getLinksForAccount(aggregateUUID))
+            .put("links", Link.getLinksForAccount(aggregateUUID))
             .put("data", aggregateUUID)
             .toString();
     assertResponses(expectedResponse, responseJson);

@@ -21,7 +21,7 @@
     "status": "OK",
     "message": "Account will be created",
     "data": "f0687dab-e497-44f9-b9c3-42afe4e420cf",
-    "_links": [
+    "links": [
             {
                 "rel": "self",
                 "href": "/api/account/f0687dab-e497-44f9-b9c3-42afe4e420cf",

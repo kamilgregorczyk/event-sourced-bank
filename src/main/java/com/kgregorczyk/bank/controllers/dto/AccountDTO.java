@@ -30,7 +30,7 @@ public class AccountDTO {
   private Map<UUID, MoneyTransactionDTO> transactions;
   private Date createdAt;
   private Date lastUpdatedAt;
-  private List<Link> _links;
+  private List<Link> links;
 
   public static AccountDTO from(AccountAggregate aggregate) {
     return AccountDTO.builder()
@@ -59,7 +59,7 @@ public class AccountDTO {
                         moneyTransactionDTO -> moneyTransactionDTO)))
         .createdAt(aggregate.getCreatedAt())
         .lastUpdatedAt(aggregate.getLastUpdatedAt())
-        ._links(getLinksForAccount(aggregate.getUuid()))
+        .links(getLinksForAccount(aggregate.getUuid()))
         .build();
   }
 

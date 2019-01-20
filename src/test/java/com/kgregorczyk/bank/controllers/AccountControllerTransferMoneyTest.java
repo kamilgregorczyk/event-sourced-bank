@@ -55,7 +55,7 @@ public class AccountControllerTransferMoneyTest extends AbstractSparkTest {
         new JSONObject()
             .put("status", "OK")
             .put("message", "Money will be transferred")
-            .put("_links", Link.getLinksForAccounts())
+            .put("links", Link.getLinksForAccounts())
             .toString();
     assertResponses(expectedResponse, getResponseBodyAndClose(response));
   }

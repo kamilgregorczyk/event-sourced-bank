@@ -20,7 +20,7 @@
 {
     "status": "OK",
     "message": "Full Name will be changed",
-    "_links": [
+    "links": [
             {
                 "rel": "self",
                 "href": "/api/account/5074d966-8887-4453-ac98-62755f426c64",

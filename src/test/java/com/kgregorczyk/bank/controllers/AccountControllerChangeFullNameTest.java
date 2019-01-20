@@ -52,7 +52,7 @@ public class AccountControllerChangeFullNameTest extends AbstractSparkTest {
         new JSONObject()
             .put("status", "OK")
             .put("message", "Full Name will be changed")
-            .put("_links", Link.getLinksForAccount(aggregateUUID))
+            .put("links", Link.getLinksForAccount(aggregateUUID))
             .toString();
     assertResponses(expectedResponse, getResponseBodyAndClose(response));
   }

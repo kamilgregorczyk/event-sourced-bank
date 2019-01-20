@@ -15,7 +15,7 @@ public class APIResponse {
   private Status status;
   private String message;
   private Object data;
-  private List<Link> _links;
+  private List<Link> links;
 
   public APIResponse(String message) {
     this(Status.OK, message, null, null);

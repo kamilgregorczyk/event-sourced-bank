@@ -34,7 +34,7 @@
             "lastUpdatedAt": "Jan 4, 2019 12:35:54 PM"
         }
     ],
-     "_links": [
+     "links": [
             {
                 "rel": "self",
                 "href": "/api/account",

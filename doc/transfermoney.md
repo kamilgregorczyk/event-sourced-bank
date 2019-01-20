@@ -22,7 +22,7 @@
 {
     "status": "OK",
     "message": "Money will be transferred",
-     "_links": [
+     "links": [
             {
                 "rel": "self",
                 "href": "/api/account",

@@ -21,7 +21,24 @@
 ```json
 {
     "status": "OK",
-    "message": "Money will be transferred"
+    "message": "Money will be transferred",
+     "_links": [
+            {
+                "rel": "self",
+                "href": "/api/account",
+                "method": "get"
+            },
+            {
+                "rel": "self",
+                "href": "/api/account",
+                "method": "post"
+            },
+            {
+                "rel": "self",
+                "href": "/api/account/transferMoney",
+                "method": "post"
+            }
+    ]
 }
 ```
 

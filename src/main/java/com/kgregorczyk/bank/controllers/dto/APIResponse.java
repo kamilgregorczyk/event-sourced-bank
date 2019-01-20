@@ -1,6 +1,7 @@
 package com.kgregorczyk.bank.controllers.dto;
 
 import com.kgregorczyk.bank.utils.JsonUtils;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,18 +17,28 @@ public class APIResponse {
   private Status status;
   private String message;
   private Object data;
-
-  public APIResponse(Object data) {
-    this(Status.OK, "SUCCESS", data);
-  }
+  private List<Link> _links;
 
   public APIResponse(String message) {
-    this(Status.OK, message, null);
+    this(Status.OK, message, null, null);
   }
 
   public APIResponse(Status status, String message) {
-    this(status, message, null);
+    this(status, message, null, null);
   }
+
+  public APIResponse(Status status, String message, Object data) {
+    this(status, message, data, null);
+  }
+
+  public APIResponse(Object data, List<Link> links) {
+    this(Status.OK, "SUCCESS", data, links);
+  }
+
+  public APIResponse(String message, List<Link> links) {
+    this(Status.OK, message, null, links);
+  }
+
 
   public String toJson() {
     return JsonUtils.toJson(this);
@@ -39,7 +50,7 @@ public class APIResponse {
     OK("OK"),
     ERROR("ERROR");
 
-    private String value;
+    private final String value;
 
   }
 }

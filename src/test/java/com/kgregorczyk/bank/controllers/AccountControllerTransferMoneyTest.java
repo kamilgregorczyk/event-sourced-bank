@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.kgregorczyk.bank.AbstractSparkTest;
 import com.kgregorczyk.bank.controllers.dto.APIResponse;
 import com.kgregorczyk.bank.controllers.dto.CreateAccountRequest;
+import com.kgregorczyk.bank.controllers.dto.Link;
 import com.kgregorczyk.bank.controllers.dto.TransferMoneyRequest;
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -54,6 +55,7 @@ public class AccountControllerTransferMoneyTest extends AbstractSparkTest {
         new JSONObject()
             .put("status", "OK")
             .put("message", "Money will be transferred")
+            .put("_links", Link.getLinksForAccounts())
             .toString();
     assertResponses(expectedResponse, getResponseBodyAndClose(response));
   }

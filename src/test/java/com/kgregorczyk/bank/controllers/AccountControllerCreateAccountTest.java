@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.kgregorczyk.bank.AbstractSparkTest;
 import com.kgregorczyk.bank.controllers.dto.CreateAccountRequest;
+import com.kgregorczyk.bank.controllers.dto.Link;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -34,12 +35,14 @@ public class AccountControllerCreateAccountTest extends AbstractSparkTest {
     // assert
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_CREATED);
     String responseJson = getResponseBodyAndClose(response);
+    String aggregateUUID = GSON.fromJson(responseJson, JsonObject.class).get(
+        "data").getAsString();
     String expectedResponse =
         new JSONObject()
             .put("status", "OK")
             .put("message", "Account will be created")
-            .put("data", GSON.fromJson(responseJson, JsonObject.class).get(
-                "data").getAsString())
+            .put("_links", Link.getLinksForAccount(aggregateUUID))
+            .put("data", aggregateUUID)
             .toString();
     assertResponses(expectedResponse, responseJson);
   }

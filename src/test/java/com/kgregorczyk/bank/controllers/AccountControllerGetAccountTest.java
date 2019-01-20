@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.kgregorczyk.bank.AbstractSparkTest;
 import com.kgregorczyk.bank.controllers.dto.APIResponse;
 import com.kgregorczyk.bank.controllers.dto.CreateAccountRequest;
+import com.kgregorczyk.bank.controllers.dto.Link;
 import java.util.UUID;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -53,7 +54,9 @@ public class AccountControllerGetAccountTest extends AbstractSparkTest {
     String expectedResponse = new JSONObject()
         .put("status", "OK")
         .put("message", "SUCCESS")
+        .put("_links", Link.getLinksForAccount(aggregateUUID))
         .put("data", new JSONObject()
+            .put("_links", Link.getLinksForAccount(aggregateUUID))
             .put("fullName", "Tony Stark")
             .put("accountNumber", aggregateUUID)
             .put("balance", 1000.0)

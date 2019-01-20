@@ -2,6 +2,8 @@ package com.kgregorczyk.bank.controllers;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.kgregorczyk.bank.controllers.dto.APIResponse.Status.ERROR;
+import static com.kgregorczyk.bank.controllers.dto.Link.getLinksForAccount;
+import static com.kgregorczyk.bank.controllers.dto.Link.getLinksForAccounts;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
@@ -89,7 +91,7 @@ public class AccountController {
   public Route listAccounts() {
     return (request, response) -> new APIResponse(
         eventStorage.loadAll().stream().map(
-            AccountDTO::from).collect(toImmutableList()));
+            AccountDTO::from).collect(toImmutableList()), getLinksForAccounts());
   }
 
   /**
@@ -111,8 +113,8 @@ public class AccountController {
       UUID aggregateUUID = UUID.fromString(request.params(":id"));
       // Verifies if requested aggregate exists
       if (eventStorage.exists(aggregateUUID)) {
-        // Issues ChangeFullNameCommand
-        return new APIResponse(AccountDTO.from(eventStorage.loadByUUID(aggregateUUID)));
+        return new APIResponse(AccountDTO.from(eventStorage.loadByUUID(aggregateUUID)),
+            getLinksForAccount(aggregateUUID));
       } else {
         response.status(HTTP_NOT_FOUND);
         return new APIResponse(ERROR,
@@ -146,7 +148,8 @@ public class AccountController {
       // Issues CreateAccountCommand
       UUID aggregateUUID = accountService.asyncCreateAccountCommand(payload.getFullName());
       response.status(HTTP_CREATED);
-      return new APIResponse(Status.OK, "Account will be created", aggregateUUID);
+      return new APIResponse(Status.OK, "Account will be created", aggregateUUID,
+          getLinksForAccount(aggregateUUID));
     };
   }
 
@@ -181,7 +184,7 @@ public class AccountController {
 
         // Issues ChangeFullNameCommand
         accountService.asyncChangeFullNameCommand(aggregateUUID, payload.getFullName());
-        return new APIResponse("Full Name will be changed");
+        return new APIResponse("Full Name will be changed", getLinksForAccount(aggregateUUID));
       } else {
         response.status(HTTP_NOT_FOUND);
         return new APIResponse(ERROR,
@@ -248,8 +251,10 @@ public class AccountController {
       // Issues money transfer
       accountService.asyncTransferMoneyCommand(fromUUID, toUUID, payload.getValue());
       response.status(HTTP_OK);
-      return new APIResponse("Money will be transferred");
+      return new APIResponse("Money will be transferred", getLinksForAccounts());
 
     });
   }
+
+
 }

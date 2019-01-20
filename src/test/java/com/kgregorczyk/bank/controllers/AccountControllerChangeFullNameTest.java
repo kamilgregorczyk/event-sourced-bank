@@ -11,6 +11,7 @@ import com.kgregorczyk.bank.AbstractSparkTest;
 import com.kgregorczyk.bank.controllers.dto.APIResponse;
 import com.kgregorczyk.bank.controllers.dto.ChangeFullNameRequest;
 import com.kgregorczyk.bank.controllers.dto.CreateAccountRequest;
+import com.kgregorczyk.bank.controllers.dto.Link;
 import java.util.UUID;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -53,6 +54,7 @@ public class AccountControllerChangeFullNameTest extends AbstractSparkTest {
         new JSONObject()
             .put("status", "OK")
             .put("message", "Full Name will be changed")
+            .put("_links", Link.getLinksForAccount(aggregateUUID))
             .toString();
     assertResponses(expectedResponse, getResponseBodyAndClose(response));
   }

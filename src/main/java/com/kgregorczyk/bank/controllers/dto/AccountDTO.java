@@ -1,5 +1,7 @@
 package com.kgregorczyk.bank.controllers.dto;
 
+import static com.kgregorczyk.bank.controllers.dto.Link.getLinksForAccount;
+
 import com.kgregorczyk.bank.aggregates.AccountAggregate;
 import com.kgregorczyk.bank.aggregates.MoneyTransaction.State;
 import com.kgregorczyk.bank.aggregates.MoneyTransaction.Type;
@@ -28,6 +30,7 @@ public class AccountDTO {
   private Map<UUID, MoneyTransactionDTO> transactions;
   private Date createdAt;
   private Date lastUpdatedAt;
+  private List<Link> _links;
 
   public static AccountDTO from(AccountAggregate aggregate) {
     return AccountDTO.builder().accountNumber(aggregate.getUuid()).fullName(aggregate.getFullName())
@@ -54,6 +57,7 @@ public class AccountDTO {
                 moneyTransactionDTO -> moneyTransactionDTO)))
         .createdAt(aggregate.getCreatedAt())
         .lastUpdatedAt(aggregate.getLastUpdatedAt())
+        ._links(getLinksForAccount(aggregate.getUuid()))
         .build();
   }
 

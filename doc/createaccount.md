@@ -20,7 +20,19 @@
 {
     "status": "OK",
     "message": "Account will be created",
-    "data": "f0687dab-e497-44f9-b9c3-42afe4e420cf"
+    "data": "f0687dab-e497-44f9-b9c3-42afe4e420cf",
+    "_links": [
+            {
+                "rel": "self",
+                "href": "/api/account/f0687dab-e497-44f9-b9c3-42afe4e420cf",
+                "method": "get"
+            },
+            {
+                "rel": "self",
+                "href": "/api/account/f0687dab-e497-44f9-b9c3-42afe4e420cf/changeFullName",
+                "method": "put"
+            }
+    ]
 }
 ```
 

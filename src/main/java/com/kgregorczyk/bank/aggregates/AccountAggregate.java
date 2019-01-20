@@ -43,6 +43,7 @@ public class AccountAggregate {
   private static final double INITIAL_BALANCE = 1000;
   private UUID uuid;
   private String fullName;
+
   private BigDecimal balance;
   private Map<UUID, BigDecimal> transactionToReservedBalance;
   private List<DomainEvent> domainEvents;

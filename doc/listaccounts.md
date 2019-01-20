@@ -1,6 +1,6 @@
 # List Accounts Endpoint
 
-**URL** : `/api/account/listAccounts`
+**URL** : `/api/account`
 
 **Method** : `GET`
 

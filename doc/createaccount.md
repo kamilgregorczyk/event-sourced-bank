@@ -1,6 +1,6 @@
 # Create Account Endpoint
 
-**URL** : `/api/account/createAccount`
+**URL** : `/api/account`
 
 **Method** : `POST`
 

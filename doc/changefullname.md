@@ -1,8 +1,8 @@
 # Change Full Name Endpoint
 
-**URL** : `/api/account/changeFullName/:uuid`
+**URL** : `/api/account/:UUID/changeFullName`
 
-**Method** : `POST`
+**Method** : `PUT`
 
 **Required Body** : 
 ```json

@@ -1,6 +1,6 @@
 # Get Account Endpoint
 
-**URL** : `/api/account/getAccount/:uuid`
+**URL** : `/api/account/:UUID`
 
 **Method** : `GET`
 

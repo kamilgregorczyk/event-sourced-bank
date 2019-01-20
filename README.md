@@ -13,18 +13,20 @@ Rolling back of unfinished transaction is implemented with a cron that finds unf
 
 ## Endpoints
 ### Metric Endpoints
+
 | Endpoint                           | Method | URL |
 |------------------------------------|--------|-----|
 | [Health Check](doc/healthcheck.md) | `GET`  | `/` |
 
 ### Account Endpoints
-| Endpoint                                  | Method | URL                               |
-|-------------------------------------------|--------|-----------------------------------|
-| [List Accounts](doc/listaccounts.md)      | `GET`  | `/api/account/listAccounts`       |
-| [Get Account](doc/getaccount.md)          | `GET`  | `/api/account/getAccount/:id`     |
-| [Change Full Name](doc/changefullname.md) | `POST` | `/api/account/changeFullName/:id` |
-| [Create Account](doc/createaccount.md)    | `POST` | `/api/account/createAccount`      |
-| [Transfer Money](doc/transfermoney.md)    | `POST` | `/api/account/transferMoney`      |
+
+| Endpoint                                  | Method | URL                                 |
+|-------------------------------------------|--------|-------------------------------------|
+| [List Accounts](doc/listaccounts.md)      | `GET`  | `/api/account`                      |
+| [Get Account](doc/getaccount.md)          | `GET`  | `/api/account/:UUID`                |
+| [Change Full Name](doc/changefullname.md) | `PUT`  | `/api/account/:UUID/changeFullName` |
+| [Create Account](doc/createaccount.md)    | `POST` | `/api/account`                      |
+| [Transfer Money](doc/transfermoney.md)    | `POST` | `/api/account/transferMoney`        |
 
 ## Notes
 

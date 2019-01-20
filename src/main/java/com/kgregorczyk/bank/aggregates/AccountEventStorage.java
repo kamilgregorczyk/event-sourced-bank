@@ -20,9 +20,7 @@ public class AccountEventStorage {
   }
 
   public ImmutableList<AccountAggregate> loadAll() {
-    return events
-        .entrySet()
-        .stream()
+    return events.entrySet().stream()
         .parallel()
         .map(entry -> recreate(entry.getValue()))
         .collect(ImmutableList.toImmutableList());

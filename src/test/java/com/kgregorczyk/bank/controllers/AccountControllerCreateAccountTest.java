@@ -35,8 +35,7 @@ public class AccountControllerCreateAccountTest extends AbstractSparkTest {
     // assert
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_CREATED);
     String responseJson = getResponseBodyAndClose(response);
-    String aggregateUUID = GSON.fromJson(responseJson, JsonObject.class).get(
-        "data").getAsString();
+    String aggregateUUID = GSON.fromJson(responseJson, JsonObject.class).get("data").getAsString();
     String expectedResponse =
         new JSONObject()
             .put("status", "OK")
@@ -62,8 +61,7 @@ public class AccountControllerCreateAccountTest extends AbstractSparkTest {
         new JSONObject()
             .put("status", "ERROR")
             .put("message", "There are validation errors")
-            .put("data", new JSONObject().put("fullName", new JSONArray()
-                .put("Cannot be empty")))
+            .put("data", new JSONObject().put("fullName", new JSONArray().put("Cannot be empty")))
             .toString();
     assertResponses(expectedResponse, getResponseBodyAndClose(response));
   }
@@ -83,8 +81,7 @@ public class AccountControllerCreateAccountTest extends AbstractSparkTest {
         new JSONObject()
             .put("status", "ERROR")
             .put("message", "There are validation errors")
-            .put("data", new JSONObject().put("fullName", new JSONArray()
-                .put("Cannot be empty")))
+            .put("data", new JSONObject().put("fullName", new JSONArray().put("Cannot be empty")))
             .toString();
     assertResponses(expectedResponse, getResponseBodyAndClose(response));
   }
@@ -104,8 +101,7 @@ public class AccountControllerCreateAccountTest extends AbstractSparkTest {
         new JSONObject()
             .put("status", "ERROR")
             .put("message", "There are validation errors")
-            .put("data", new JSONObject().put("fullName", new JSONArray()
-                .put("Cannot be empty")))
+            .put("data", new JSONObject().put("fullName", new JSONArray().put("Cannot be empty")))
             .toString();
     assertResponses(expectedResponse, getResponseBodyAndClose(response));
   }

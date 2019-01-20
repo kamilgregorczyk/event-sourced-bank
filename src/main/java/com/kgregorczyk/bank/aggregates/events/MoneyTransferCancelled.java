@@ -24,15 +24,24 @@ public class MoneyTransferCancelled extends DomainEvent {
   private BigDecimal value;
   private Reason reason;
 
-  public MoneyTransferCancelled(UUID aggregateUUID, UUID fromUUID, UUID toUUID,
+  public MoneyTransferCancelled(
+      UUID aggregateUUID,
+      UUID fromUUID,
+      UUID toUUID,
       UUID transactionUUID,
-      BigDecimal value, Reason reason) {
+      BigDecimal value,
+      Reason reason) {
     this(aggregateUUID, fromUUID, toUUID, transactionUUID, value, reason, new Date());
   }
 
-  public MoneyTransferCancelled(UUID aggregateUUID, UUID fromUUID, UUID toUUID,
+  public MoneyTransferCancelled(
+      UUID aggregateUUID,
+      UUID fromUUID,
+      UUID toUUID,
       UUID transactionUUID,
-      BigDecimal value, Reason reason, Date date) {
+      BigDecimal value,
+      Reason reason,
+      Date date) {
     super(aggregateUUID, date);
     this.transactionUUID = transactionUUID;
     this.fromUUID = fromUUID;
@@ -42,6 +51,7 @@ public class MoneyTransferCancelled extends DomainEvent {
   }
 
   public enum Reason {
-    BALANCE_TOO_LOW, INTERNAL_SERVER_ERROR
+    BALANCE_TOO_LOW,
+    INTERNAL_SERVER_ERROR
   }
 }

@@ -8,7 +8,7 @@ import spark.Response;
 /**
  * Logging filter which is applied to every incoming request.
  *
- * <p>Example: `127.0.0.1 GET [/api/users]`</p>
+ * <p>Example: `127.0.0.1 GET [/api/users]`
  */
 @Slf4j
 public class LoggingFilter implements Filter {

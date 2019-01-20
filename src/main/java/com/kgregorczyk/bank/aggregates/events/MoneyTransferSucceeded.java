@@ -19,9 +19,8 @@ public class MoneyTransferSucceeded extends DomainEvent {
   private UUID toUUID;
   private BigDecimal value;
 
-  public MoneyTransferSucceeded(UUID aggregateUUID, UUID fromUUID, UUID toUUID,
-      UUID transactionUUID,
-      BigDecimal value) {
+  public MoneyTransferSucceeded(
+      UUID aggregateUUID, UUID fromUUID, UUID toUUID, UUID transactionUUID, BigDecimal value) {
     super(aggregateUUID, new Date());
     this.transactionUUID = transactionUUID;
     this.fromUUID = fromUUID;
@@ -29,9 +28,13 @@ public class MoneyTransferSucceeded extends DomainEvent {
     this.value = value;
   }
 
-  public MoneyTransferSucceeded(UUID aggregateUUID, UUID fromUUID, UUID toUUID,
+  public MoneyTransferSucceeded(
+      UUID aggregateUUID,
+      UUID fromUUID,
+      UUID toUUID,
       UUID transactionUUID,
-      BigDecimal value, Date date) {
+      BigDecimal value,
+      Date date) {
     super(aggregateUUID, date);
     this.transactionUUID = transactionUUID;
     this.fromUUID = fromUUID;

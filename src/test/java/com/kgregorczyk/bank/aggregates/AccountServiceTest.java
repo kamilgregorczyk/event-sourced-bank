@@ -1,6 +1,5 @@
 package com.kgregorczyk.bank.aggregates;
 
-
 import static org.mockito.Mockito.verify;
 
 import com.google.common.eventbus.EventBus;
@@ -20,11 +19,9 @@ import org.mockito.quality.Strictness;
 @MockitoSettings(strictness = Strictness.LENIENT)
 class AccountServiceTest {
 
-  @Mock
-  private EventBus eventBus;
+  @Mock private EventBus eventBus;
 
-  @InjectMocks
-  private AccountService service;
+  @InjectMocks private AccountService service;
 
   @Test
   public void asyncCancelMoneyTransferCommand() {
@@ -37,14 +34,13 @@ class AccountServiceTest {
     Reason reason = Reason.INTERNAL_SERVER_ERROR;
 
     // when
-    service.asyncCancelTransactionCommand(aggregateUUID, fromUUID, toUUID, transactionUUID, value,
-        reason);
+    service.asyncCancelTransactionCommand(
+        aggregateUUID, fromUUID, toUUID, transactionUUID, value, reason);
 
     // assert
-    verify(eventBus).post(
-        new MoneyTransferCancelled(aggregateUUID, fromUUID, toUUID, transactionUUID, value,
-            reason));
-
+    verify(eventBus)
+        .post(
+            new MoneyTransferCancelled(
+                aggregateUUID, fromUUID, toUUID, transactionUUID, value, reason));
   }
-
 }

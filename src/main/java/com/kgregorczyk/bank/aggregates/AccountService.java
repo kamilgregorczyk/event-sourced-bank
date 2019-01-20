@@ -18,8 +18,8 @@ public class AccountService {
   }
 
   /**
-   * Command which initializes  {@link AccountAggregate} by emitting {@link AccountCreatedEvent}
-   * with only {@code fullName}. This event is then received {@link EventManager}.
+   * Command which initializes {@link AccountAggregate} by emitting {@link AccountCreatedEvent} with
+   * only {@code fullName}. This event is then received {@link EventManager}.
    */
   public UUID asyncCreateAccountCommand(String fullName) {
     UUID aggregateUUID = UUID.randomUUID();
@@ -47,10 +47,15 @@ public class AccountService {
    * Command which cancels money transfer on a single aggregate by emitting {@link
    * MoneyTransferCancelled}. This event is then received {@link EventManager}.
    */
-  public void asyncCancelTransactionCommand(UUID aggregateUUID, UUID fromUUID, UUID toUUID,
-      UUID transactionUUID, BigDecimal value, Reason reason) {
+  public void asyncCancelTransactionCommand(
+      UUID aggregateUUID,
+      UUID fromUUID,
+      UUID toUUID,
+      UUID transactionUUID,
+      BigDecimal value,
+      Reason reason) {
     eventBus.post(
-        new MoneyTransferCancelled(aggregateUUID, fromUUID, toUUID, transactionUUID, value,
-            reason));
+        new MoneyTransferCancelled(
+            aggregateUUID, fromUUID, toUUID, transactionUUID, value, reason));
   }
 }

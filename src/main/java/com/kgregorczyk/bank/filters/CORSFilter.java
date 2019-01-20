@@ -4,9 +4,7 @@ import spark.Filter;
 import spark.Request;
 import spark.Response;
 
-/**
- * Allows anyone to connect to the server
- */
+/** Allows anyone to connect to the server */
 public class CORSFilter implements Filter {
 
   @Override

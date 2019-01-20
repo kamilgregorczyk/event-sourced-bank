@@ -41,6 +41,5 @@ public class AccountControllerListAccountsTest extends AbstractSparkTest {
     String responseJson = getResponseBodyAndClose(response);
     assertThat(GSON.fromJson(responseJson, JsonObject.class).get("data").getAsJsonArray().size())
         .isGreaterThan(1);
-
   }
 }

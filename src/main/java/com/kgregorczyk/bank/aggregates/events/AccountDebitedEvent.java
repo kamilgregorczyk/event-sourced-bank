@@ -23,8 +23,8 @@ public class AccountDebitedEvent extends DomainEvent {
   private UUID toUUID;
   private BigDecimal value;
 
-  public AccountDebitedEvent(UUID aggregateUUID, UUID fromUUID, UUID toUUID, UUID transactionUUID,
-      BigDecimal value) {
+  public AccountDebitedEvent(
+      UUID aggregateUUID, UUID fromUUID, UUID toUUID, UUID transactionUUID, BigDecimal value) {
     super(aggregateUUID, new Date());
     this.transactionUUID = transactionUUID;
     this.fromUUID = fromUUID;

@@ -7,24 +7,20 @@ import lombok.Builder;
 import lombok.Getter;
 import spark.route.HttpMethod;
 
-/**
- * Represents a link for HATEOAS responses.
- */
+/** Represents a link for HATEOAS responses. */
 @Getter
 @Builder
 public class Link {
 
-  private static final ImmutableList<Link> LINKS_FOR_ACCOUNTS = ImmutableList.of(
-      Link.builder().rel("self").href("/api/account")
-          .method(HttpMethod.get)
-          .build(),
-      Link.builder().rel("self").href("/api/account")
-          .method(HttpMethod.post)
-          .build(),
-      Link.builder().rel("self")
-          .href("/api/account/transferMoney")
-          .method(HttpMethod.post)
-          .build());
+  private static final ImmutableList<Link> LINKS_FOR_ACCOUNTS =
+      ImmutableList.of(
+          Link.builder().rel("self").href("/api/account").method(HttpMethod.get).build(),
+          Link.builder().rel("self").href("/api/account").method(HttpMethod.post).build(),
+          Link.builder()
+              .rel("self")
+              .href("/api/account/transferMoney")
+              .method(HttpMethod.post)
+              .build());
 
   private String rel;
   private String href;
@@ -40,13 +36,15 @@ public class Link {
 
   public static List<Link> getLinksForAccount(String aggregateUUID) {
     return ImmutableList.of(
-        Link.builder().rel("self").href("/api/account/" + aggregateUUID)
+        Link.builder()
+            .rel("self")
+            .href("/api/account/" + aggregateUUID)
             .method(HttpMethod.get)
             .build(),
-        Link.builder().rel("self")
+        Link.builder()
+            .rel("self")
             .href("/api/account/" + aggregateUUID + "/changeFullName")
             .method(HttpMethod.put)
-            .build()
-    );
+            .build());
   }
 }

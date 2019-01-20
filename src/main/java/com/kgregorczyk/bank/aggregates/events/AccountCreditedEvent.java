@@ -19,8 +19,8 @@ public class AccountCreditedEvent extends DomainEvent {
   private UUID toUUID;
   private BigDecimal value;
 
-  public AccountCreditedEvent(UUID aggregateUUID, UUID fromUUID, UUID toUUID, UUID transactionUUID,
-      BigDecimal value) {
+  public AccountCreditedEvent(
+      UUID aggregateUUID, UUID fromUUID, UUID toUUID, UUID transactionUUID, BigDecimal value) {
     super(aggregateUUID, new Date());
     this.transactionUUID = transactionUUID;
     this.fromUUID = fromUUID;

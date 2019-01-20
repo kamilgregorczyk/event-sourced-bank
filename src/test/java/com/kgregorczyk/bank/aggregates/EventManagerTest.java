@@ -33,44 +33,48 @@ class EventManagerTest {
 
   private static final UUID FROM_UUID = UUID.randomUUID();
   private static final UUID TO_UUID = UUID.randomUUID();
-  private static final AccountCreatedEvent ACCOUNT_CREATED = new AccountCreatedEvent(
-      UUID.randomUUID(),
-      "Tony Stark");
+  private static final AccountCreatedEvent ACCOUNT_CREATED =
+      new AccountCreatedEvent(UUID.randomUUID(), "Tony Stark");
   private static final FullNameChangedEvent FULL_NAME_CHANGED =
       new FullNameChangedEvent(UUID.randomUUID(), "Tony Stark");
-  private static final MoneyTransferredEvent ISSUER_MONEY_TRANSFERRED = new MoneyTransferredEvent(
-      FROM_UUID, FROM_UUID,
-      TO_UUID, UUID.randomUUID(), BigDecimal.TEN);
+  private static final MoneyTransferredEvent ISSUER_MONEY_TRANSFERRED =
+      new MoneyTransferredEvent(FROM_UUID, FROM_UUID, TO_UUID, UUID.randomUUID(), BigDecimal.TEN);
   private static final MoneyTransferredEvent RECEIVER_MONEY_TRANSFERRED =
       new MoneyTransferredEvent(
-          ISSUER_MONEY_TRANSFERRED.getToUUID(), ISSUER_MONEY_TRANSFERRED.getFromUUID(),
+          ISSUER_MONEY_TRANSFERRED.getToUUID(),
+          ISSUER_MONEY_TRANSFERRED.getFromUUID(),
           ISSUER_MONEY_TRANSFERRED.getToUUID(),
           ISSUER_MONEY_TRANSFERRED.getTransactionUUID(),
           ISSUER_MONEY_TRANSFERRED.getValue());
-  private static final AccountDebitedEvent ACCOUNT_DEBITED = new AccountDebitedEvent(
-      ISSUER_MONEY_TRANSFERRED.getAggregateUUID(),
-      ISSUER_MONEY_TRANSFERRED.getFromUUID(),
-      ISSUER_MONEY_TRANSFERRED.getToUUID(),
-      ISSUER_MONEY_TRANSFERRED.getTransactionUUID(),
-      ISSUER_MONEY_TRANSFERRED.getValue());
-  private static final AccountCreditedEvent ACCOUNT_CREDITED = new AccountCreditedEvent(
-      RECEIVER_MONEY_TRANSFERRED.getAggregateUUID(),
-      RECEIVER_MONEY_TRANSFERRED.getFromUUID(),
-      RECEIVER_MONEY_TRANSFERRED.getToUUID(),
-      RECEIVER_MONEY_TRANSFERRED.getTransactionUUID(),
-      RECEIVER_MONEY_TRANSFERRED.getValue());
-  private static final MoneyTransferCancelled MONEY_TRANSFER_CANCELLED = new MoneyTransferCancelled(
-      ISSUER_MONEY_TRANSFERRED.getAggregateUUID(),
-      ISSUER_MONEY_TRANSFERRED.getFromUUID(),
-      ISSUER_MONEY_TRANSFERRED.getToUUID(),
-      ISSUER_MONEY_TRANSFERRED.getTransactionUUID(),
-      ISSUER_MONEY_TRANSFERRED.getValue(), Reason.BALANCE_TOO_LOW);
-  private static final MoneyTransferSucceeded ISSUER_MONEY_TRANSFER_SUCCEEDED = new MoneyTransferSucceeded(
-      ISSUER_MONEY_TRANSFERRED.getAggregateUUID(),
-      ISSUER_MONEY_TRANSFERRED.getFromUUID(),
-      ISSUER_MONEY_TRANSFERRED.getToUUID(),
-      ISSUER_MONEY_TRANSFERRED.getTransactionUUID(),
-      ISSUER_MONEY_TRANSFERRED.getValue());
+  private static final AccountDebitedEvent ACCOUNT_DEBITED =
+      new AccountDebitedEvent(
+          ISSUER_MONEY_TRANSFERRED.getAggregateUUID(),
+          ISSUER_MONEY_TRANSFERRED.getFromUUID(),
+          ISSUER_MONEY_TRANSFERRED.getToUUID(),
+          ISSUER_MONEY_TRANSFERRED.getTransactionUUID(),
+          ISSUER_MONEY_TRANSFERRED.getValue());
+  private static final AccountCreditedEvent ACCOUNT_CREDITED =
+      new AccountCreditedEvent(
+          RECEIVER_MONEY_TRANSFERRED.getAggregateUUID(),
+          RECEIVER_MONEY_TRANSFERRED.getFromUUID(),
+          RECEIVER_MONEY_TRANSFERRED.getToUUID(),
+          RECEIVER_MONEY_TRANSFERRED.getTransactionUUID(),
+          RECEIVER_MONEY_TRANSFERRED.getValue());
+  private static final MoneyTransferCancelled MONEY_TRANSFER_CANCELLED =
+      new MoneyTransferCancelled(
+          ISSUER_MONEY_TRANSFERRED.getAggregateUUID(),
+          ISSUER_MONEY_TRANSFERRED.getFromUUID(),
+          ISSUER_MONEY_TRANSFERRED.getToUUID(),
+          ISSUER_MONEY_TRANSFERRED.getTransactionUUID(),
+          ISSUER_MONEY_TRANSFERRED.getValue(),
+          Reason.BALANCE_TOO_LOW);
+  private static final MoneyTransferSucceeded ISSUER_MONEY_TRANSFER_SUCCEEDED =
+      new MoneyTransferSucceeded(
+          ISSUER_MONEY_TRANSFERRED.getAggregateUUID(),
+          ISSUER_MONEY_TRANSFERRED.getFromUUID(),
+          ISSUER_MONEY_TRANSFERRED.getToUUID(),
+          ISSUER_MONEY_TRANSFERRED.getTransactionUUID(),
+          ISSUER_MONEY_TRANSFERRED.getValue());
   private static final MoneyTransferSucceeded RECEIVER_MONEY_TRANSFER_SUCCEEDED =
       new MoneyTransferSucceeded(
           RECEIVER_MONEY_TRANSFERRED.getAggregateUUID(),
@@ -79,15 +83,11 @@ class EventManagerTest {
           RECEIVER_MONEY_TRANSFERRED.getTransactionUUID(),
           RECEIVER_MONEY_TRANSFERRED.getValue());
 
+  @Mock private EventBus eventBus;
 
-  @Mock
-  private EventBus eventBus;
+  @Mock private AccountEventStorage accountEventStorage;
 
-  @Mock
-  private AccountEventStorage accountEventStorage;
-
-  @InjectMocks
-  private EventManager eventManager;
+  @InjectMocks private EventManager eventManager;
 
   @Test
   public void accountCreatedEvent() {
@@ -144,8 +144,7 @@ class EventManagerTest {
     when(accountEventStorage.exists(any())).thenReturn(false);
 
     // when
-    assertThrows(AggregateDoesNotExist.class, () -> eventManager.handle(
-        ISSUER_MONEY_TRANSFERRED));
+    assertThrows(AggregateDoesNotExist.class, () -> eventManager.handle(ISSUER_MONEY_TRANSFERRED));
 
     // assert
     verify(accountEventStorage).exists(ISSUER_MONEY_TRANSFERRED.getAggregateUUID());
@@ -158,8 +157,9 @@ class EventManagerTest {
     // given
     when(accountEventStorage.exists(any())).thenReturn(true);
     when(accountEventStorage.loadByUUID(ACCOUNT_DEBITED.getAggregateUUID()))
-        .thenReturn(AccountEventStorage.recreate(
-            ImmutableList.of(ACCOUNT_CREATED, ISSUER_MONEY_TRANSFERRED)));
+        .thenReturn(
+            AccountEventStorage.recreate(
+                ImmutableList.of(ACCOUNT_CREATED, ISSUER_MONEY_TRANSFERRED)));
 
     // when
     eventManager.handle(ACCOUNT_DEBITED);
@@ -174,8 +174,7 @@ class EventManagerTest {
   public void accountDebitedEventAggregateDoesNotExist() {
     // given
     when(accountEventStorage.exists(any())).thenReturn(false);
-    when(accountEventStorage.loadByUUID(ACCOUNT_DEBITED.getAggregateUUID()))
-        .thenReturn(null);
+    when(accountEventStorage.loadByUUID(ACCOUNT_DEBITED.getAggregateUUID())).thenReturn(null);
 
     // when
     assertThrows(AggregateDoesNotExist.class, () -> eventManager.handle(ACCOUNT_DEBITED));
@@ -195,8 +194,9 @@ class EventManagerTest {
         MONEY_TRANSFER_CANCELLED.toBuilder().value(accountDebited.getValue()).build();
     when(accountEventStorage.exists(any())).thenReturn(true);
     when(accountEventStorage.loadByUUID(ACCOUNT_DEBITED.getAggregateUUID()))
-        .thenReturn(AccountEventStorage.recreate(
-            ImmutableList.of(ACCOUNT_CREATED, ISSUER_MONEY_TRANSFERRED)));
+        .thenReturn(
+            AccountEventStorage.recreate(
+                ImmutableList.of(ACCOUNT_CREATED, ISSUER_MONEY_TRANSFERRED)));
 
     // when
     eventManager.handle(accountDebited);
@@ -267,12 +267,11 @@ class EventManagerTest {
     when(accountEventStorage.exists(any())).thenReturn(false);
 
     // when
-    assertThrows(AggregateDoesNotExist.class,
-        () -> eventManager.handle(ISSUER_MONEY_TRANSFER_SUCCEEDED));
+    assertThrows(
+        AggregateDoesNotExist.class, () -> eventManager.handle(ISSUER_MONEY_TRANSFER_SUCCEEDED));
 
     // assert
     verify(accountEventStorage).exists(ISSUER_MONEY_TRANSFER_SUCCEEDED.getAggregateUUID());
     verifyNoMoreInteractions(accountEventStorage);
   }
-
 }

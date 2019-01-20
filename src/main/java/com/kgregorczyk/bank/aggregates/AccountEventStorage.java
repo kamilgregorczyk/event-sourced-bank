@@ -10,21 +10,17 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * In-memory storage for events that make {@link AccountAggregate}.
- */
+/** In-memory storage for events that make {@link AccountAggregate}. */
 public class AccountEventStorage {
 
   private final Map<UUID, List<DomainEvent>> events = new ConcurrentHashMap<>();
 
   public static AccountAggregate recreate(List<DomainEvent> events) {
-    return ofAll(events).foldLeft(new AccountAggregate(events),
-        (AccountAggregate::apply));
+    return ofAll(events).foldLeft(new AccountAggregate(events), (AccountAggregate::apply));
   }
 
   public ImmutableList<AccountAggregate> loadAll() {
-    return events.entrySet()
-        .stream()
+    return events.entrySet().stream()
         .parallel()
         .map(entry -> recreate(entry.getValue()))
         .collect(ImmutableList.toImmutableList());
@@ -42,8 +38,8 @@ public class AccountEventStorage {
   }
 
   public void save(DomainEvent domainEvent) {
-    List<DomainEvent> currentEvents = events
-        .computeIfAbsent(domainEvent.getAggregateUUID(), uuid2 -> new ArrayList<>());
+    List<DomainEvent> currentEvents =
+        events.computeIfAbsent(domainEvent.getAggregateUUID(), uuid2 -> new ArrayList<>());
     currentEvents.add(domainEvent);
   }
 }

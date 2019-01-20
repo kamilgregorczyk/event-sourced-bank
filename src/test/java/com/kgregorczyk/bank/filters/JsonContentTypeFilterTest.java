@@ -1,6 +1,5 @@
 package com.kgregorczyk.bank.filters;
 
-
 import static com.google.common.truth.Truth.assertThat;
 import static java.net.HttpURLConnection.HTTP_OK;
 
@@ -20,8 +19,8 @@ class JsonContentTypeFilterTest extends AbstractSparkTest {
 
     // assert
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_OK);
-    assertThat(response.getFirstHeader("Content-Type").toString()).isEqualTo(
-        "Content-Type: application/json");
+    assertThat(response.getFirstHeader("Content-Type").toString())
+        .isEqualTo("Content-Type: application/json");
     response.close();
   }
 }

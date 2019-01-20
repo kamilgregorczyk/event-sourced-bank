@@ -40,18 +40,18 @@ import lombok.extern.slf4j.Slf4j;
 @SuppressWarnings("FutureReturnValueIgnored")
 class BankServer {
 
-  //TODO: Replace these containers with proper DI tool like Guice
+  // TODO: Replace these containers with proper DI tool like Guice
   private static final EventBus EVENT_BUS = new EventBus();
   private static final AccountEventStorage ACCOUNT_EVENT_STORAGE = new AccountEventStorage();
-  private static final EventManager EVENT_MANAGER = new EventManager(EVENT_BUS,
-      ACCOUNT_EVENT_STORAGE);
+  private static final EventManager EVENT_MANAGER =
+      new EventManager(EVENT_BUS, ACCOUNT_EVENT_STORAGE);
   private static final AccountService ACCOUNT_SERVICE = new AccountService(EVENT_BUS);
-  private static final AccountController ACCOUNT_CONTROLLER = new AccountController(ACCOUNT_SERVICE,
-      ACCOUNT_EVENT_STORAGE);
-  private static final TransactionRollbackCron TRANSACTION_ROLLBACK_CRON = new TransactionRollbackCron(
-      ACCOUNT_SERVICE, ACCOUNT_EVENT_STORAGE);
-  private static final ScheduledExecutorService cronExecutorService = Executors
-      .newScheduledThreadPool(1);
+  private static final AccountController ACCOUNT_CONTROLLER =
+      new AccountController(ACCOUNT_SERVICE, ACCOUNT_EVENT_STORAGE);
+  private static final TransactionRollbackCron TRANSACTION_ROLLBACK_CRON =
+      new TransactionRollbackCron(ACCOUNT_SERVICE, ACCOUNT_EVENT_STORAGE);
+  private static final ScheduledExecutorService cronExecutorService =
+      Executors.newScheduledThreadPool(1);
 
   private static final int PORT = 8000;
 
@@ -74,20 +74,34 @@ class BankServer {
     afterAfter(new CORSFilter());
 
     // Controllers
-    path("", () -> {
-      get("/", IndexController.healthCheck(), JsonUtils::toJson);
-      path("/api", () -> path("/account", () -> {
-        get("", ACCOUNT_CONTROLLER.listAccounts(), JsonUtils::toJson);
-        post("", ACCOUNT_CONTROLLER.createAccount(), JsonUtils::toJson);
-        get("/:id", ACCOUNT_CONTROLLER.getAccount(), JsonUtils::toJson);
-        put("/:id/changeFullName", ACCOUNT_CONTROLLER.changeFullName(), JsonUtils::toJson);
-        post("/transferMoney", ACCOUNT_CONTROLLER.transferMoney(), JsonUtils::toJson);
-      }));
-    });
+    path(
+        "",
+        () -> {
+          get("/", IndexController.healthCheck(), JsonUtils::toJson);
+          path(
+              "/api",
+              () ->
+                  path(
+                      "/account",
+                      () -> {
+                        get("", ACCOUNT_CONTROLLER.listAccounts(), JsonUtils::toJson);
+                        post("", ACCOUNT_CONTROLLER.createAccount(), JsonUtils::toJson);
+                        get("/:id", ACCOUNT_CONTROLLER.getAccount(), JsonUtils::toJson);
+                        put(
+                            "/:id/changeFullName",
+                            ACCOUNT_CONTROLLER.changeFullName(),
+                            JsonUtils::toJson);
+                        post(
+                            "/transferMoney",
+                            ACCOUNT_CONTROLLER.transferMoney(),
+                            JsonUtils::toJson);
+                      }));
+        });
 
     // Other handlers
-    notFound((request, response) ->
-        new APIResponse(Status.ERROR, "Requested resource doesn't exist").toJson());
+    notFound(
+        (request, response) ->
+            new APIResponse(Status.ERROR, "Requested resource doesn't exist").toJson());
     internalServerError(
         (request, response) -> new APIResponse(Status.ERROR, "Internal Server Error").toJson());
 

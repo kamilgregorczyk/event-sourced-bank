@@ -33,28 +33,30 @@ public class AccountDTO {
   private List<Link> _links;
 
   public static AccountDTO from(AccountAggregate aggregate) {
-    return AccountDTO.builder().accountNumber(aggregate.getUuid()).fullName(aggregate.getFullName())
+    return AccountDTO.builder()
+        .accountNumber(aggregate.getUuid())
+        .fullName(aggregate.getFullName())
         .balance(aggregate.getBalance())
         .transactionToReservedBalance(aggregate.getTransactionToReservedBalance())
         .events(aggregate.getDomainEvents())
-        .transactions(aggregate.getTransactions()
-            .entrySet()
-            .stream()
-            .map(
-                uuidToTransaction -> MoneyTransactionDTO
-                    .builder()
-                    .transactionUUID(uuidToTransaction.getValue().getTransactionUUID())
-                    .fromAccountUUID(uuidToTransaction.getValue().getFromUUID())
-                    .toAccountUUID(uuidToTransaction.getValue().getToUUID())
-                    .value(uuidToTransaction.getValue().getValue())
-                    .state(uuidToTransaction.getValue().getState())
-                    .type(uuidToTransaction.getValue().getType())
-                    .lastUpdatedAt(uuidToTransaction.getValue().getLastUpdatedAt())
-                    .createdAt(uuidToTransaction.getValue().getCreatedAt())
-                    .build()
-            )
-            .collect(Collectors.toMap(MoneyTransactionDTO::getTransactionUUID,
-                moneyTransactionDTO -> moneyTransactionDTO)))
+        .transactions(
+            aggregate.getTransactions().entrySet().stream()
+                .map(
+                    uuidToTransaction ->
+                        MoneyTransactionDTO.builder()
+                            .transactionUUID(uuidToTransaction.getValue().getTransactionUUID())
+                            .fromAccountUUID(uuidToTransaction.getValue().getFromUUID())
+                            .toAccountUUID(uuidToTransaction.getValue().getToUUID())
+                            .value(uuidToTransaction.getValue().getValue())
+                            .state(uuidToTransaction.getValue().getState())
+                            .type(uuidToTransaction.getValue().getType())
+                            .lastUpdatedAt(uuidToTransaction.getValue().getLastUpdatedAt())
+                            .createdAt(uuidToTransaction.getValue().getCreatedAt())
+                            .build())
+                .collect(
+                    Collectors.toMap(
+                        MoneyTransactionDTO::getTransactionUUID,
+                        moneyTransactionDTO -> moneyTransactionDTO)))
         .createdAt(aggregate.getCreatedAt())
         .lastUpdatedAt(aggregate.getLastUpdatedAt())
         ._links(getLinksForAccount(aggregate.getUuid()))
@@ -73,6 +75,5 @@ public class AccountDTO {
     private Type type;
     private Date lastUpdatedAt;
     private Date createdAt;
-
   }
 }

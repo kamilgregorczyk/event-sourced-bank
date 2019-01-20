@@ -54,19 +54,17 @@ public class AccountAggregate {
     this.domainEvents = domainEvents;
   }
 
-  /**
-   * Applies stored event by rerouting it to proper handler.
-   */
+  /** Applies stored event by rerouting it to proper handler. */
   AccountAggregate apply(DomainEvent event) {
     return API.Match(event)
-        .of(Case(of(AccountCreatedEvent.class), this::apply),
+        .of(
+            Case(of(AccountCreatedEvent.class), this::apply),
             Case(of(FullNameChangedEvent.class), this::apply),
             Case(of(MoneyTransferredEvent.class), this::apply),
             Case(of(AccountDebitedEvent.class), this::apply),
             Case(of(AccountCreditedEvent.class), this::apply),
             Case(of(MoneyTransferCancelled.class), this::apply),
-            Case(of(MoneyTransferSucceeded.class), this::apply)
-        );
+            Case(of(MoneyTransferSucceeded.class), this::apply));
   }
 
   /**
@@ -77,7 +75,7 @@ public class AccountAggregate {
   AccountAggregate apply(AccountCreatedEvent event) {
     uuid = event.getAggregateUUID();
     transactionToReservedBalance = new TreeMap<>(); // TreeMap because it keeps the order
-    //TODO: Replace with 0 initial balance.
+    // TODO: Replace with 0 initial balance.
     balance = BigDecimal.valueOf(INITIAL_BALANCE).setScale(2, RoundingMode.HALF_EVEN);
     fullName = event.getFullName();
     transactions = new TreeMap<>(); // TreeMap because it keeps the order
@@ -86,9 +84,7 @@ public class AccountAggregate {
     return this;
   }
 
-  /**
-   * Updates {@link AccountAggregate#fullName}.
-   */
+  /** Updates {@link AccountAggregate#fullName}. */
   AccountAggregate apply(FullNameChangedEvent event) {
     lastUpdatedAt = event.getCreatedAt();
     fullName = event.getFullName();
@@ -116,9 +112,17 @@ public class AccountAggregate {
       value = event.getValue();
       type = MoneyTransaction.Type.INCOMING;
     }
-    transactions.put(event.getTransactionUUID(),
-        new MoneyTransaction(event.getTransactionUUID(), event.getFromUUID(), event.getToUUID(),
-            value, State.NEW, type, event.getCreatedAt(), event.getCreatedAt()));
+    transactions.put(
+        event.getTransactionUUID(),
+        new MoneyTransaction(
+            event.getTransactionUUID(),
+            event.getFromUUID(),
+            event.getToUUID(),
+            value,
+            State.NEW,
+            type,
+            event.getCreatedAt(),
+            event.getCreatedAt()));
 
     return this;
   }
@@ -127,8 +131,8 @@ public class AccountAggregate {
    * Reserves balance on account that's about to have it's balance transferred and subtracts that
    * amount from the main balance.
    *
-   * <p>If the event was followed by {@link MoneyTransferredEvent} (there's a transaction)
-   * then it also updates the transaction state to {@link MoneyTransaction.State#PENDING}.
+   * <p>If the event was followed by {@link MoneyTransferredEvent} (there's a transaction) then it
+   * also updates the transaction state to {@link MoneyTransaction.State#PENDING}.
    *
    * @throws BalanceTooLowException when {@link AccountAggregate#balance} is not sufficient.
    */
@@ -145,15 +149,14 @@ public class AccountAggregate {
     } else {
       throw new BalanceTooLowException();
     }
-
   }
 
   /**
    * Reserves balance on account that's about to have it's balance increased (receiver or the money
    * transfer).
    *
-   * <p>If the event was followed by {@link MoneyTransferredEvent} (there's a transaction)
-   * then it also updates the transaction state to {@link MoneyTransaction.State#PENDING}.
+   * <p>If the event was followed by {@link MoneyTransferredEvent} (there's a transaction) then it
+   * also updates the transaction state to {@link MoneyTransaction.State#PENDING}.
    */
   AccountAggregate apply(AccountCreditedEvent event) {
     lastUpdatedAt = event.getCreatedAt();
@@ -182,9 +185,7 @@ public class AccountAggregate {
     return this;
   }
 
-  /**
-   * Cancels ongoing transaction.
-   */
+  /** Cancels ongoing transaction. */
   AccountAggregate apply(MoneyTransferCancelled event) {
     lastUpdatedAt = event.getCreatedAt();
     if (event.getToUUID().equals(event.getAggregateUUID())) {

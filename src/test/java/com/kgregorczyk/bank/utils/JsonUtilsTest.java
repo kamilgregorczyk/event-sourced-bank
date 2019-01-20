@@ -27,7 +27,6 @@ class JsonUtilsTest {
     assertThat(JsonUtils.isJSONValid("{niceValue;Avengers}")).isFalse();
   }
 
-
   @Data
   @NoArgsConstructor
   @AllArgsConstructor

@@ -1,6 +1,5 @@
 package com.kgregorczyk.bank.filters;
 
-
 import static com.google.common.truth.Truth.assertThat;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_CREATED;
@@ -24,15 +23,15 @@ class JsonBodyFilterTest extends AbstractSparkTest {
 
   private static void assertResponseForEmptyBody(CloseableHttpResponse response) throws Exception {
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_BAD_REQUEST);
-    assertThat(GSON.fromJson(getResponseBodyAndClose(response), APIResponse.class)).isEqualTo(
-        new APIResponse(Status.ERROR, "Body is empty"));
+    assertThat(GSON.fromJson(getResponseBodyAndClose(response), APIResponse.class))
+        .isEqualTo(new APIResponse(Status.ERROR, "Body is empty"));
   }
 
   private static void assertResponseForNotValidJson(CloseableHttpResponse response)
       throws Exception {
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_BAD_REQUEST);
-    assertThat(GSON.fromJson(getResponseBodyAndClose(response), APIResponse.class)).isEqualTo(
-        new APIResponse(Status.ERROR, "Body is required and it is not in JSON format"));
+    assertThat(GSON.fromJson(getResponseBodyAndClose(response), APIResponse.class))
+        .isEqualTo(new APIResponse(Status.ERROR, "Body is required and it is not in JSON format"));
   }
 
   @Test
@@ -57,7 +56,6 @@ class JsonBodyFilterTest extends AbstractSparkTest {
 
     // assert
     assertResponseForEmptyBody(response);
-
   }
 
   @Test
@@ -137,5 +135,4 @@ class JsonBodyFilterTest extends AbstractSparkTest {
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_OK);
     response.close();
   }
-
 }

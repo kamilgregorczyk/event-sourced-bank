@@ -1,6 +1,5 @@
 package com.kgregorczyk.bank.aggregates;
 
-
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.collect.ImmutableList;
@@ -9,7 +8,6 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 class AccountEventStorageTest {
-
 
   @Test
   void loadAll() {
@@ -23,10 +21,10 @@ class AccountEventStorageTest {
     // when
     ImmutableList<AccountAggregate> aggregates = storage.loadAll();
     // assert
-    assertThat(aggregates).containsExactly(
-        AccountEventStorage.recreate(ImmutableList.of(event1)), AccountEventStorage
-            .recreate(ImmutableList.of(event2)));
-
+    assertThat(aggregates)
+        .containsExactly(
+            AccountEventStorage.recreate(ImmutableList.of(event1)),
+            AccountEventStorage.recreate(ImmutableList.of(event2)));
   }
 
   @Test
@@ -41,7 +39,6 @@ class AccountEventStorageTest {
 
     // assert
     assertThat(aggregate).isEqualTo(AccountEventStorage.recreate(ImmutableList.of(event)));
-
   }
 
   @Test
@@ -51,7 +48,6 @@ class AccountEventStorageTest {
 
     // when & assert
     assertThat(storage.loadByUUID(UUID.randomUUID())).isNull();
-
   }
 
   @Test
@@ -63,7 +59,6 @@ class AccountEventStorageTest {
 
     // when & assert
     assertThat(storage.exists(event.getAggregateUUID())).isTrue();
-
   }
 
   @Test
@@ -73,6 +68,5 @@ class AccountEventStorageTest {
 
     // when & assert
     assertThat(storage.exists(UUID.randomUUID())).isFalse();
-
   }
 }

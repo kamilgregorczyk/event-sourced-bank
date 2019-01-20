@@ -34,15 +34,13 @@ public class AccountControllerChangeFullNameTest extends AbstractSparkTest {
   private static String extractUUIDFromResponseAndClose(CloseableHttpResponse response)
       throws Exception {
     return (String) GSON.fromJson(getResponseBodyAndClose(response), APIResponse.class).getData();
-
   }
 
   @Test
   public void changeFullNameValid() throws Exception {
     // given
     String aggregateUUID = extractUUIDFromResponseAndClose(createAccount());
-    HttpPut request = new HttpPut(
-        SERVER_URL + "/api/account/" + aggregateUUID + "/changeFullName");
+    HttpPut request = new HttpPut(SERVER_URL + "/api/account/" + aggregateUUID + "/changeFullName");
     request.setEntity(new StringEntity(toJson(new ChangeFullNameRequest("Superman"))));
 
     // when
@@ -62,8 +60,7 @@ public class AccountControllerChangeFullNameTest extends AbstractSparkTest {
   @Test
   public void changeFullNameNotValidInvalidUUID() throws Exception {
     // given
-    HttpPut request =
-        new HttpPut(SERVER_URL + "/api/account/asd/changeFullName");
+    HttpPut request = new HttpPut(SERVER_URL + "/api/account/asd/changeFullName");
     request.setEntity(new StringEntity(toJson(new ChangeFullNameRequest("Superman"))));
 
     // when
@@ -75,8 +72,9 @@ public class AccountControllerChangeFullNameTest extends AbstractSparkTest {
         new JSONObject()
             .put("status", "ERROR")
             .put("message", "There are validation errors")
-            .put("data", new JSONObject().put("uuid", new JSONArray()
-                .put("Is not a valid UUID value")))
+            .put(
+                "data",
+                new JSONObject().put("uuid", new JSONArray().put("Is not a valid UUID value")))
             .toString();
     assertResponses(expectedResponse, getResponseBodyAndClose(response));
   }
@@ -97,7 +95,8 @@ public class AccountControllerChangeFullNameTest extends AbstractSparkTest {
     String expectedResponse =
         new JSONObject()
             .put("status", "ERROR")
-            .put("message",
+            .put(
+                "message",
                 String.format("Account with ID: %s was not found", aggregateUUID.toString()))
             .toString();
     assertResponses(expectedResponse, getResponseBodyAndClose(response));
@@ -107,8 +106,7 @@ public class AccountControllerChangeFullNameTest extends AbstractSparkTest {
   public void changeFullNameNotValidNoFullName() throws Exception {
     // given
     String aggregateUUID = extractUUIDFromResponseAndClose(createAccount());
-    HttpPut request = new HttpPut(
-        SERVER_URL + "/api/account/" + aggregateUUID + "/changeFullName");
+    HttpPut request = new HttpPut(SERVER_URL + "/api/account/" + aggregateUUID + "/changeFullName");
     request.setEntity(new StringEntity("{}"));
 
     // when
@@ -120,8 +118,7 @@ public class AccountControllerChangeFullNameTest extends AbstractSparkTest {
         new JSONObject()
             .put("status", "ERROR")
             .put("message", "There are validation errors")
-            .put("data", new JSONObject().put("fullName", new JSONArray()
-                .put("Cannot be empty")))
+            .put("data", new JSONObject().put("fullName", new JSONArray().put("Cannot be empty")))
             .toString();
     assertResponses(expectedResponse, getResponseBodyAndClose(response));
   }
@@ -130,8 +127,7 @@ public class AccountControllerChangeFullNameTest extends AbstractSparkTest {
   public void changeFullNameNotValidEmptyFullName() throws Exception {
     // given
     String aggregateUUID = extractUUIDFromResponseAndClose(createAccount());
-    HttpPut request = new HttpPut(
-        SERVER_URL + "/api/account/" + aggregateUUID + "/changeFullName");
+    HttpPut request = new HttpPut(SERVER_URL + "/api/account/" + aggregateUUID + "/changeFullName");
     request.setEntity(new StringEntity("{\"fullName\": \"\"}"));
 
     // when
@@ -143,8 +139,7 @@ public class AccountControllerChangeFullNameTest extends AbstractSparkTest {
         new JSONObject()
             .put("status", "ERROR")
             .put("message", "There are validation errors")
-            .put("data", new JSONObject().put("fullName", new JSONArray()
-                .put("Cannot be empty")))
+            .put("data", new JSONObject().put("fullName", new JSONArray().put("Cannot be empty")))
             .toString();
     assertResponses(expectedResponse, getResponseBodyAndClose(response));
   }
@@ -153,8 +148,7 @@ public class AccountControllerChangeFullNameTest extends AbstractSparkTest {
   public void changeFullNameNotValidNullFullName() throws Exception {
     // given
     String aggregateUUID = extractUUIDFromResponseAndClose(createAccount());
-    HttpPut request = new HttpPut(
-        SERVER_URL + "/api/account/" + aggregateUUID + "/changeFullName");
+    HttpPut request = new HttpPut(SERVER_URL + "/api/account/" + aggregateUUID + "/changeFullName");
     request.setEntity(new StringEntity("{\"fullName\": null}"));
 
     // when
@@ -166,8 +160,7 @@ public class AccountControllerChangeFullNameTest extends AbstractSparkTest {
         new JSONObject()
             .put("status", "ERROR")
             .put("message", "There are validation errors")
-            .put("data", new JSONObject().put("fullName", new JSONArray()
-                .put("Cannot be empty")))
+            .put("data", new JSONObject().put("fullName", new JSONArray().put("Cannot be empty")))
             .toString();
     assertResponses(expectedResponse, getResponseBodyAndClose(response));
   }

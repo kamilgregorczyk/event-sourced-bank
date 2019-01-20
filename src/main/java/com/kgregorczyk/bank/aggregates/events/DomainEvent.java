@@ -8,9 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-/**
- * Base event for all the other events that mutate aggregates and that should be stored.
- */
+/** Base event for all the other events that mutate aggregates and that should be stored. */
 @Getter
 @ToString
 @AllArgsConstructor
@@ -31,11 +29,8 @@ public abstract class DomainEvent {
     this.eventType = classNameToUpperCase();
   }
 
-  /**
-   * Converts for e.g. AccountCreatedEvent -> ACCOUNT_CREATED_EVENT
-   */
+  /** Converts for e.g. AccountCreatedEvent -> ACCOUNT_CREATED_EVENT */
   private String classNameToUpperCase() {
-    return CaseFormat.UPPER_CAMEL
-        .to(CaseFormat.UPPER_UNDERSCORE, this.getClass().getSimpleName());
+    return CaseFormat.UPPER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, this.getClass().getSimpleName());
   }
 }

@@ -33,16 +33,13 @@ public class AccountControllerGetAccountTest extends AbstractSparkTest {
   private static String extractUUIDFromResponseAndClose(CloseableHttpResponse response)
       throws Exception {
     return (String) GSON.fromJson(getResponseBodyAndClose(response), APIResponse.class).getData();
-
   }
-
 
   @Test
   public void getAccountValid() throws Exception {
     // given
     String aggregateUUID = extractUUIDFromResponseAndClose(createAccount());
-    HttpGet request =
-        new HttpGet(SERVER_URL + "/api/account/" + aggregateUUID);
+    HttpGet request = new HttpGet(SERVER_URL + "/api/account/" + aggregateUUID);
 
     // when
     CloseableHttpResponse response = client.execute(request);
@@ -51,34 +48,40 @@ public class AccountControllerGetAccountTest extends AbstractSparkTest {
     String responseJson = getResponseBodyAndClose(response);
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_OK);
     String createdAt = getFieldFromEvents(responseJson, 0, "createdAt");
-    String expectedResponse = new JSONObject()
-        .put("status", "OK")
-        .put("message", "SUCCESS")
-        .put("_links", Link.getLinksForAccount(aggregateUUID))
-        .put("data", new JSONObject()
+    String expectedResponse =
+        new JSONObject()
+            .put("status", "OK")
+            .put("message", "SUCCESS")
             .put("_links", Link.getLinksForAccount(aggregateUUID))
-            .put("fullName", "Tony Stark")
-            .put("accountNumber", aggregateUUID)
-            .put("balance", 1000.0)
-            .put("transactionToReservedBalance", new JSONObject())
-            .put("events",
-                new JSONArray().put(new JSONObject().put("fullName", "Tony Stark")
-                    .put("eventType", "ACCOUNT_CREATED_EVENT").put("aggregateUUID",
-                        aggregateUUID).put("createdAt", createdAt)))
-            .put("createdAt", createdAt)
-            .put("lastUpdatedAt", createdAt)
-            .put("transactions", new JSONObject())
-        ).toString();
+            .put(
+                "data",
+                new JSONObject()
+                    .put("_links", Link.getLinksForAccount(aggregateUUID))
+                    .put("fullName", "Tony Stark")
+                    .put("accountNumber", aggregateUUID)
+                    .put("balance", 1000.0)
+                    .put("transactionToReservedBalance", new JSONObject())
+                    .put(
+                        "events",
+                        new JSONArray()
+                            .put(
+                                new JSONObject()
+                                    .put("fullName", "Tony Stark")
+                                    .put("eventType", "ACCOUNT_CREATED_EVENT")
+                                    .put("aggregateUUID", aggregateUUID)
+                                    .put("createdAt", createdAt)))
+                    .put("createdAt", createdAt)
+                    .put("lastUpdatedAt", createdAt)
+                    .put("transactions", new JSONObject()))
+            .toString();
 
     assertResponses(expectedResponse, responseJson);
-
   }
 
   @Test
   public void getAccountNotValidInvalidUUID() throws Exception {
     // given
-    HttpGet request =
-        new HttpGet(SERVER_URL + "/api/account/asd");
+    HttpGet request = new HttpGet(SERVER_URL + "/api/account/asd");
 
     // when
     CloseableHttpResponse response = client.execute(request);
@@ -89,8 +92,9 @@ public class AccountControllerGetAccountTest extends AbstractSparkTest {
         new JSONObject()
             .put("status", "ERROR")
             .put("message", "There are validation errors")
-            .put("data", new JSONObject().put("uuid", new JSONArray()
-                .put("Is not a valid UUID value")))
+            .put(
+                "data",
+                new JSONObject().put("uuid", new JSONArray().put("Is not a valid UUID value")))
             .toString();
     assertResponses(expectedResponse, getResponseBodyAndClose(response));
   }
@@ -99,8 +103,7 @@ public class AccountControllerGetAccountTest extends AbstractSparkTest {
   public void getAccountNotValidAggregateDoesNotExist() throws Exception {
     // given
     UUID aggregateUUID = UUID.randomUUID();
-    HttpGet request =
-        new HttpGet(SERVER_URL + "/api/account/" + aggregateUUID.toString());
+    HttpGet request = new HttpGet(SERVER_URL + "/api/account/" + aggregateUUID.toString());
 
     // when
     CloseableHttpResponse response = client.execute(request);
@@ -110,10 +113,10 @@ public class AccountControllerGetAccountTest extends AbstractSparkTest {
     String expectedResponse =
         new JSONObject()
             .put("status", "ERROR")
-            .put("message",
+            .put(
+                "message",
                 String.format("Account with ID: %s was not found", aggregateUUID.toString()))
             .toString();
     assertResponses(expectedResponse, getResponseBodyAndClose(response));
   }
-
 }

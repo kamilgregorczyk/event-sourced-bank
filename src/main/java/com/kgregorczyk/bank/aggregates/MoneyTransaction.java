@@ -28,10 +28,14 @@ public class MoneyTransaction {
   private Date createdAt;
 
   public enum State {
-    NEW, PENDING, SUCCEEDED, CANCELLED
+    NEW,
+    PENDING,
+    SUCCEEDED,
+    CANCELLED
   }
 
   public enum Type {
-    INCOMING, OUTGOING
+    INCOMING,
+    OUTGOING
   }
 }

@@ -4,9 +4,7 @@ import spark.Filter;
 import spark.Request;
 import spark.Response;
 
-/**
- * Sets ContentType:application/json header.
- */
+/** Sets ContentType:application/json header. */
 public class JsonContentTypeFilter implements Filter {
 
   @Override

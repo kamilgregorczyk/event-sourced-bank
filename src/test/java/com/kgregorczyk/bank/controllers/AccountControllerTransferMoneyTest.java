@@ -34,7 +34,6 @@ public class AccountControllerTransferMoneyTest extends AbstractSparkTest {
   private static String extractUUIDFromResponseAndClose(CloseableHttpResponse response)
       throws Exception {
     return (String) GSON.fromJson(getResponseBodyAndClose(response), APIResponse.class).getData();
-
   }
 
   @Test
@@ -43,8 +42,9 @@ public class AccountControllerTransferMoneyTest extends AbstractSparkTest {
     String aggregateUUID1 = extractUUIDFromResponseAndClose(createAccount());
     String aggregateUUID2 = extractUUIDFromResponseAndClose(createAccount());
     HttpPost request = new HttpPost(SERVER_URL + "/api/account/transferMoney");
-    request.setEntity(new StringEntity(toJson(new TransferMoneyRequest(aggregateUUID1,
-        aggregateUUID2, BigDecimal.TEN))));
+    request.setEntity(
+        new StringEntity(
+            toJson(new TransferMoneyRequest(aggregateUUID1, aggregateUUID2, BigDecimal.TEN))));
 
     // when
     CloseableHttpResponse response = client.execute(request);
@@ -66,8 +66,11 @@ public class AccountControllerTransferMoneyTest extends AbstractSparkTest {
     String aggregateUUID1 = extractUUIDFromResponseAndClose(createAccount());
     String aggregateUUID2 = extractUUIDFromResponseAndClose(createAccount());
     HttpPost request = new HttpPost(SERVER_URL + "/api/account/transferMoney");
-    request.setEntity(new StringEntity(toJson(new TransferMoneyRequest(aggregateUUID1,
-        aggregateUUID2, BigDecimal.valueOf(-10)))));
+    request.setEntity(
+        new StringEntity(
+            toJson(
+                new TransferMoneyRequest(
+                    aggregateUUID1, aggregateUUID2, BigDecimal.valueOf(-10)))));
 
     // when
     CloseableHttpResponse response = client.execute(request);
@@ -78,8 +81,10 @@ public class AccountControllerTransferMoneyTest extends AbstractSparkTest {
         new JSONObject()
             .put("status", "ERROR")
             .put("message", "There are validation errors")
-            .put("data", new JSONObject().put("value", new JSONArray().put("Must be provided & "
-                + "be greater than 0")))
+            .put(
+                "data",
+                new JSONObject()
+                    .put("value", new JSONArray().put("Must be provided & " + "be greater than 0")))
             .toString();
     assertResponses(expectedResponse, getResponseBodyAndClose(response));
   }
@@ -99,16 +104,12 @@ public class AccountControllerTransferMoneyTest extends AbstractSparkTest {
         new JSONObject()
             .put("status", "ERROR")
             .put("message", "There are validation errors")
-            .put("data", new JSONObject()
-                .put("fromAccountNumber", new JSONArray()
-                    .put("Is not a valid UUID value")
-                )
-                .put("toAccountNumber", new JSONArray()
-                    .put("Is not a valid UUID value")
-                ).put("value", new JSONArray()
-                    .put("Must be provided & be greater than 0")
-                )
-            )
+            .put(
+                "data",
+                new JSONObject()
+                    .put("fromAccountNumber", new JSONArray().put("Is not a valid UUID value"))
+                    .put("toAccountNumber", new JSONArray().put("Is not a valid UUID value"))
+                    .put("value", new JSONArray().put("Must be provided & be greater than 0")))
             .toString();
     assertResponses(expectedResponse, getResponseBodyAndClose(response));
   }
@@ -118,8 +119,9 @@ public class AccountControllerTransferMoneyTest extends AbstractSparkTest {
     // given
     String aggregateUUID = extractUUIDFromResponseAndClose(createAccount());
     HttpPost request = new HttpPost(SERVER_URL + "/api/account/transferMoney");
-    request.setEntity(new StringEntity(toJson(new TransferMoneyRequest(aggregateUUID,
-        aggregateUUID, BigDecimal.TEN))));
+    request.setEntity(
+        new StringEntity(
+            toJson(new TransferMoneyRequest(aggregateUUID, aggregateUUID, BigDecimal.TEN))));
 
     // when
     CloseableHttpResponse response = client.execute(request);
@@ -130,11 +132,13 @@ public class AccountControllerTransferMoneyTest extends AbstractSparkTest {
         new JSONObject()
             .put("status", "ERROR")
             .put("message", "There are validation errors")
-            .put("data", new JSONObject()
-                .put("toAccountNumber", new JSONArray()
-                    .put("Is not possible to transfer money to the same account")
-                )
-            )
+            .put(
+                "data",
+                new JSONObject()
+                    .put(
+                        "toAccountNumber",
+                        new JSONArray()
+                            .put("Is not possible to transfer money to the same account")))
             .toString();
     assertResponses(expectedResponse, getResponseBodyAndClose(response));
   }
@@ -143,8 +147,8 @@ public class AccountControllerTransferMoneyTest extends AbstractSparkTest {
   public void transferMoneyNotValidAccountNumbersAreNulls() throws Exception {
     // given
     HttpPost request = new HttpPost(SERVER_URL + "/api/account/transferMoney");
-    request.setEntity(new StringEntity(toJson(new TransferMoneyRequest(null,
-        null, BigDecimal.TEN))));
+    request.setEntity(
+        new StringEntity(toJson(new TransferMoneyRequest(null, null, BigDecimal.TEN))));
 
     // when
     CloseableHttpResponse response = client.execute(request);
@@ -155,14 +159,11 @@ public class AccountControllerTransferMoneyTest extends AbstractSparkTest {
         new JSONObject()
             .put("status", "ERROR")
             .put("message", "There are validation errors")
-            .put("data", new JSONObject()
-                .put("fromAccountNumber", new JSONArray()
-                    .put("Is not a valid UUID value")
-                )
-                .put("toAccountNumber", new JSONArray()
-                    .put("Is not a valid UUID value")
-                )
-            )
+            .put(
+                "data",
+                new JSONObject()
+                    .put("fromAccountNumber", new JSONArray().put("Is not a valid UUID value"))
+                    .put("toAccountNumber", new JSONArray().put("Is not a valid UUID value")))
             .toString();
     assertResponses(expectedResponse, getResponseBodyAndClose(response));
   }
@@ -173,8 +174,9 @@ public class AccountControllerTransferMoneyTest extends AbstractSparkTest {
     String randomUUID = UUID.randomUUID().toString();
     String aggregateUUID = extractUUIDFromResponseAndClose(createAccount());
     HttpPost request = new HttpPost(SERVER_URL + "/api/account/transferMoney");
-    request.setEntity(new StringEntity(toJson(new TransferMoneyRequest(randomUUID,
-        aggregateUUID, BigDecimal.TEN))));
+    request.setEntity(
+        new StringEntity(
+            toJson(new TransferMoneyRequest(randomUUID, aggregateUUID, BigDecimal.TEN))));
 
     // when
     CloseableHttpResponse response = client.execute(request);
@@ -195,8 +197,9 @@ public class AccountControllerTransferMoneyTest extends AbstractSparkTest {
     String randomUUID = UUID.randomUUID().toString();
     String aggregateUUID = extractUUIDFromResponseAndClose(createAccount());
     HttpPost request = new HttpPost(SERVER_URL + "/api/account/transferMoney");
-    request.setEntity(new StringEntity(
-        toJson(new TransferMoneyRequest(aggregateUUID, randomUUID, BigDecimal.TEN))));
+    request.setEntity(
+        new StringEntity(
+            toJson(new TransferMoneyRequest(aggregateUUID, randomUUID, BigDecimal.TEN))));
 
     // when
     CloseableHttpResponse response = client.execute(request);

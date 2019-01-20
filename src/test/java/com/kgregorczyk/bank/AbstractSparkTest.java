@@ -44,8 +44,12 @@ public abstract class AbstractSparkTest {
   }
 
   protected static String getFieldFromEvents(String json, int index, String fieldName) {
-    return GSON.fromJson(json, JsonObject.class).getAsJsonObject("data").getAsJsonArray(
-        "events").get(index).getAsJsonObject().get(fieldName).getAsString();
+    return GSON.fromJson(json, JsonObject.class)
+        .getAsJsonObject("data")
+        .getAsJsonArray("events")
+        .get(index)
+        .getAsJsonObject()
+        .get(fieldName)
+        .getAsString();
   }
-
 }

@@ -45,47 +45,47 @@ public class TransactionRollbackCron implements Runnable {
     return transactions.get(1);
   }
 
-  private static boolean bothTransactionsAreInState(MoneyTransaction issuerTransaction,
-      MoneyTransaction receiverTransaction, State state) {
-    return issuerTransaction.getState().equals(state) && receiverTransaction.getState()
-        .equals(state);
+  private static boolean bothTransactionsAreInState(
+      MoneyTransaction issuerTransaction, MoneyTransaction receiverTransaction, State state) {
+    return issuerTransaction.getState().equals(state)
+        && receiverTransaction.getState().equals(state);
   }
 
   @Override
   public void run() {
     log.info("TransactionRollbackCron has started");
-    Date thresholdDate = Date
-        .from(Instant.now().minus(TRANSACTION_TIMEOUT_IN_MINUTES, ChronoUnit.MINUTES));
+    Date thresholdDate =
+        Date.from(Instant.now().minus(TRANSACTION_TIMEOUT_IN_MINUTES, ChronoUnit.MINUTES));
 
     // Transactions have to be grouped by it's UUID as there might be two unfinished transactions
     // of the same money transfer or one finished and 2nd one not.
-    ListMultimap<UUID, MoneyTransaction> outDatedTransactions = findOutDatedTransactions(
-        thresholdDate);
+    ListMultimap<UUID, MoneyTransaction> outDatedTransactions =
+        findOutDatedTransactions(thresholdDate);
 
-    for (Map.Entry<UUID, Collection<MoneyTransaction>> uuidToTransactions : outDatedTransactions
-        .asMap().entrySet()) {
+    for (Map.Entry<UUID, Collection<MoneyTransaction>> uuidToTransactions :
+        outDatedTransactions.asMap().entrySet()) {
       List<MoneyTransaction> transactions = new ArrayList<>(uuidToTransactions.getValue());
 
       // If there is one transaction then the event was only received by issuer's account
       if (transactions.size() == 1) {
         rollbackSingleTransaction(transactions.get(0));
       } else {
-        rollbackTwoTransactions(findTransaction(transactions, Type.OUTGOING),
+        rollbackTwoTransactions(
+            findTransaction(transactions, Type.OUTGOING),
             findTransaction(transactions, Type.INCOMING));
       }
     }
     log.info("TransactionRollbackCron has finished");
   }
 
-  private ListMultimap<UUID, MoneyTransaction> findOutDatedTransactions(
-      Date thresholdDate) {
-    return eventStorage
-        .loadAll().stream()
+  private ListMultimap<UUID, MoneyTransaction> findOutDatedTransactions(Date thresholdDate) {
+    return eventStorage.loadAll().stream()
         .flatMap(accountAggregate -> accountAggregate.getTransactions().entrySet().stream())
         .map(Map.Entry::getValue)
         .filter(transaction -> transaction.getLastUpdatedAt().before(thresholdDate))
-        .collect(toImmutableListMultimap(MoneyTransaction::getTransactionUUID,
-            moneyTransaction -> moneyTransaction));
+        .collect(
+            toImmutableListMultimap(
+                MoneyTransaction::getTransactionUUID, moneyTransaction -> moneyTransaction));
   }
 
   private void rollbackSingleTransaction(MoneyTransaction transaction) {
@@ -95,12 +95,11 @@ public class TransactionRollbackCron implements Runnable {
     }
   }
 
-  private void rollbackTwoTransactions(MoneyTransaction issuerTransaction,
-      MoneyTransaction receiverTransaction) {
+  private void rollbackTwoTransactions(
+      MoneyTransaction issuerTransaction, MoneyTransaction receiverTransaction) {
     // We filter out transactions with two entries with state SUCCEEDED or CANCELLED
     if (!bothTransactionsAreInState(issuerTransaction, receiverTransaction, State.SUCCEEDED)
-        && !bothTransactionsAreInState(issuerTransaction, receiverTransaction,
-        State.CANCELLED)) {
+        && !bothTransactionsAreInState(issuerTransaction, receiverTransaction, State.CANCELLED)) {
 
       // Otherwise we have two transactions where one is not finished.
       if (!issuerTransaction.getState().equals(State.CANCELLED)) {
@@ -123,9 +122,12 @@ public class TransactionRollbackCron implements Runnable {
   }
 
   private void cancelTransaction(UUID aggregateUUID, MoneyTransaction transaction) {
-    accountService.asyncCancelTransactionCommand(aggregateUUID,
-        transaction.getFromUUID(), transaction.getToUUID(),
-        transaction.getTransactionUUID(), transaction.getValue().abs(),
+    accountService.asyncCancelTransactionCommand(
+        aggregateUUID,
+        transaction.getFromUUID(),
+        transaction.getToUUID(),
+        transaction.getTransactionUUID(),
+        transaction.getValue().abs(),
         Reason.INTERNAL_SERVER_ERROR);
   }
 }

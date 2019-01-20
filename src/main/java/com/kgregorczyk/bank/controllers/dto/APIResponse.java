@@ -6,9 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Main DTO which is used as a response to every REST request.
- */
+/** Main DTO which is used as a response to every REST request. */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,11 +37,9 @@ public class APIResponse {
     this(Status.OK, message, null, links);
   }
 
-
   public String toJson() {
     return JsonUtils.toJson(this);
   }
-
 
   @AllArgsConstructor
   public enum Status {
@@ -51,6 +47,5 @@ public class APIResponse {
     ERROR("ERROR");
 
     private final String value;
-
   }
 }

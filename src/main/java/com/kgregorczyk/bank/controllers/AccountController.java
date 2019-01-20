@@ -30,11 +30,11 @@ import spark.Route;
  *
  * <p>It's possible to: </p>
  * <ul>
- * <li>GET to fetch a list of accounts on `/api/account/listAccounts`</li>
- * <li>GET to fetch a single account on `/api/account/getAccount`</li>
- * <li>POST to create account on `/api/account/createAccount`</li>
- * <li>POST to Change full name on already existing account on `/api/account/changeFullName/VALID_UUID`</li>
+ * <li>GET to fetch a list of accounts on `/api/account`</li>
+ * <li>GET to fetch a single account on `/api/account/VALID_UUID`</li>
+ * <li>POST to create account on `/api/account`</li>
  * <li>POST to transfer money on `/api/account/transferMoney`</li>
+ * <li>PUT to Change full name on already existing account on `/api/account/VALID_UUID/changeFullName`</li>
  * </ul>
  */
 public class AccountController {

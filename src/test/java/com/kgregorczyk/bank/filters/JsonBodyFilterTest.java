@@ -114,7 +114,7 @@ class JsonBodyFilterTest extends AbstractSparkTest {
   @Test
   public void postMethodWithValidBodyShouldNotFail() throws Exception {
     // given
-    HttpPost request = new HttpPost(SERVER_URL + "/api/account/createAccount");
+    HttpPost request = new HttpPost(SERVER_URL + "/api/account");
     request.setEntity(new StringEntity("{\"fullName\":\"Tony Stark\"}"));
 
     // when

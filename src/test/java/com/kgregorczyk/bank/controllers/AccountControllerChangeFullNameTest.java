@@ -14,6 +14,7 @@ import com.kgregorczyk.bank.controllers.dto.CreateAccountRequest;
 import java.util.UUID;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -24,7 +25,7 @@ public class AccountControllerChangeFullNameTest extends AbstractSparkTest {
   private static final Gson GSON = new Gson();
 
   private static CloseableHttpResponse createAccount() throws Exception {
-    HttpPost request = new HttpPost(SERVER_URL + "/api/account/createAccount");
+    HttpPost request = new HttpPost(SERVER_URL + "/api/account");
     request.setEntity(new StringEntity(toJson(new CreateAccountRequest("Tony Stark"))));
     return client.execute(request);
   }
@@ -39,7 +40,8 @@ public class AccountControllerChangeFullNameTest extends AbstractSparkTest {
   public void changeFullNameValid() throws Exception {
     // given
     String aggregateUUID = extractUUIDFromResponseAndClose(createAccount());
-    HttpPost request = new HttpPost(SERVER_URL + "/api/account/changeFullName/" + aggregateUUID);
+    HttpPut request = new HttpPut(
+        SERVER_URL + "/api/account/" + aggregateUUID + "/changeFullName");
     request.setEntity(new StringEntity(toJson(new ChangeFullNameRequest("Superman"))));
 
     // when
@@ -58,8 +60,8 @@ public class AccountControllerChangeFullNameTest extends AbstractSparkTest {
   @Test
   public void changeFullNameNotValidInvalidUUID() throws Exception {
     // given
-    HttpPost request =
-        new HttpPost(SERVER_URL + "/api/account/changeFullName/asd");
+    HttpPut request =
+        new HttpPut(SERVER_URL + "/api/account/asd/changeFullName");
     request.setEntity(new StringEntity(toJson(new ChangeFullNameRequest("Superman"))));
 
     // when
@@ -81,8 +83,8 @@ public class AccountControllerChangeFullNameTest extends AbstractSparkTest {
   public void changeFullNameNotValidAggregateDoesNotExist() throws Exception {
     // given
     UUID aggregateUUID = UUID.randomUUID();
-    HttpPost request =
-        new HttpPost(SERVER_URL + "/api/account/changeFullName/" + aggregateUUID.toString());
+    HttpPut request =
+        new HttpPut(SERVER_URL + "/api/account/" + aggregateUUID.toString() + "/changeFullName");
     request.setEntity(new StringEntity(toJson(new ChangeFullNameRequest("Superman"))));
 
     // when
@@ -103,7 +105,8 @@ public class AccountControllerChangeFullNameTest extends AbstractSparkTest {
   public void changeFullNameNotValidNoFullName() throws Exception {
     // given
     String aggregateUUID = extractUUIDFromResponseAndClose(createAccount());
-    HttpPost request = new HttpPost(SERVER_URL + "/api/account/changeFullName/" + aggregateUUID);
+    HttpPut request = new HttpPut(
+        SERVER_URL + "/api/account/" + aggregateUUID + "/changeFullName");
     request.setEntity(new StringEntity("{}"));
 
     // when
@@ -125,7 +128,8 @@ public class AccountControllerChangeFullNameTest extends AbstractSparkTest {
   public void changeFullNameNotValidEmptyFullName() throws Exception {
     // given
     String aggregateUUID = extractUUIDFromResponseAndClose(createAccount());
-    HttpPost request = new HttpPost(SERVER_URL + "/api/account/changeFullName/" + aggregateUUID);
+    HttpPut request = new HttpPut(
+        SERVER_URL + "/api/account/" + aggregateUUID + "/changeFullName");
     request.setEntity(new StringEntity("{\"fullName\": \"\"}"));
 
     // when
@@ -147,7 +151,8 @@ public class AccountControllerChangeFullNameTest extends AbstractSparkTest {
   public void changeFullNameNotValidNullFullName() throws Exception {
     // given
     String aggregateUUID = extractUUIDFromResponseAndClose(createAccount());
-    HttpPost request = new HttpPost(SERVER_URL + "/api/account/changeFullName/" + aggregateUUID);
+    HttpPut request = new HttpPut(
+        SERVER_URL + "/api/account/" + aggregateUUID + "/changeFullName");
     request.setEntity(new StringEntity("{\"fullName\": null}"));
 
     // when

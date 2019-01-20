@@ -24,7 +24,7 @@ public class AccountControllerGetAccountTest extends AbstractSparkTest {
   private static final Gson GSON = new Gson();
 
   private static CloseableHttpResponse createAccount() throws Exception {
-    HttpPost request = new HttpPost(SERVER_URL + "/api/account/createAccount");
+    HttpPost request = new HttpPost(SERVER_URL + "/api/account");
     request.setEntity(new StringEntity(toJson(new CreateAccountRequest("Tony Stark"))));
     return client.execute(request);
   }
@@ -41,7 +41,7 @@ public class AccountControllerGetAccountTest extends AbstractSparkTest {
     // given
     String aggregateUUID = extractUUIDFromResponseAndClose(createAccount());
     HttpGet request =
-        new HttpGet(SERVER_URL + "/api/account/getAccount/" + aggregateUUID);
+        new HttpGet(SERVER_URL + "/api/account/" + aggregateUUID);
 
     // when
     CloseableHttpResponse response = client.execute(request);
@@ -75,7 +75,7 @@ public class AccountControllerGetAccountTest extends AbstractSparkTest {
   public void getAccountNotValidInvalidUUID() throws Exception {
     // given
     HttpGet request =
-        new HttpGet(SERVER_URL + "/api/account/getAccount/asd");
+        new HttpGet(SERVER_URL + "/api/account/asd");
 
     // when
     CloseableHttpResponse response = client.execute(request);
@@ -97,7 +97,7 @@ public class AccountControllerGetAccountTest extends AbstractSparkTest {
     // given
     UUID aggregateUUID = UUID.randomUUID();
     HttpGet request =
-        new HttpGet(SERVER_URL + "/api/account/getAccount/" + aggregateUUID.toString());
+        new HttpGet(SERVER_URL + "/api/account/" + aggregateUUID.toString());
 
     // when
     CloseableHttpResponse response = client.execute(request);

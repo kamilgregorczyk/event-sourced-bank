@@ -9,6 +9,7 @@ import static spark.Spark.notFound;
 import static spark.Spark.path;
 import static spark.Spark.port;
 import static spark.Spark.post;
+import static spark.Spark.put;
 
 import com.google.common.eventbus.EventBus;
 import com.kgregorczyk.bank.aggregates.AccountEventStorage;
@@ -76,10 +77,10 @@ class BankServer {
     path("", () -> {
       get("/", IndexController.healthCheck(), JsonUtils::toJson);
       path("/api", () -> path("/account", () -> {
-        get("/getAccount/:id", ACCOUNT_CONTROLLER.getAccount(), JsonUtils::toJson);
-        get("/listAccounts", ACCOUNT_CONTROLLER.listAccounts(), JsonUtils::toJson);
-        post("/createAccount", ACCOUNT_CONTROLLER.createAccount(), JsonUtils::toJson);
-        post("/changeFullName/:id", ACCOUNT_CONTROLLER.changeFullName(), JsonUtils::toJson);
+        get("", ACCOUNT_CONTROLLER.listAccounts(), JsonUtils::toJson);
+        post("", ACCOUNT_CONTROLLER.createAccount(), JsonUtils::toJson);
+        get("/:id", ACCOUNT_CONTROLLER.getAccount(), JsonUtils::toJson);
+        put("/:id/changeFullName", ACCOUNT_CONTROLLER.changeFullName(), JsonUtils::toJson);
         post("/transferMoney", ACCOUNT_CONTROLLER.transferMoney(), JsonUtils::toJson);
       }));
     });

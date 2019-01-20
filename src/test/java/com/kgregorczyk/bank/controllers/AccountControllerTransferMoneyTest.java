@@ -25,7 +25,7 @@ public class AccountControllerTransferMoneyTest extends AbstractSparkTest {
   private static final Gson GSON = new Gson();
 
   private static CloseableHttpResponse createAccount() throws Exception {
-    HttpPost request = new HttpPost(SERVER_URL + "/api/account/createAccount");
+    HttpPost request = new HttpPost(SERVER_URL + "/api/account");
     request.setEntity(new StringEntity(toJson(new CreateAccountRequest("Tony Stark"))));
     return client.execute(request);
   }

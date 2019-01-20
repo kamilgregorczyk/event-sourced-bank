@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -38,7 +39,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
   }
 
   private static HttpPost createAccountRequest(String fullName) throws Exception {
-    HttpPost createAccountRequest = new HttpPost(SERVER_URL + "/api/account/createAccount");
+    HttpPost createAccountRequest = new HttpPost(SERVER_URL + "/api/account");
     createAccountRequest.setEntity(new StringEntity(toJson(
         CreateAccountRequest.builder().fullName(fullName).build()
     )));
@@ -56,7 +57,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
   private static String getAccount(String aggregateUUID) throws Exception {
     // given
     HttpGet getAccountRequest = new HttpGet(
-        SERVER_URL + "/api/account/getAccount/" + aggregateUUID);
+        SERVER_URL + "/api/account/" + aggregateUUID);
 
     // when
     CloseableHttpResponse response = client.execute(getAccountRequest);
@@ -103,8 +104,8 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
   public void testChangeFullNameEndpoint() throws Exception {
     // given
     String aggregateUUID = createAndAssertAccount("Tony Stark");
-    HttpPost changeFullNameRequest =
-        new HttpPost(SERVER_URL + "/api/account/changeFullName/" + aggregateUUID);
+    HttpPut changeFullNameRequest =
+        new HttpPut(SERVER_URL + "/api/account/" + aggregateUUID + "/changeFullName");
     changeFullNameRequest.setEntity(new StringEntity(toJson(
         ChangeFullNameRequest.builder().fullName("Iron Man").build()
     )));

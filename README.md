@@ -31,7 +31,7 @@ Rolling back of unfinished transaction is implemented with a cron that finds unf
 ## Notes
 
 In order to develop it use the error prone intellij plugin with `-Xep:ParameterName:OFF` 
-as a command line argument because of [this bug](https://github.com/google/error-prone/issues/780)
+as a compiler argument because of [this bug](https://github.com/google/error-prone/issues/780)
 
 ## Links
 

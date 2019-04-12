@@ -1,12 +1,12 @@
 package com.kgregorczyk.bank.utils;
 
-import static com.google.common.truth.Truth.assertThat;
-
 import com.google.common.truth.Truth;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.Test;
+
+import static com.google.common.truth.Truth.assertThat;
 
 class JsonUtilsTest {
 

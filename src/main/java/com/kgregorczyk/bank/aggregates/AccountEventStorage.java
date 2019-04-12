@@ -1,14 +1,15 @@
 package com.kgregorczyk.bank.aggregates;
 
-import static io.vavr.collection.List.ofAll;
-
 import com.google.common.collect.ImmutableList;
 import com.kgregorczyk.bank.aggregates.events.DomainEvent;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static io.vavr.collection.List.ofAll;
 
 /** In-memory storage for events that make {@link AccountAggregate}. */
 public class AccountEventStorage {

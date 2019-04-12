@@ -1,24 +1,9 @@
 package com.kgregorczyk.bank.aggregates;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.eventbus.EventBus;
-import com.kgregorczyk.bank.aggregates.events.AccountCreatedEvent;
-import com.kgregorczyk.bank.aggregates.events.AccountCreditedEvent;
-import com.kgregorczyk.bank.aggregates.events.AccountDebitedEvent;
-import com.kgregorczyk.bank.aggregates.events.FullNameChangedEvent;
-import com.kgregorczyk.bank.aggregates.events.MoneyTransferCancelled;
+import com.kgregorczyk.bank.aggregates.events.*;
 import com.kgregorczyk.bank.aggregates.events.MoneyTransferCancelled.Reason;
-import com.kgregorczyk.bank.aggregates.events.MoneyTransferSucceeded;
-import com.kgregorczyk.bank.aggregates.events.MoneyTransferredEvent;
-import java.math.BigDecimal;
-import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,6 +11,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+
+import java.math.BigDecimal;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)

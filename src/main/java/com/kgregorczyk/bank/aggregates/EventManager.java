@@ -2,15 +2,8 @@ package com.kgregorczyk.bank.aggregates;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import com.kgregorczyk.bank.aggregates.events.AccountCreatedEvent;
-import com.kgregorczyk.bank.aggregates.events.AccountCreditedEvent;
-import com.kgregorczyk.bank.aggregates.events.AccountDebitedEvent;
-import com.kgregorczyk.bank.aggregates.events.DomainEvent;
-import com.kgregorczyk.bank.aggregates.events.FullNameChangedEvent;
-import com.kgregorczyk.bank.aggregates.events.MoneyTransferCancelled;
+import com.kgregorczyk.bank.aggregates.events.*;
 import com.kgregorczyk.bank.aggregates.events.MoneyTransferCancelled.Reason;
-import com.kgregorczyk.bank.aggregates.events.MoneyTransferSucceeded;
-import com.kgregorczyk.bank.aggregates.events.MoneyTransferredEvent;
 import lombok.extern.slf4j.Slf4j;
 
 /** Listener and dispatcher of events in whole system. It contains dependencies between events. */

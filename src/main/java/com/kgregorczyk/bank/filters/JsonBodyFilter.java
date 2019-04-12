@@ -1,15 +1,15 @@
 package com.kgregorczyk.bank.filters;
 
-import static com.kgregorczyk.bank.utils.JsonUtils.isJSONValid;
-import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
-import static spark.Spark.halt;
-
 import com.google.common.collect.ImmutableSet;
 import com.kgregorczyk.bank.controllers.dto.APIResponse;
 import com.kgregorczyk.bank.controllers.dto.APIResponse.Status;
 import spark.Filter;
 import spark.Request;
 import spark.Response;
+
+import static com.kgregorczyk.bank.utils.JsonUtils.isJSONValid;
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+import static spark.Spark.halt;
 
 /** Verifies if incoming body is not empty and in JSON format. */
 public class JsonBodyFilter implements Filter {

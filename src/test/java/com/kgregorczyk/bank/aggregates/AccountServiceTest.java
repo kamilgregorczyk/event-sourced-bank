@@ -1,12 +1,8 @@
 package com.kgregorczyk.bank.aggregates;
 
-import static org.mockito.Mockito.verify;
-
 import com.google.common.eventbus.EventBus;
 import com.kgregorczyk.bank.aggregates.events.MoneyTransferCancelled;
 import com.kgregorczyk.bank.aggregates.events.MoneyTransferCancelled.Reason;
-import java.math.BigDecimal;
-import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,6 +10,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+
+import java.math.BigDecimal;
+import java.util.UUID;
+
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)

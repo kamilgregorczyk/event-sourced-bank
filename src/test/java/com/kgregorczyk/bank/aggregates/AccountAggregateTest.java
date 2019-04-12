@@ -1,23 +1,17 @@
 package com.kgregorczyk.bank.aggregates;
 
-import static com.google.common.truth.Truth.assertThat;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.kgregorczyk.bank.aggregates.MoneyTransaction.State;
-import com.kgregorczyk.bank.aggregates.events.AccountCreatedEvent;
-import com.kgregorczyk.bank.aggregates.events.AccountCreditedEvent;
-import com.kgregorczyk.bank.aggregates.events.AccountDebitedEvent;
-import com.kgregorczyk.bank.aggregates.events.DomainEvent;
-import com.kgregorczyk.bank.aggregates.events.FullNameChangedEvent;
-import com.kgregorczyk.bank.aggregates.events.MoneyTransferCancelled;
+import com.kgregorczyk.bank.aggregates.events.*;
 import com.kgregorczyk.bank.aggregates.events.MoneyTransferCancelled.Reason;
-import com.kgregorczyk.bank.aggregates.events.MoneyTransferSucceeded;
-import com.kgregorczyk.bank.aggregates.events.MoneyTransferredEvent;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.UUID;
-import org.junit.jupiter.api.Test;
+
+import static com.google.common.truth.Truth.assertThat;
 
 class AccountAggregateTest {
 

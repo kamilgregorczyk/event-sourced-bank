@@ -1,16 +1,17 @@
 package com.kgregorczyk.bank;
 
-import static com.google.common.truth.Truth.assertThat;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import java.io.IOException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.junit.jupiter.api.BeforeAll;
 import spark.utils.IOUtils;
+
+import java.io.IOException;
+
+import static com.google.common.truth.Truth.assertThat;
 
 public abstract class AbstractSparkTest {
 

@@ -1,10 +1,5 @@
 package com.kgregorczyk.bank.controllers;
 
-import static com.google.common.truth.Truth.assertThat;
-import static com.kgregorczyk.bank.utils.JsonUtils.toJson;
-import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
-import static java.net.HttpURLConnection.HTTP_CREATED;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.kgregorczyk.bank.AbstractSparkTest;
@@ -16,6 +11,11 @@ import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
+
+import static com.google.common.truth.Truth.assertThat;
+import static com.kgregorczyk.bank.utils.JsonUtils.toJson;
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+import static java.net.HttpURLConnection.HTTP_CREATED;
 
 public class AccountControllerCreateAccountTest extends AbstractSparkTest {
 

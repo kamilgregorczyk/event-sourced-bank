@@ -1,16 +1,5 @@
 package com.kgregorczyk.bank;
 
-import static spark.Spark.afterAfter;
-import static spark.Spark.awaitInitialization;
-import static spark.Spark.before;
-import static spark.Spark.get;
-import static spark.Spark.internalServerError;
-import static spark.Spark.notFound;
-import static spark.Spark.path;
-import static spark.Spark.port;
-import static spark.Spark.post;
-import static spark.Spark.put;
-
 import com.google.common.eventbus.EventBus;
 import com.kgregorczyk.bank.aggregates.AccountEventStorage;
 import com.kgregorczyk.bank.aggregates.AccountService;
@@ -25,10 +14,13 @@ import com.kgregorczyk.bank.filters.JsonBodyFilter;
 import com.kgregorczyk.bank.filters.JsonContentTypeFilter;
 import com.kgregorczyk.bank.filters.LoggingFilter;
 import com.kgregorczyk.bank.utils.JsonUtils;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import lombok.extern.slf4j.Slf4j;
+
+import static spark.Spark.*;
 
 /**
  * Runs HTTP server on port 8000;

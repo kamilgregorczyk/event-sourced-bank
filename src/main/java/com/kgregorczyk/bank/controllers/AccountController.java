@@ -1,5 +1,17 @@
 package com.kgregorczyk.bank.controllers;
 
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.MultimapBuilder;
+import com.google.gson.Gson;
+import com.kgregorczyk.bank.aggregates.AccountEventStorage;
+import com.kgregorczyk.bank.aggregates.AccountService;
+import com.kgregorczyk.bank.controllers.dto.*;
+import com.kgregorczyk.bank.controllers.dto.APIResponse.Status;
+import spark.Route;
+
+import java.math.BigDecimal;
+import java.util.UUID;
+
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.kgregorczyk.bank.controllers.dto.APIResponse.Status.ERROR;
 import static com.kgregorczyk.bank.controllers.dto.Link.getLinksForAccount;
@@ -8,21 +20,6 @@ import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static java.net.HttpURLConnection.HTTP_OK;
-
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.MultimapBuilder;
-import com.google.gson.Gson;
-import com.kgregorczyk.bank.aggregates.AccountEventStorage;
-import com.kgregorczyk.bank.aggregates.AccountService;
-import com.kgregorczyk.bank.controllers.dto.APIResponse;
-import com.kgregorczyk.bank.controllers.dto.APIResponse.Status;
-import com.kgregorczyk.bank.controllers.dto.AccountDTO;
-import com.kgregorczyk.bank.controllers.dto.ChangeFullNameRequest;
-import com.kgregorczyk.bank.controllers.dto.CreateAccountRequest;
-import com.kgregorczyk.bank.controllers.dto.TransferMoneyRequest;
-import java.math.BigDecimal;
-import java.util.UUID;
-import spark.Route;
 
 /**
  * AccountDTO Controller.

@@ -88,7 +88,7 @@ public class AccountController {
   public Route listAccounts() {
     return (request, response) ->
         new APIResponse(
-            eventStorage.loadAll().stream().map(AccountDTO::from).collect(toImmutableList()),
+            eventStorage.findAll().stream().map(AccountDTO::from).collect(toImmutableList()),
             getLinksForAccounts());
   }
 
@@ -112,7 +112,7 @@ public class AccountController {
       // Verifies if requested aggregate exists
       if (eventStorage.exists(aggregateUUID)) {
         return new APIResponse(
-            AccountDTO.from(eventStorage.loadByUUID(aggregateUUID)),
+            AccountDTO.from(eventStorage.get(aggregateUUID)),
             getLinksForAccount(aggregateUUID));
       } else {
         response.status(HTTP_NOT_FOUND);

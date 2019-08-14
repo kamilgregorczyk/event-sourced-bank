@@ -30,19 +30,19 @@ import static spark.Spark.*;
  */
 @Slf4j
 @SuppressWarnings("FutureReturnValueIgnored")
-class BankServer {
+public class BankServer {
 
   // TODO: Replace these containers with proper DI tool like Guice
-  private static final EventBus EVENT_BUS = new EventBus();
-  private static final AccountEventStorage ACCOUNT_EVENT_STORAGE = new AccountEventStorage();
-  private static final EventManager EVENT_MANAGER =
+  public static final EventBus EVENT_BUS = new EventBus();
+  public static final AccountEventStorage ACCOUNT_EVENT_STORAGE = new AccountEventStorage();
+  public static final EventManager EVENT_MANAGER =
       new EventManager(EVENT_BUS, ACCOUNT_EVENT_STORAGE);
-  private static final AccountService ACCOUNT_SERVICE = new AccountService(EVENT_BUS);
-  private static final AccountController ACCOUNT_CONTROLLER =
+  public static final AccountService ACCOUNT_SERVICE = new AccountService(EVENT_BUS);
+  public static final AccountController ACCOUNT_CONTROLLER =
       new AccountController(ACCOUNT_SERVICE, ACCOUNT_EVENT_STORAGE);
-  private static final TransactionRollbackCron TRANSACTION_ROLLBACK_CRON =
+  public static final TransactionRollbackCron TRANSACTION_ROLLBACK_CRON =
       new TransactionRollbackCron(ACCOUNT_SERVICE, ACCOUNT_EVENT_STORAGE);
-  private static final ScheduledExecutorService cronExecutorService =
+  public static final ScheduledExecutorService cronExecutorService =
       Executors.newScheduledThreadPool(1);
 
   private static final int PORT = 8000;

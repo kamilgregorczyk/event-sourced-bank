@@ -1,17 +1,17 @@
 package com.kgregorczyk.bank.aggregates;
 
+import static io.vavr.collection.List.ofAll;
+
 import com.google.common.collect.ImmutableList;
 import com.kgregorczyk.bank.aggregates.events.DomainEvent;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static io.vavr.collection.List.ofAll;
-
-/** In-memory storage for events that make {@link AccountAggregate}. */
+/**
+ * In-memory storage for events that make {@link AccountAggregate}.
+ */
 public class AccountEventStorage {
 
   private final Map<UUID, List<DomainEvent>> events = new ConcurrentHashMap<>();
@@ -20,14 +20,13 @@ public class AccountEventStorage {
     return ofAll(events).foldLeft(new AccountAggregate(events), (AccountAggregate::apply));
   }
 
-  public ImmutableList<AccountAggregate> loadAll() {
-    return events.entrySet().stream()
-        .parallel()
-        .map(entry -> recreate(entry.getValue()))
+  public ImmutableList<AccountAggregate> findAll() {
+    return events.values().stream()
+        .map(AccountEventStorage::recreate)
         .collect(ImmutableList.toImmutableList());
   }
 
-  public AccountAggregate loadByUUID(UUID uuid) {
+  public AccountAggregate get(UUID uuid) {
     if (events.containsKey(uuid)) {
       return recreate(events.get(uuid));
     }
@@ -39,8 +38,8 @@ public class AccountEventStorage {
   }
 
   public void save(DomainEvent domainEvent) {
-    List<DomainEvent> currentEvents =
-        events.computeIfAbsent(domainEvent.getAggregateUUID(), uuid2 -> new ArrayList<>());
-    currentEvents.add(domainEvent);
+    events.compute(domainEvent.getAggregateUUID(),
+        (id, events) -> (events == null) ? ImmutableList.of(domainEvent)
+            : new ImmutableList.Builder<DomainEvent>().addAll(events).add(domainEvent).build());
   }
 }

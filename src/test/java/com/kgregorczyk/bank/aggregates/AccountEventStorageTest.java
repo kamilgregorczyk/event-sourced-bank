@@ -20,7 +20,7 @@ class AccountEventStorageTest {
     storage.save(event2);
 
     // when
-    ImmutableList<AccountAggregate> aggregates = storage.loadAll();
+    ImmutableList<AccountAggregate> aggregates = storage.findAll();
     // assert
     assertThat(aggregates)
         .containsExactly(
@@ -36,7 +36,7 @@ class AccountEventStorageTest {
     storage.save(event);
 
     // when
-    AccountAggregate aggregate = storage.loadByUUID(event.getAggregateUUID());
+    AccountAggregate aggregate = storage.get(event.getAggregateUUID());
 
     // assert
     assertThat(aggregate).isEqualTo(AccountEventStorage.recreate(ImmutableList.of(event)));
@@ -48,7 +48,7 @@ class AccountEventStorageTest {
     AccountEventStorage storage = new AccountEventStorage();
 
     // when & assert
-    assertThat(storage.loadByUUID(UUID.randomUUID())).isNull();
+    assertThat(storage.get(UUID.randomUUID())).isNull();
   }
 
   @Test

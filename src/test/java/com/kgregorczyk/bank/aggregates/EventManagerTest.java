@@ -151,7 +151,7 @@ class EventManagerTest {
   public void accountDebitedEventAggregateExists() {
     // given
     when(accountEventStorage.exists(any())).thenReturn(true);
-    when(accountEventStorage.loadByUUID(ACCOUNT_DEBITED.getAggregateUUID()))
+    when(accountEventStorage.get(ACCOUNT_DEBITED.getAggregateUUID()))
         .thenReturn(
             AccountEventStorage.recreate(
                 ImmutableList.of(ACCOUNT_CREATED, ISSUER_MONEY_TRANSFERRED)));
@@ -169,13 +169,13 @@ class EventManagerTest {
   public void accountDebitedEventAggregateDoesNotExist() {
     // given
     when(accountEventStorage.exists(any())).thenReturn(false);
-    when(accountEventStorage.loadByUUID(ACCOUNT_DEBITED.getAggregateUUID())).thenReturn(null);
+    when(accountEventStorage.get(ACCOUNT_DEBITED.getAggregateUUID())).thenReturn(null);
 
     // when
     assertThrows(AggregateDoesNotExist.class, () -> eventManager.handle(ACCOUNT_DEBITED));
 
     // assert
-    verify(accountEventStorage).loadByUUID(ACCOUNT_DEBITED.getAggregateUUID());
+    verify(accountEventStorage).get(ACCOUNT_DEBITED.getAggregateUUID());
     verifyNoMoreInteractions(accountEventStorage);
     verifyZeroInteractions(eventBus);
   }
@@ -188,7 +188,7 @@ class EventManagerTest {
     MoneyTransferCancelled moneyTransferCancelled =
         MONEY_TRANSFER_CANCELLED.toBuilder().value(accountDebited.getValue()).build();
     when(accountEventStorage.exists(any())).thenReturn(true);
-    when(accountEventStorage.loadByUUID(ACCOUNT_DEBITED.getAggregateUUID()))
+    when(accountEventStorage.get(ACCOUNT_DEBITED.getAggregateUUID()))
         .thenReturn(
             AccountEventStorage.recreate(
                 ImmutableList.of(ACCOUNT_CREATED, ISSUER_MONEY_TRANSFERRED)));
@@ -197,7 +197,7 @@ class EventManagerTest {
     eventManager.handle(accountDebited);
 
     // assert
-    verify(accountEventStorage).loadByUUID(ACCOUNT_DEBITED.getAggregateUUID());
+    verify(accountEventStorage).get(ACCOUNT_DEBITED.getAggregateUUID());
     verify(eventBus).post(moneyTransferCancelled);
     verifyNoMoreInteractions(accountEventStorage);
     verifyNoMoreInteractions(eventBus);

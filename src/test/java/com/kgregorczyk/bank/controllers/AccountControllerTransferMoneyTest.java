@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.kgregorczyk.bank.BankServer.ACCOUNT_EVENT_STORAGE;
 import static com.kgregorczyk.bank.utils.JsonUtils.toJson;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
@@ -59,6 +60,8 @@ public class AccountControllerTransferMoneyTest extends AbstractSparkTest {
             .put("links", Link.getLinksForAccounts())
             .toString();
     assertResponses(expectedResponse, getResponseBodyAndClose(response));
+    assertThat(ACCOUNT_EVENT_STORAGE.get(UUID.fromString(aggregateUUID1)).getBalance().compareTo(BigDecimal.valueOf(990))).isEqualTo(0);
+    assertThat(ACCOUNT_EVENT_STORAGE.get(UUID.fromString(aggregateUUID2)).getBalance().compareTo(BigDecimal.valueOf(1010))).isEqualTo(0);
   }
 
   @Test

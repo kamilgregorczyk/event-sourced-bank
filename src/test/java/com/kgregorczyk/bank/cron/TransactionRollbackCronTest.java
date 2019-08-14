@@ -123,7 +123,7 @@ class TransactionRollbackCronTest {
   @Test
   public void transactionsModifiedRecentlyShouldNotBeProcessed() {
     // given
-    when(accountEventStorage.loadAll())
+    when(accountEventStorage.findAll())
         .thenReturn(
             ImmutableList.of(
                 aggregate(ACCOUNT_CREATED_1, MONEY_TRANSFERRED_1),
@@ -140,7 +140,7 @@ class TransactionRollbackCronTest {
   @Test
   public void transactionsNotModifiedRecentlyShouldBeProcessed() {
     // given
-    when(accountEventStorage.loadAll())
+    when(accountEventStorage.findAll())
         .thenReturn(
             ImmutableList.of(
                 aggregate(ACCOUNT_CREATED_1, MONEY_TRANSFERRED_1_IN_PAST),
@@ -183,7 +183,7 @@ class TransactionRollbackCronTest {
   @Test
   public void succeededTransactionsNotModifiedRecentlyShouldNotBeProcessed() {
     // given
-    when(accountEventStorage.loadAll())
+    when(accountEventStorage.findAll())
         .thenReturn(
             ImmutableList.of(
                 aggregate(
@@ -211,7 +211,7 @@ class TransactionRollbackCronTest {
   @Test
   public void cancelledTransactionsNotModifiedRecentlyShouldNotBeProcessed() {
     // given
-    when(accountEventStorage.loadAll())
+    when(accountEventStorage.findAll())
         .thenReturn(
             ImmutableList.of(
                 aggregate(
@@ -231,7 +231,7 @@ class TransactionRollbackCronTest {
   @Test
   public void transactionsWithMixedStatuesNotModifiedRecentlyShouldBeProcessed() {
     // given
-    when(accountEventStorage.loadAll())
+    when(accountEventStorage.findAll())
         .thenReturn(
             ImmutableList.of(
                 aggregate(
@@ -266,7 +266,7 @@ class TransactionRollbackCronTest {
   @Test
   public void transactionsWithMixedStatuesNotModifiedRecentlyShouldBeProcessed2() {
     // given
-    when(accountEventStorage.loadAll())
+    when(accountEventStorage.findAll())
         .thenReturn(
             ImmutableList.of(
                 aggregate(ACCOUNT_CREATED_1, MONEY_TRANSFERRED_1_IN_PAST),
@@ -293,7 +293,7 @@ class TransactionRollbackCronTest {
   @Test
   public void transactionWithSucceededStateAndCancelledShouldBeProcessed() {
     // given
-    when(accountEventStorage.loadAll())
+    when(accountEventStorage.findAll())
         .thenReturn(
             ImmutableList.of(
                 aggregate(

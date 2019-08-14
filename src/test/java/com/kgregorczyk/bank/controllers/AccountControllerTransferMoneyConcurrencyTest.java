@@ -51,7 +51,7 @@ public class AccountControllerTransferMoneyConcurrencyTest extends AbstractSpark
     ExecutorService threadPool = Executors.newCachedThreadPool();
 
     // when
-    ImmutableList<Future<?>> futures = IntStream.range(1, 1000).boxed()
+    ImmutableList<Future<?>> futures = IntStream.range(1, 501).boxed()
         .map(i -> threadPool.submit(() -> {
           try {
             client.execute(request).close();
@@ -71,8 +71,8 @@ public class AccountControllerTransferMoneyConcurrencyTest extends AbstractSpark
     });
     // assert
     assertThat(ACCOUNT_EVENT_STORAGE.get(UUID.fromString(aggregateUUID1)).getBalance()
-        .compareTo(BigDecimal.valueOf(1))).isEqualTo(0);
+        .compareTo(BigDecimal.valueOf(500))).isEqualTo(0);
     assertThat(ACCOUNT_EVENT_STORAGE.get(UUID.fromString(aggregateUUID2)).getBalance()
-        .compareTo(BigDecimal.valueOf(1999))).isEqualTo(0);
+        .compareTo(BigDecimal.valueOf(1500))).isEqualTo(0);
   }
 }

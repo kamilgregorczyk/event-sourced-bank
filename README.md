@@ -28,10 +28,6 @@ Rolling back of unfinished transaction is implemented with a cron that finds unf
 | [Create Account](doc/createaccount.md)    | `POST` | `/api/account`                      |
 | [Transfer Money](doc/transfermoney.md)    | `POST` | `/api/account/transferMoney`        |
 
-## Notes
-
-In order to develop it use the error prone intellij plugin with `javac error prone` compiler
-
 ## Links
 
 * [GitLab Pipelines](https://gitlab.com/kamilgregorczyk/event-sourced-bank/pipelines)

@@ -5,7 +5,7 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/kamilgregorczyk/event-sourced-bank/badge.svg?targetFile=pom.xml)](https://snyk.io/test/github/kamilgregorczyk/event-sourced-bank?targetFile=pom.xml)
 [![](https://images.microbadger.com/badges/commit/uniqe15/event-sourced-bank.svg)](https://microbadger.com/images/uniqe15/event-sourced-bank "Microbadger")
 
-POC of a bank which runs in-memory. It allows to create accounts, change names and transfer money between two accounts. Consistency between two models is  achieved with event sourcing (no CQRS so far) and bouncing events between two aggregates.
+POC of a bank which runs in-memory. It allows to create accounts, change names and transfer money between two accounts. Consistency between two models is  achieved with event sourcing (no CQRS so far) and bouncing events between two aggregates in a sync way.
 
 It requires no external dependencies as everything is in-memory (event bus, storage etc.)
 

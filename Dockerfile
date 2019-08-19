@@ -4,10 +4,9 @@ ARG VCS_REF
 RUN mkdir /app
 WORKDIR /app
 ADD pom.xml pom.xml
-RUN mvn verify
 
 ADD src src
-RUN mvn package
+RUN mvn clean install -DskipTests=true
 
 LABEL org.label-schema.vcs-ref=$VCS_REF \
       org.label-schema.vcs-url="https://github.com/kamilgregorczyk/event-sourced-bank"

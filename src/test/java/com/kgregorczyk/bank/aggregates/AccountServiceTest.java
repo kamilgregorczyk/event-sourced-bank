@@ -27,12 +27,12 @@ class AccountServiceTest {
   @Test
   public void asyncCancelMoneyTransferCommand() {
     // given
-    UUID aggregateUUID = UUID.randomUUID();
-    UUID fromUUID = UUID.randomUUID();
-    UUID toUUID = UUID.randomUUID();
-    UUID transactionUUID = UUID.randomUUID();
-    BigDecimal value = BigDecimal.TEN;
-    Reason reason = Reason.INTERNAL_SERVER_ERROR;
+    var aggregateUUID = UUID.randomUUID();
+    var fromUUID = UUID.randomUUID();
+    var toUUID = UUID.randomUUID();
+    var transactionUUID = UUID.randomUUID();
+    var value = BigDecimal.TEN;
+    var reason = Reason.INTERNAL_SERVER_ERROR;
 
     // when
     service.asyncCancelTransactionCommand(

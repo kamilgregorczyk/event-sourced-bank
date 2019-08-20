@@ -34,7 +34,7 @@ public abstract class AbstractSparkTest {
 
   protected static String getResponseBodyAndClose(CloseableHttpResponse response)
       throws IOException {
-    String value = IOUtils.toString(response.getEntity().getContent());
+    var value = IOUtils.toString(response.getEntity().getContent());
     response.close();
     return value;
   }

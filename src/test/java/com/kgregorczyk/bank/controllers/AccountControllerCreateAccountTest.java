@@ -22,7 +22,7 @@ public class AccountControllerCreateAccountTest extends AbstractSparkTest {
   private static final Gson GSON = new Gson();
 
   private static CloseableHttpResponse createAccount() throws Exception {
-    HttpPost request = new HttpPost(SERVER_URL + "/api/account");
+    var request = new HttpPost(SERVER_URL + "/api/account");
     request.setEntity(new StringEntity(toJson(new CreateAccountRequest("Tony Stark"))));
     return client.execute(request);
   }
@@ -30,13 +30,13 @@ public class AccountControllerCreateAccountTest extends AbstractSparkTest {
   @Test
   public void createAccountValid() throws Exception {
     // when
-    CloseableHttpResponse response = createAccount();
+    var response = createAccount();
 
     // assert
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_CREATED);
-    String responseJson = getResponseBodyAndClose(response);
-    String aggregateUUID = GSON.fromJson(responseJson, JsonObject.class).get("data").getAsString();
-    String expectedResponse =
+    var responseJson = getResponseBodyAndClose(response);
+    var aggregateUUID = GSON.fromJson(responseJson, JsonObject.class).get("data").getAsString();
+    var expectedResponse =
         new JSONObject()
             .put("status", "OK")
             .put("message", "Account will be created")
@@ -49,15 +49,15 @@ public class AccountControllerCreateAccountTest extends AbstractSparkTest {
   @Test
   public void createAccountNotValidNoFullName() throws Exception {
     // given
-    HttpPost request = new HttpPost(SERVER_URL + "/api/account");
+    var request = new HttpPost(SERVER_URL + "/api/account");
     request.setEntity(new StringEntity("{}"));
 
     // when
-    CloseableHttpResponse response = client.execute(request);
+    var response = client.execute(request);
 
     // assert
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_BAD_REQUEST);
-    String expectedResponse =
+    var expectedResponse =
         new JSONObject()
             .put("status", "ERROR")
             .put("message", "There are validation errors")
@@ -69,15 +69,15 @@ public class AccountControllerCreateAccountTest extends AbstractSparkTest {
   @Test
   public void createAccountNotValidNullFullName() throws Exception {
     // given
-    HttpPost request = new HttpPost(SERVER_URL + "/api/account");
+    var request = new HttpPost(SERVER_URL + "/api/account");
     request.setEntity(new StringEntity("{\"fullName\": null}"));
 
     // when
-    CloseableHttpResponse response = client.execute(request);
+    var response = client.execute(request);
 
     // assert
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_BAD_REQUEST);
-    String expectedResponse =
+    var expectedResponse =
         new JSONObject()
             .put("status", "ERROR")
             .put("message", "There are validation errors")
@@ -89,15 +89,15 @@ public class AccountControllerCreateAccountTest extends AbstractSparkTest {
   @Test
   public void createAccountNotValidEmptyFullName() throws Exception {
     // given
-    HttpPost request = new HttpPost(SERVER_URL + "/api/account");
+    var request = new HttpPost(SERVER_URL + "/api/account");
     request.setEntity(new StringEntity("{\"fullName\": \"\"}"));
 
     // when
-    CloseableHttpResponse response = client.execute(request);
+    var response = client.execute(request);
 
     // assert
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_BAD_REQUEST);
-    String expectedResponse =
+    var expectedResponse =
         new JSONObject()
             .put("status", "ERROR")
             .put("message", "There are validation errors")

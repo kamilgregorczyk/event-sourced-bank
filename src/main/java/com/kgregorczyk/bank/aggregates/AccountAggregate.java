@@ -36,12 +36,12 @@ public class AccountAggregate {
 
   private BigDecimal balance;
   private Map<UUID, BigDecimal> transactionToReservedBalance;
-  private List<DomainEvent> domainEvents;
+  private Collection<DomainEvent> domainEvents;
   private Map<UUID, MoneyTransaction> transactions;
   private Date createdAt;
   private Date lastUpdatedAt;
 
-  AccountAggregate(List<DomainEvent> domainEvents) {
+  AccountAggregate(Collection<DomainEvent> domainEvents) {
     this.domainEvents = domainEvents;
   }
 
@@ -167,7 +167,7 @@ public class AccountAggregate {
     lastUpdatedAt = event.getCreatedAt();
     changeTransactionState(event.getTransactionUUID(), State.SUCCEEDED, event.getCreatedAt());
     if (transactionToReservedBalance.containsKey(event.getTransactionUUID())) {
-      BigDecimal reservedMoney = transactionToReservedBalance.remove(event.getTransactionUUID());
+      var reservedMoney = transactionToReservedBalance.remove(event.getTransactionUUID());
       // Increments receiver's account
       if (event.getToUUID().equals(event.getAggregateUUID())) {
         balance = balance.add(reservedMoney);
@@ -193,7 +193,7 @@ public class AccountAggregate {
   }
 
   private void changeTransactionState(UUID transactionUUID, State state, Date lastUpdatedAt) {
-    MoneyTransaction transaction = transactions.get(transactionUUID);
+    var transaction = transactions.get(transactionUUID);
     transaction.setState(state);
     transaction.setLastUpdatedAt(lastUpdatedAt);
   }

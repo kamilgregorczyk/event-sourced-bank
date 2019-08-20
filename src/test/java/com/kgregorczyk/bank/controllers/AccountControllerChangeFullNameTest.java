@@ -27,7 +27,7 @@ public class AccountControllerChangeFullNameTest extends AbstractSparkTest {
   private static final Gson GSON = new Gson();
 
   private static CloseableHttpResponse createAccount() throws Exception {
-    HttpPost request = new HttpPost(SERVER_URL + "/api/account");
+    var request = new HttpPost(SERVER_URL + "/api/account");
     request.setEntity(new StringEntity(toJson(new CreateAccountRequest("Tony Stark"))));
     return client.execute(request);
   }
@@ -40,16 +40,16 @@ public class AccountControllerChangeFullNameTest extends AbstractSparkTest {
   @Test
   public void changeFullNameValid() throws Exception {
     // given
-    String aggregateUUID = extractUUIDFromResponseAndClose(createAccount());
-    HttpPut request = new HttpPut(SERVER_URL + "/api/account/" + aggregateUUID + "/changeFullName");
+    var aggregateUUID = extractUUIDFromResponseAndClose(createAccount());
+    var request = new HttpPut(SERVER_URL + "/api/account/" + aggregateUUID + "/changeFullName");
     request.setEntity(new StringEntity(toJson(new ChangeFullNameRequest("Superman"))));
 
     // when
-    CloseableHttpResponse response = client.execute(request);
+    var response = client.execute(request);
 
     // assert
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_OK);
-    String expectedResponse =
+    var expectedResponse =
         new JSONObject()
             .put("status", "OK")
             .put("message", "Full Name will be changed")
@@ -61,15 +61,15 @@ public class AccountControllerChangeFullNameTest extends AbstractSparkTest {
   @Test
   public void changeFullNameNotValidInvalidUUID() throws Exception {
     // given
-    HttpPut request = new HttpPut(SERVER_URL + "/api/account/asd/changeFullName");
+    var request = new HttpPut(SERVER_URL + "/api/account/asd/changeFullName");
     request.setEntity(new StringEntity(toJson(new ChangeFullNameRequest("Superman"))));
 
     // when
-    CloseableHttpResponse response = client.execute(request);
+    var response = client.execute(request);
 
     // assert
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_BAD_REQUEST);
-    String expectedResponse =
+    var expectedResponse =
         new JSONObject()
             .put("status", "ERROR")
             .put("message", "There are validation errors")
@@ -83,17 +83,17 @@ public class AccountControllerChangeFullNameTest extends AbstractSparkTest {
   @Test
   public void changeFullNameNotValidAggregateDoesNotExist() throws Exception {
     // given
-    UUID aggregateUUID = UUID.randomUUID();
-    HttpPut request =
+    var aggregateUUID = UUID.randomUUID();
+    var request =
         new HttpPut(SERVER_URL + "/api/account/" + aggregateUUID.toString() + "/changeFullName");
     request.setEntity(new StringEntity(toJson(new ChangeFullNameRequest("Superman"))));
 
     // when
-    CloseableHttpResponse response = client.execute(request);
+    var response = client.execute(request);
 
     // assert
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_NOT_FOUND);
-    String expectedResponse =
+    var expectedResponse =
         new JSONObject()
             .put("status", "ERROR")
             .put(
@@ -106,16 +106,16 @@ public class AccountControllerChangeFullNameTest extends AbstractSparkTest {
   @Test
   public void changeFullNameNotValidNoFullName() throws Exception {
     // given
-    String aggregateUUID = extractUUIDFromResponseAndClose(createAccount());
-    HttpPut request = new HttpPut(SERVER_URL + "/api/account/" + aggregateUUID + "/changeFullName");
+    var aggregateUUID = extractUUIDFromResponseAndClose(createAccount());
+    var request = new HttpPut(SERVER_URL + "/api/account/" + aggregateUUID + "/changeFullName");
     request.setEntity(new StringEntity("{}"));
 
     // when
-    CloseableHttpResponse response = client.execute(request);
+    var response = client.execute(request);
 
     // assert
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_BAD_REQUEST);
-    String expectedResponse =
+    var expectedResponse =
         new JSONObject()
             .put("status", "ERROR")
             .put("message", "There are validation errors")
@@ -127,16 +127,16 @@ public class AccountControllerChangeFullNameTest extends AbstractSparkTest {
   @Test
   public void changeFullNameNotValidEmptyFullName() throws Exception {
     // given
-    String aggregateUUID = extractUUIDFromResponseAndClose(createAccount());
-    HttpPut request = new HttpPut(SERVER_URL + "/api/account/" + aggregateUUID + "/changeFullName");
+    var aggregateUUID = extractUUIDFromResponseAndClose(createAccount());
+    var request = new HttpPut(SERVER_URL + "/api/account/" + aggregateUUID + "/changeFullName");
     request.setEntity(new StringEntity("{\"fullName\": \"\"}"));
 
     // when
-    CloseableHttpResponse response = client.execute(request);
+    var response = client.execute(request);
 
     // assert
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_BAD_REQUEST);
-    String expectedResponse =
+    var expectedResponse =
         new JSONObject()
             .put("status", "ERROR")
             .put("message", "There are validation errors")
@@ -148,16 +148,16 @@ public class AccountControllerChangeFullNameTest extends AbstractSparkTest {
   @Test
   public void changeFullNameNotValidNullFullName() throws Exception {
     // given
-    String aggregateUUID = extractUUIDFromResponseAndClose(createAccount());
-    HttpPut request = new HttpPut(SERVER_URL + "/api/account/" + aggregateUUID + "/changeFullName");
+    var aggregateUUID = extractUUIDFromResponseAndClose(createAccount());
+    var request = new HttpPut(SERVER_URL + "/api/account/" + aggregateUUID + "/changeFullName");
     request.setEntity(new StringEntity("{\"fullName\": null}"));
 
     // when
-    CloseableHttpResponse response = client.execute(request);
+    var response = client.execute(request);
 
     // assert
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_BAD_REQUEST);
-    String expectedResponse =
+    var expectedResponse =
         new JSONObject()
             .put("status", "ERROR")
             .put("message", "There are validation errors")

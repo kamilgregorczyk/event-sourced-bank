@@ -26,29 +26,29 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
 
   private static String createAndAssertAccount(String fullName) throws Exception {
     // given
-    HttpPost createAccountRequest = createAccountRequest(fullName);
+    var createAccountRequest = createAccountRequest(fullName);
 
     // when
-    CloseableHttpResponse response = client.execute(createAccountRequest);
+    var response = client.execute(createAccountRequest);
 
     // assert
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_CREATED);
-    String createAccountJson = getResponseBodyAndClose(response);
-    String aggregateUUID =
+    var createAccountJson = getResponseBodyAndClose(response);
+    var aggregateUUID =
         GSON.fromJson(createAccountJson, JsonObject.class).get("data").getAsString();
     assertCreateAccountResponse(createAccountJson, aggregateUUID);
     return aggregateUUID;
   }
 
   private static HttpPost createAccountRequest(String fullName) throws Exception {
-    HttpPost createAccountRequest = new HttpPost(SERVER_URL + "/api/account");
+    var createAccountRequest = new HttpPost(SERVER_URL + "/api/account");
     createAccountRequest.setEntity(
         new StringEntity(toJson(CreateAccountRequest.builder().fullName(fullName).build())));
     return createAccountRequest;
   }
 
   private static void assertCreateAccountResponse(String createAccountJson, String aggregateUUID) {
-    String expectedResponse =
+    var expectedResponse =
         new JSONObject()
             .put("status", "OK")
             .put("message", "Account will be created")
@@ -60,10 +60,10 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
 
   private static String getAccount(String aggregateUUID) throws Exception {
     // given
-    HttpGet getAccountRequest = new HttpGet(SERVER_URL + "/api/account/" + aggregateUUID);
+    var getAccountRequest = new HttpGet(SERVER_URL + "/api/account/" + aggregateUUID);
 
     // when
-    CloseableHttpResponse response = client.execute(getAccountRequest);
+    var response = client.execute(getAccountRequest);
 
     // assert
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_OK);
@@ -74,14 +74,14 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
   @Test
   public void testGetAccountEndpoint() throws Exception {
     // given
-    String aggregateUUID = createAndAssertAccount("Tony Stark");
+    var aggregateUUID = createAndAssertAccount("Tony Stark");
 
     // when
-    String getAccountJson = getAccount(aggregateUUID);
+    var getAccountJson = getAccount(aggregateUUID);
 
     // assert
-    String createdAt = getFieldFromEvents(getAccountJson, 0, "createdAt");
-    String expectedResponse =
+    var createdAt = getFieldFromEvents(getAccountJson, 0, "createdAt");
+    var expectedResponse =
         new JSONObject()
             .put("status", "OK")
             .put("message", "SUCCESS")
@@ -113,19 +113,19 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
   @Test
   public void testChangeFullNameEndpoint() throws Exception {
     // given
-    String aggregateUUID = createAndAssertAccount("Tony Stark");
-    HttpPut changeFullNameRequest =
+    var aggregateUUID = createAndAssertAccount("Tony Stark");
+    var changeFullNameRequest =
         new HttpPut(SERVER_URL + "/api/account/" + aggregateUUID + "/changeFullName");
     changeFullNameRequest.setEntity(
         new StringEntity(toJson(ChangeFullNameRequest.builder().fullName("Iron Man").build())));
 
     // when
-    CloseableHttpResponse changeFullNameResponse = client.execute(changeFullNameRequest);
+    var changeFullNameResponse = client.execute(changeFullNameRequest);
 
     // assert
     assertThat(changeFullNameResponse.getStatusLine().getStatusCode()).isEqualTo(HTTP_OK);
-    String changeFullNameJson = getResponseBodyAndClose(changeFullNameResponse);
-    String changeFullNameExpectedResponse =
+    var changeFullNameJson = getResponseBodyAndClose(changeFullNameResponse);
+    var changeFullNameExpectedResponse =
         new JSONObject()
             .put("status", "OK")
             .put("message", "Full Name will be changed")
@@ -138,12 +138,12 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
     */
 
     // when
-    String getAccountJson = getAccount(aggregateUUID);
+    var getAccountJson = getAccount(aggregateUUID);
 
     // assert
-    String createdAt = getFieldFromEvents(getAccountJson, 0, "createdAt");
-    String lastUpdatedAt = getFieldFromEvents(getAccountJson, 1, "createdAt");
-    String expectedResponse =
+    var createdAt = getFieldFromEvents(getAccountJson, 0, "createdAt");
+    var lastUpdatedAt = getFieldFromEvents(getAccountJson, 1, "createdAt");
+    var expectedResponse =
         new JSONObject()
             .put("status", "OK")
             .put("message", "SUCCESS")
@@ -181,8 +181,8 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
   @Test
   public void testMoneyTransferEndpointWhenIssuerHasEnoughMoney() throws Exception {
     // given
-    String aggregateUUID1 = createAndAssertAccount("Tony Stark");
-    String aggregateUUID2 = createAndAssertAccount("Black Widow");
+    var aggregateUUID1 = createAndAssertAccount("Tony Stark");
+    var aggregateUUID2 = createAndAssertAccount("Black Widow");
     transferMoney(aggregateUUID1, aggregateUUID2, 25.01);
 
     /*
@@ -190,12 +190,12 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
     */
 
     // when
-    String getAccountJson1 = getAccount(aggregateUUID1);
+    var getAccountJson1 = getAccount(aggregateUUID1);
 
     // assert
-    String createdAt1 = getFieldFromEvents(getAccountJson1, 0, "createdAt");
-    String lastUpdatedAt1 = getFieldFromEvents(getAccountJson1, 3, "createdAt");
-    String expectedResponse1 =
+    var createdAt1 = getFieldFromEvents(getAccountJson1, 0, "createdAt");
+    var lastUpdatedAt1 = getFieldFromEvents(getAccountJson1, 3, "createdAt");
+    var expectedResponse1 =
         new JSONObject()
             .put("status", "OK")
             .put("message", "SUCCESS")
@@ -286,12 +286,12 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
     */
 
     // when
-    String getAccountJson2 = getAccount(aggregateUUID2);
+    var getAccountJson2 = getAccount(aggregateUUID2);
 
     // assert
-    String createdAt2 = getFieldFromEvents(getAccountJson2, 0, "createdAt");
-    String lastUpdatedAt2 = getFieldFromEvents(getAccountJson2, 3, "createdAt");
-    String expectedResponse2 =
+    var createdAt2 = getFieldFromEvents(getAccountJson2, 0, "createdAt");
+    var lastUpdatedAt2 = getFieldFromEvents(getAccountJson2, 3, "createdAt");
+    var expectedResponse2 =
         new JSONObject()
             .put("status", "OK")
             .put("message", "SUCCESS")
@@ -381,8 +381,8 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
   @Test
   public void testMoneyTransferEndpointWhenIssuerDoesNotHaveEnoughMoney() throws Exception {
     // given
-    String aggregateUUID1 = createAndAssertAccount("Tony Stark");
-    String aggregateUUID2 = createAndAssertAccount("Black Widow");
+    var aggregateUUID1 = createAndAssertAccount("Tony Stark");
+    var aggregateUUID2 = createAndAssertAccount("Black Widow");
     transferMoney(aggregateUUID1, aggregateUUID2, 2600.01);
 
     /*
@@ -390,12 +390,12 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
     */
 
     // when
-    String getAccountJson1 = getAccount(aggregateUUID1);
+    var getAccountJson1 = getAccount(aggregateUUID1);
 
     // assert
-    String createdAt1 = getFieldFromEvents(getAccountJson1, 0, "createdAt");
-    String lastUpdatedAt1 = getFieldFromEvents(getAccountJson1, 2, "createdAt");
-    String expectedResponse1 =
+    var createdAt1 = getFieldFromEvents(getAccountJson1, 0, "createdAt");
+    var lastUpdatedAt1 = getFieldFromEvents(getAccountJson1, 2, "createdAt");
+    var expectedResponse1 =
         new JSONObject()
             .put("status", "OK")
             .put("message", "SUCCESS")
@@ -474,11 +474,11 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
     */
 
     // when
-    String getAccountJson2 = getAccount(aggregateUUID2);
+    var getAccountJson2 = getAccount(aggregateUUID2);
 
     // assert
-    String createdAt2 = getFieldFromEvents(getAccountJson2, 0, "createdAt");
-    String expectedResponse2 =
+    var createdAt2 = getFieldFromEvents(getAccountJson2, 0, "createdAt");
+    var expectedResponse2 =
         new JSONObject()
             .put("status", "OK")
             .put("message", "SUCCESS")
@@ -509,7 +509,7 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
 
   private void transferMoney(String aggregateUUID1, String aggregateUUID2, double value)
       throws Exception {
-    HttpPost transferMoneyRequest = new HttpPost(SERVER_URL + "/api/account/transferMoney");
+    var transferMoneyRequest = new HttpPost(SERVER_URL + "/api/account/transferMoney");
     transferMoneyRequest.setEntity(
         new StringEntity(
             toJson(
@@ -520,10 +520,10 @@ public class AccountControllerEndToEndTest extends AbstractSparkTest {
                     .build())));
 
     // when
-    CloseableHttpResponse transferMoneyResponse = client.execute(transferMoneyRequest);
+    var transferMoneyResponse = client.execute(transferMoneyRequest);
 
     // assert
-    String transferMoneyExpectedResponse =
+    var transferMoneyExpectedResponse =
         new JSONObject()
             .put("status", "OK")
             .put("message", "Money will be transferred")

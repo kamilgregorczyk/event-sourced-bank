@@ -99,7 +99,7 @@ public class AccountController {
    */
   public Route getAccount() {
     return (request, response) -> {
-      ListMultimap<String, String> validationErrors = validationErrorsMap();
+      var validationErrors = validationErrorsMap();
 
       validateUUID("uuid", request.params(":id"), validationErrors);
 
@@ -108,7 +108,7 @@ public class AccountController {
         return new APIResponse(ERROR, VALIDATION_ERROR_MESSAGE, validationErrors.asMap());
       }
 
-      UUID aggregateUUID = UUID.fromString(request.params(":id"));
+      var aggregateUUID = UUID.fromString(request.params(":id"));
       // Verifies if requested aggregate exists
       if (eventStorage.exists(aggregateUUID)) {
         return new APIResponse(
@@ -134,8 +134,8 @@ public class AccountController {
    */
   public Route createAccount() {
     return (request, response) -> {
-      CreateAccountRequest payload = GSON.fromJson(request.body(), CreateAccountRequest.class);
-      ListMultimap<String, String> validationErrors = validationErrorsMap();
+      var payload = GSON.fromJson(request.body(), CreateAccountRequest.class);
+      var validationErrors = validationErrorsMap();
 
       // Validates request
       validateString("fullName", payload.getFullName(), validationErrors);
@@ -146,7 +146,7 @@ public class AccountController {
       }
 
       // Issues CreateAccountCommand
-      UUID aggregateUUID = accountService.asyncCreateAccountCommand(payload.getFullName());
+      var aggregateUUID = accountService.asyncCreateAccountCommand(payload.getFullName());
       response.status(HTTP_CREATED);
       return new APIResponse(
           Status.OK, "Account will be created", aggregateUUID, getLinksForAccount(aggregateUUID));
@@ -166,8 +166,8 @@ public class AccountController {
    */
   public Route changeFullName() {
     return (request, response) -> {
-      ChangeFullNameRequest payload = GSON.fromJson(request.body(), ChangeFullNameRequest.class);
-      ListMultimap<String, String> validationErrors = validationErrorsMap();
+      var payload = GSON.fromJson(request.body(), ChangeFullNameRequest.class);
+      var validationErrors = validationErrorsMap();
 
       // Validates request
       validateString("fullName", payload.getFullName(), validationErrors);
@@ -178,7 +178,7 @@ public class AccountController {
         return new APIResponse(ERROR, VALIDATION_ERROR_MESSAGE, validationErrors.asMap());
       }
 
-      UUID aggregateUUID = UUID.fromString(request.params(":id"));
+      var aggregateUUID = UUID.fromString(request.params(":id"));
 
       // Verifies if requested aggregate exists
       if (eventStorage.exists(aggregateUUID)) {
@@ -212,8 +212,8 @@ public class AccountController {
    */
   public Route transferMoney() {
     return ((request, response) -> {
-      TransferMoneyRequest payload = GSON.fromJson(request.body(), TransferMoneyRequest.class);
-      ListMultimap<String, String> validationErrors = validationErrorsMap();
+      var payload = GSON.fromJson(request.body(), TransferMoneyRequest.class);
+      var validationErrors = validationErrorsMap();
 
       // Validates request
       validateUUID("fromAccountNumber", payload.getFromAccountNumber(), validationErrors);
@@ -236,8 +236,8 @@ public class AccountController {
       }
 
       // Validates existence
-      UUID fromUUID = UUID.fromString(payload.getFromAccountNumber());
-      UUID toUUID = UUID.fromString(payload.getToAccountNumber());
+      var fromUUID = UUID.fromString(payload.getFromAccountNumber());
+      var toUUID = UUID.fromString(payload.getToAccountNumber());
       if (!eventStorage.exists(fromUUID)) {
         response.status(HTTP_NOT_FOUND);
         return new APIResponse(

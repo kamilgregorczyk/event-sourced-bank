@@ -12,10 +12,10 @@ class JsonContentTypeFilterTest extends AbstractSparkTest {
 
   @Test
   public void postMethodWithNoBodyShouldFail() throws Exception {
-    HttpGet request = new HttpGet(SERVER_URL + "/");
+    var request = new HttpGet(SERVER_URL + "/");
 
     // when
-    CloseableHttpResponse response = client.execute(request);
+    var response = client.execute(request);
 
     // assert
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_OK);

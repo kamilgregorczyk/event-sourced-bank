@@ -1,4 +1,4 @@
-FROM maven:3.6.0-jdk-8-alpine
+FROM maven:3.6.1-jdk-11-slim
 ARG VCS_REF
 
 RUN mkdir /app

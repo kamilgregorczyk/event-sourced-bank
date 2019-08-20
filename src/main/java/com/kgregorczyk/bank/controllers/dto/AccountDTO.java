@@ -10,10 +10,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.kgregorczyk.bank.controllers.dto.Link.getLinksForAccount;
@@ -27,7 +24,7 @@ public class AccountDTO {
   private UUID accountNumber;
   private BigDecimal balance;
   private Map<UUID, BigDecimal> transactionToReservedBalance;
-  private List<DomainEvent> events;
+  private Collection<DomainEvent> events;
   private Map<UUID, MoneyTransactionDTO> transactions;
   private Date createdAt;
   private Date lastUpdatedAt;

@@ -71,7 +71,7 @@ public class EventManager {
   @Subscribe
   void handle(AccountDebitedEvent event) {
     logEvent(event);
-    AccountAggregate dirtyAggregate = eventStorage.get(event.getFromUUID());
+    var dirtyAggregate = eventStorage.get(event.getFromUUID());
     if (dirtyAggregate == null) {
       throw new AggregateDoesNotExist(event.toString());
     }

@@ -29,7 +29,7 @@ public class AccountControllerTransferMoneyConcurrencyTest extends AbstractSpark
   private static final Gson GSON = new Gson();
 
   private static CloseableHttpResponse createAccount() throws Exception {
-    HttpPost request = new HttpPost(SERVER_URL + "/api/account");
+    var request = new HttpPost(SERVER_URL + "/api/account");
     request.setEntity(new StringEntity(toJson(new CreateAccountRequest("Tony Stark"))));
     return client.execute(request);
   }
@@ -42,16 +42,16 @@ public class AccountControllerTransferMoneyConcurrencyTest extends AbstractSpark
   @Test
   public void transferMoneyValid() throws Exception {
     // given
-    String aggregateUUID1 = extractUUIDFromResponseAndClose(createAccount());
-    String aggregateUUID2 = extractUUIDFromResponseAndClose(createAccount());
-    HttpPost request = new HttpPost(SERVER_URL + "/api/account/transferMoney");
+    var aggregateUUID1 = extractUUIDFromResponseAndClose(createAccount());
+    var aggregateUUID2 = extractUUIDFromResponseAndClose(createAccount());
+    var request = new HttpPost(SERVER_URL + "/api/account/transferMoney");
     request.setEntity(
         new StringEntity(
             toJson(new TransferMoneyRequest(aggregateUUID1, aggregateUUID2, BigDecimal.ONE))));
-    ExecutorService threadPool = Executors.newCachedThreadPool();
+    var threadPool = Executors.newCachedThreadPool();
 
     // when
-    ImmutableList<Future<?>> futures = IntStream.range(1, 501).boxed()
+    var futures = IntStream.range(1, 501).boxed()
         .map(i -> threadPool.submit(() -> {
           try {
             client.execute(request).close();

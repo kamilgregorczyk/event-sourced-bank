@@ -19,7 +19,7 @@ public class AccountControllerListAccountsTest extends AbstractSparkTest {
   private static final Gson GSON = new Gson();
 
   private static CloseableHttpResponse createAccount() throws Exception {
-    HttpPost request = new HttpPost(SERVER_URL + "/api/account");
+    var request = new HttpPost(SERVER_URL + "/api/account");
     request.setEntity(new StringEntity(toJson(new CreateAccountRequest("Tony Stark"))));
     return client.execute(request);
   }
@@ -27,18 +27,18 @@ public class AccountControllerListAccountsTest extends AbstractSparkTest {
   @Test
   public void listAccounts() throws Exception {
     // given
-    CloseableHttpResponse response1 = createAccount();
-    CloseableHttpResponse response2 = createAccount();
+    var response1 = createAccount();
+    var response2 = createAccount();
     response1.close();
     response2.close();
-    HttpGet request = new HttpGet(SERVER_URL + "/api/account");
+    var request = new HttpGet(SERVER_URL + "/api/account");
 
     // when
-    CloseableHttpResponse response = client.execute(request);
+    var response = client.execute(request);
 
     // assert
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_OK);
-    String responseJson = getResponseBodyAndClose(response);
+    var responseJson = getResponseBodyAndClose(response);
     assertThat(GSON.fromJson(responseJson, JsonObject.class).get("data").getAsJsonArray().size())
         .isGreaterThan(1);
   }

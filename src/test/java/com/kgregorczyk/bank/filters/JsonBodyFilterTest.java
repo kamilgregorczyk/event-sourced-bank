@@ -36,10 +36,10 @@ class JsonBodyFilterTest extends AbstractSparkTest {
   @Test
   public void postMethodWithNoBodyShouldFail() throws Exception {
     // given
-    HttpPost request = new HttpPost(SERVER_URL + "/api/account/createAccount");
+    var request = new HttpPost(SERVER_URL + "/api/account/createAccount");
 
     // when
-    CloseableHttpResponse response = client.execute(request);
+    var response = client.execute(request);
 
     // assert
     assertResponseForEmptyBody(response);
@@ -48,10 +48,10 @@ class JsonBodyFilterTest extends AbstractSparkTest {
   @Test
   public void putMethodWithNoBodyShouldFail() throws Exception {
     // given
-    HttpPut request = new HttpPut(SERVER_URL + "/api/account/createAccount");
+    var request = new HttpPut(SERVER_URL + "/api/account/createAccount");
 
     // when
-    CloseableHttpResponse response = client.execute(request);
+    var response = client.execute(request);
 
     // assert
     assertResponseForEmptyBody(response);
@@ -60,11 +60,11 @@ class JsonBodyFilterTest extends AbstractSparkTest {
   @Test
   public void postMethodWithNotValidJsonShouldFail() throws Exception {
     // given
-    HttpPost request = new HttpPost(SERVER_URL + "/api/account/createAccount");
+    var request = new HttpPost(SERVER_URL + "/api/account/createAccount");
     request.setEntity(new StringEntity("{\"a\":}"));
 
     // when
-    CloseableHttpResponse response = client.execute(request);
+    var response = client.execute(request);
 
     // assert
     assertResponseForNotValidJson(response);
@@ -73,11 +73,11 @@ class JsonBodyFilterTest extends AbstractSparkTest {
   @Test
   public void putMethodWithNotValidJsonShouldFail() throws Exception {
     // given
-    HttpPut request = new HttpPut(SERVER_URL + "/api/account/createAccount");
+    var request = new HttpPut(SERVER_URL + "/api/account/createAccount");
     request.setEntity(new StringEntity("{\"a\":}"));
 
     // when
-    CloseableHttpResponse response = client.execute(request);
+    var response = client.execute(request);
 
     // assert
     assertResponseForNotValidJson(response);
@@ -86,11 +86,11 @@ class JsonBodyFilterTest extends AbstractSparkTest {
   @Test
   public void postMethodWithValidBodyShouldNotFail() throws Exception {
     // given
-    HttpPost request = new HttpPost(SERVER_URL + "/api/account");
+    var request = new HttpPost(SERVER_URL + "/api/account");
     request.setEntity(new StringEntity("{\"fullName\":\"\"}"));
 
     // when
-    CloseableHttpResponse response = client.execute(request);
+    var response = client.execute(request);
 
     // assert
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_BAD_REQUEST);
@@ -102,11 +102,11 @@ class JsonBodyFilterTest extends AbstractSparkTest {
   @Test
   public void putMethodWithValidBodyShouldNotFail() throws Exception {
     // given
-    HttpPut request = new HttpPut(SERVER_URL + "/api/account/123/changeFullName");
+    var request = new HttpPut(SERVER_URL + "/api/account/123/changeFullName");
     request.setEntity(new StringEntity("{\"fullName\":\"\"}"));
 
     // when
-    CloseableHttpResponse response = client.execute(request);
+    var response = client.execute(request);
 
     // assert
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_BAD_REQUEST);
@@ -118,10 +118,10 @@ class JsonBodyFilterTest extends AbstractSparkTest {
   @Test
   public void getMethodShouldNotFail() throws Exception {
     // given
-    HttpGet request = new HttpGet(SERVER_URL + "/");
+    var request = new HttpGet(SERVER_URL + "/");
 
     // when
-    CloseableHttpResponse response = client.execute(request);
+    var response = client.execute(request);
 
     // assert
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_OK);

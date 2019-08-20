@@ -81,7 +81,7 @@ class AccountAggregateTest {
     ImmutableList<DomainEvent> events = ImmutableList.of(ACCOUNT_CREATED);
 
     // when
-    AccountAggregate aggregate = AccountEventStorage.recreate(events);
+    var aggregate = AccountEventStorage.recreate(events);
 
     // assert
     assertThat(aggregate.getFullName()).isEqualTo(ACCOUNT_CREATED.getFullName());
@@ -98,10 +98,10 @@ class AccountAggregateTest {
   @Test
   public void fullNameChangedEvent() {
     // given
-    ImmutableList<DomainEvent> events = ImmutableList.of(ACCOUNT_CREATED, FULL_NAME_CHANGED);
+    var events = ImmutableList.of(ACCOUNT_CREATED, FULL_NAME_CHANGED);
 
     // when
-    AccountAggregate aggregate = AccountEventStorage.recreate(events);
+    var aggregate = AccountEventStorage.recreate(events);
 
     // assert
     assertThat(aggregate.getFullName()).isEqualTo(FULL_NAME_CHANGED.getFullName());
@@ -118,10 +118,10 @@ class AccountAggregateTest {
   @Test
   public void moneyTransferredEventIssuer() {
     // given
-    ImmutableList<DomainEvent> events = ImmutableList.of(ACCOUNT_CREATED, ISSUER_MONEY_TRANSFERRED);
+    var events = ImmutableList.of(ACCOUNT_CREATED, ISSUER_MONEY_TRANSFERRED);
 
     // when
-    AccountAggregate aggregate = AccountEventStorage.recreate(events);
+    var aggregate = AccountEventStorage.recreate(events);
 
     // assert
     assertThat(aggregate.getFullName()).isEqualTo(ACCOUNT_CREATED.getFullName());
@@ -151,11 +151,11 @@ class AccountAggregateTest {
   @Test
   public void moneyTransferredEventReceiver() {
     // given
-    ImmutableList<DomainEvent> events =
+    var events =
         ImmutableList.of(ACCOUNT_CREATED, RECEIVER_MONEY_TRANSFERRED);
 
     // when
-    AccountAggregate aggregate = AccountEventStorage.recreate(events);
+    var aggregate = AccountEventStorage.recreate(events);
 
     // assert
     assertThat(aggregate.getFullName()).isEqualTo(ACCOUNT_CREATED.getFullName());
@@ -185,11 +185,10 @@ class AccountAggregateTest {
   @Test
   public void accountDebitedEvent() {
     // given
-    ImmutableList<DomainEvent> events =
-        ImmutableList.of(ACCOUNT_CREATED, ISSUER_MONEY_TRANSFERRED, ACCOUNT_DEBITED);
+    var events = ImmutableList.of(ACCOUNT_CREATED, ISSUER_MONEY_TRANSFERRED, ACCOUNT_DEBITED);
 
     // when
-    AccountAggregate aggregate = AccountEventStorage.recreate(events);
+    var aggregate = AccountEventStorage.recreate(events);
 
     // assert
     assertThat(aggregate.getFullName()).isEqualTo(ACCOUNT_CREATED.getFullName());
@@ -222,10 +221,10 @@ class AccountAggregateTest {
   @Test
   public void accountDebitedEventNoTransaction() {
     // given
-    ImmutableList<DomainEvent> events = ImmutableList.of(ACCOUNT_CREATED, ACCOUNT_DEBITED);
+    var events = ImmutableList.of(ACCOUNT_CREATED, ACCOUNT_DEBITED);
 
     // when
-    AccountAggregate aggregate = AccountEventStorage.recreate(events);
+    var aggregate = AccountEventStorage.recreate(events);
 
     // assert
     assertThat(aggregate.getFullName()).isEqualTo(ACCOUNT_CREATED.getFullName());
@@ -245,11 +244,11 @@ class AccountAggregateTest {
   @Test
   public void accountCreditedEvent() {
     // given
-    ImmutableList<DomainEvent> events =
+    var events =
         ImmutableList.of(ACCOUNT_CREATED, RECEIVER_MONEY_TRANSFERRED, ACCOUNT_CREDITED);
 
     // when
-    AccountAggregate aggregate = AccountEventStorage.recreate(events);
+    var aggregate = AccountEventStorage.recreate(events);
 
     // assert
     assertThat(aggregate.getFullName()).isEqualTo(ACCOUNT_CREATED.getFullName());
@@ -281,10 +280,10 @@ class AccountAggregateTest {
   @Test
   public void accountCreditedEventWithNoTransaction() {
     // given
-    ImmutableList<DomainEvent> events = ImmutableList.of(ACCOUNT_CREATED, ACCOUNT_CREDITED);
+    var events = ImmutableList.of(ACCOUNT_CREATED, ACCOUNT_CREDITED);
 
     // when
-    AccountAggregate aggregate = AccountEventStorage.recreate(events);
+    var aggregate = AccountEventStorage.recreate(events);
 
     // assert
     assertThat(aggregate.getFullName()).isEqualTo(ACCOUNT_CREATED.getFullName());
@@ -303,12 +302,12 @@ class AccountAggregateTest {
   @Test
   public void moneyTransferSucceededNoReservedMoney() {
     // given
-    ImmutableList<DomainEvent> events =
+    var events =
         ImmutableList.of(
             ACCOUNT_CREATED, ISSUER_MONEY_TRANSFERRED, ISSUER_MONEY_TRANSFER_SUCCEEDED);
 
     // when
-    AccountAggregate aggregate = AccountEventStorage.recreate(events);
+    var aggregate = AccountEventStorage.recreate(events);
 
     // assert
     assertThat(aggregate.getFullName()).isEqualTo(ACCOUNT_CREATED.getFullName());
@@ -339,7 +338,7 @@ class AccountAggregateTest {
   @Test
   public void moneyTransferSucceededIssuer() {
     // given
-    ImmutableList<DomainEvent> events =
+    var events =
         ImmutableList.of(
             ACCOUNT_CREATED,
             ISSUER_MONEY_TRANSFERRED,
@@ -347,7 +346,7 @@ class AccountAggregateTest {
             ISSUER_MONEY_TRANSFER_SUCCEEDED);
 
     // when
-    AccountAggregate aggregate = AccountEventStorage.recreate(events);
+    var aggregate = AccountEventStorage.recreate(events);
 
     // assert
     assertThat(aggregate.getFullName()).isEqualTo(ACCOUNT_CREATED.getFullName());
@@ -378,7 +377,7 @@ class AccountAggregateTest {
   @Test
   public void moneyTransferSucceededReceiver() {
     // given
-    ImmutableList<DomainEvent> events =
+    var events =
         ImmutableList.of(
             ACCOUNT_CREATED,
             RECEIVER_MONEY_TRANSFERRED,
@@ -386,7 +385,7 @@ class AccountAggregateTest {
             RECEIVER_MONEY_TRANSFER_SUCCEEDED);
 
     // when
-    AccountAggregate aggregate = AccountEventStorage.recreate(events);
+    var aggregate = AccountEventStorage.recreate(events);
 
     // assert
     assertThat(aggregate.getFullName()).isEqualTo(ACCOUNT_CREATED.getFullName());
@@ -417,12 +416,12 @@ class AccountAggregateTest {
   @Test
   public void moneyTransferCancelledEventIssuer() {
     // given
-    ImmutableList<DomainEvent> events =
+    var events =
         ImmutableList.of(
             ACCOUNT_CREATED, ISSUER_MONEY_TRANSFERRED, ISSUER_MONEY_TRANSFER_CANCELLED);
 
     // when
-    AccountAggregate aggregate = AccountEventStorage.recreate(events);
+    var aggregate = AccountEventStorage.recreate(events);
 
     // assert
     assertThat(aggregate.getFullName()).isEqualTo(ACCOUNT_CREATED.getFullName());
@@ -453,7 +452,7 @@ class AccountAggregateTest {
   @Test
   public void moneyTransferCancelledEventIssuerWhenAccountWasDebited() {
     // given
-    ImmutableList<DomainEvent> events =
+    var events =
         ImmutableList.of(
             ACCOUNT_CREATED,
             ISSUER_MONEY_TRANSFERRED,
@@ -461,7 +460,7 @@ class AccountAggregateTest {
             ISSUER_MONEY_TRANSFER_CANCELLED);
 
     // when
-    AccountAggregate aggregate = AccountEventStorage.recreate(events);
+    var aggregate = AccountEventStorage.recreate(events);
 
     // assert
     assertThat(aggregate.getFullName()).isEqualTo(ACCOUNT_CREATED.getFullName());
@@ -492,7 +491,7 @@ class AccountAggregateTest {
   @Test
   public void moneyTransferCancelledEventReceiver() {
     // given
-    ImmutableList<DomainEvent> events =
+    var events =
         ImmutableList.of(
             ACCOUNT_CREATED,
             RECEIVER_MONEY_TRANSFERRED,
@@ -500,7 +499,7 @@ class AccountAggregateTest {
             RECEIVER_MONEY_TRANSFER_CANCELLED);
 
     // when
-    AccountAggregate aggregate = AccountEventStorage.recreate(events);
+    var aggregate = AccountEventStorage.recreate(events);
 
     // assert
     assertThat(aggregate.getFullName()).isEqualTo(ACCOUNT_CREATED.getFullName());

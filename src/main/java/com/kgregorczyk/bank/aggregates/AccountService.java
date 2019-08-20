@@ -23,7 +23,7 @@ public class AccountService {
    * only {@code fullName}. This event is then received {@link EventManager}.
    */
   public UUID asyncCreateAccountCommand(String fullName) {
-    UUID aggregateUUID = UUID.randomUUID();
+    var aggregateUUID = UUID.randomUUID();
     eventBus.post(new AccountCreatedEvent(aggregateUUID, fullName));
     return aggregateUUID;
   }

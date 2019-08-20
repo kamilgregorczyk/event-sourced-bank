@@ -183,9 +183,9 @@ class EventManagerTest {
   @Test
   public void accountDebitedEventAggregateExistsNotEnoughMoney() {
     // given
-    AccountDebitedEvent accountDebited =
+    var accountDebited =
         ACCOUNT_DEBITED.toBuilder().value(BigDecimal.valueOf(2000)).build();
-    MoneyTransferCancelled moneyTransferCancelled =
+    var moneyTransferCancelled =
         MONEY_TRANSFER_CANCELLED.toBuilder().value(accountDebited.getValue()).build();
     when(accountEventStorage.exists(any())).thenReturn(true);
     when(accountEventStorage.get(ACCOUNT_DEBITED.getAggregateUUID()))

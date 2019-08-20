@@ -26,7 +26,7 @@ public class AccountControllerGetAccountTest extends AbstractSparkTest {
   private static final Gson GSON = new Gson();
 
   private static CloseableHttpResponse createAccount() throws Exception {
-    HttpPost request = new HttpPost(SERVER_URL + "/api/account");
+    var request = new HttpPost(SERVER_URL + "/api/account");
     request.setEntity(new StringEntity(toJson(new CreateAccountRequest("Tony Stark"))));
     return client.execute(request);
   }
@@ -39,17 +39,17 @@ public class AccountControllerGetAccountTest extends AbstractSparkTest {
   @Test
   public void getAccountValid() throws Exception {
     // given
-    String aggregateUUID = extractUUIDFromResponseAndClose(createAccount());
-    HttpGet request = new HttpGet(SERVER_URL + "/api/account/" + aggregateUUID);
+    var aggregateUUID = extractUUIDFromResponseAndClose(createAccount());
+    var request = new HttpGet(SERVER_URL + "/api/account/" + aggregateUUID);
 
     // when
-    CloseableHttpResponse response = client.execute(request);
+    var response = client.execute(request);
 
     // assert
-    String responseJson = getResponseBodyAndClose(response);
+    var responseJson = getResponseBodyAndClose(response);
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_OK);
-    String createdAt = getFieldFromEvents(responseJson, 0, "createdAt");
-    String expectedResponse =
+    var createdAt = getFieldFromEvents(responseJson, 0, "createdAt");
+    var expectedResponse =
         new JSONObject()
             .put("status", "OK")
             .put("message", "SUCCESS")
@@ -82,14 +82,14 @@ public class AccountControllerGetAccountTest extends AbstractSparkTest {
   @Test
   public void getAccountNotValidInvalidUUID() throws Exception {
     // given
-    HttpGet request = new HttpGet(SERVER_URL + "/api/account/asd");
+    var request = new HttpGet(SERVER_URL + "/api/account/asd");
 
     // when
-    CloseableHttpResponse response = client.execute(request);
+    var response = client.execute(request);
 
     // assert
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_BAD_REQUEST);
-    String expectedResponse =
+    var expectedResponse =
         new JSONObject()
             .put("status", "ERROR")
             .put("message", "There are validation errors")
@@ -103,15 +103,15 @@ public class AccountControllerGetAccountTest extends AbstractSparkTest {
   @Test
   public void getAccountNotValidAggregateDoesNotExist() throws Exception {
     // given
-    UUID aggregateUUID = UUID.randomUUID();
-    HttpGet request = new HttpGet(SERVER_URL + "/api/account/" + aggregateUUID.toString());
+    var aggregateUUID = UUID.randomUUID();
+    var request = new HttpGet(SERVER_URL + "/api/account/" + aggregateUUID.toString());
 
     // when
-    CloseableHttpResponse response = client.execute(request);
+    var response = client.execute(request);
 
     // assert
     assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HTTP_NOT_FOUND);
-    String expectedResponse =
+    var expectedResponse =
         new JSONObject()
             .put("status", "ERROR")
             .put(

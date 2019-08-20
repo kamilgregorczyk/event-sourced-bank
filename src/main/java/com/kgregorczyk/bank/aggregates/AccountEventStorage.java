@@ -4,6 +4,8 @@ import static io.vavr.collection.List.ofAll;
 
 import com.google.common.collect.ImmutableList;
 import com.kgregorczyk.bank.aggregates.events.DomainEvent;
+
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -16,7 +18,7 @@ public class AccountEventStorage {
 
   private final Map<UUID, List<DomainEvent>> events = new ConcurrentHashMap<>();
 
-  public static AccountAggregate recreate(List<DomainEvent> events) {
+  public static AccountAggregate recreate(Collection<DomainEvent> events) {
     return ofAll(events).foldLeft(new AccountAggregate(events), (AccountAggregate::apply));
   }
 

@@ -50,17 +50,17 @@ public class TransactionRollbackCron implements Runnable {
   @Override
   public void run() {
     log.info("TransactionRollbackCron has started");
-    Date thresholdDate =
+    var thresholdDate =
         Date.from(Instant.now().minus(TRANSACTION_TIMEOUT_IN_MINUTES, ChronoUnit.MINUTES));
 
     // Transactions have to be grouped by it's UUID as there might be two unfinished transactions
     // of the same money transfer or one finished and 2nd one not.
-    ListMultimap<UUID, MoneyTransaction> outDatedTransactions =
+    var outDatedTransactions =
         findOutDatedTransactions(thresholdDate);
 
     for (Map.Entry<UUID, Collection<MoneyTransaction>> uuidToTransactions :
         outDatedTransactions.asMap().entrySet()) {
-      List<MoneyTransaction> transactions = new ArrayList<>(uuidToTransactions.getValue());
+      var transactions = new ArrayList<>(uuidToTransactions.getValue());
 
       // If there is one transaction then the event was only received by issuer's account
       if (transactions.size() == 1) {

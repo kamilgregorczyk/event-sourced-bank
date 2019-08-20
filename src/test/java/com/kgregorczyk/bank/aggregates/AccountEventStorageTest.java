@@ -13,14 +13,14 @@ class AccountEventStorageTest {
   @Test
   void loadAll() {
     // given
-    AccountCreatedEvent event1 = new AccountCreatedEvent(UUID.randomUUID(), "Tony Stark");
-    AccountCreatedEvent event2 = new AccountCreatedEvent(UUID.randomUUID(), "Black Widow");
-    AccountEventStorage storage = new AccountEventStorage();
+    var event1 = new AccountCreatedEvent(UUID.randomUUID(), "Tony Stark");
+    var event2 = new AccountCreatedEvent(UUID.randomUUID(), "Black Widow");
+    var storage = new AccountEventStorage();
     storage.save(event1);
     storage.save(event2);
 
     // when
-    ImmutableList<AccountAggregate> aggregates = storage.findAll();
+    var aggregates = storage.findAll();
     // assert
     assertThat(aggregates)
         .containsExactly(
@@ -31,12 +31,12 @@ class AccountEventStorageTest {
   @Test
   void loadByUUIDExistingAggregate() {
     // given
-    AccountCreatedEvent event = new AccountCreatedEvent(UUID.randomUUID(), "Tony Stark");
-    AccountEventStorage storage = new AccountEventStorage();
+    var event = new AccountCreatedEvent(UUID.randomUUID(), "Tony Stark");
+    var storage = new AccountEventStorage();
     storage.save(event);
 
     // when
-    AccountAggregate aggregate = storage.get(event.getAggregateUUID());
+    var aggregate = storage.get(event.getAggregateUUID());
 
     // assert
     assertThat(aggregate).isEqualTo(AccountEventStorage.recreate(ImmutableList.of(event)));
@@ -45,7 +45,7 @@ class AccountEventStorageTest {
   @Test
   void loadByUUIDNotExistingAggregate() {
     // given
-    AccountEventStorage storage = new AccountEventStorage();
+    var storage = new AccountEventStorage();
 
     // when & assert
     assertThat(storage.get(UUID.randomUUID())).isNull();
@@ -54,8 +54,8 @@ class AccountEventStorageTest {
   @Test
   void existsExistingAggregate() {
     // given
-    AccountCreatedEvent event = new AccountCreatedEvent(UUID.randomUUID(), "Tony Stark");
-    AccountEventStorage storage = new AccountEventStorage();
+    var event = new AccountCreatedEvent(UUID.randomUUID(), "Tony Stark");
+    var storage = new AccountEventStorage();
     storage.save(event);
 
     // when & assert
@@ -65,7 +65,7 @@ class AccountEventStorageTest {
   @Test
   void existsNotExistingAggregate() {
     // given
-    AccountEventStorage storage = new AccountEventStorage();
+    var storage = new AccountEventStorage();
 
     // when & assert
     assertThat(storage.exists(UUID.randomUUID())).isFalse();

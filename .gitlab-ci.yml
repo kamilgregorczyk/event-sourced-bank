@@ -7,7 +7,7 @@ services:
 
 test:
   stage: test
-  image: maven:3.6.0-jdk-8-alpine
+  image: maven:3.6.1-jdk-11-slim
   script:
     - mvn test
     - mvn jacoco:report

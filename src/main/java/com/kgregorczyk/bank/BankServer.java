@@ -9,10 +9,7 @@ import com.kgregorczyk.bank.controllers.IndexController;
 import com.kgregorczyk.bank.controllers.dto.APIResponse;
 import com.kgregorczyk.bank.controllers.dto.APIResponse.Status;
 import com.kgregorczyk.bank.cron.TransactionRollbackCron;
-import com.kgregorczyk.bank.filters.CORSFilter;
-import com.kgregorczyk.bank.filters.JsonBodyFilter;
-import com.kgregorczyk.bank.filters.JsonContentTypeFilter;
-import com.kgregorczyk.bank.filters.LoggingFilter;
+import com.kgregorczyk.bank.filters.*;
 import com.kgregorczyk.bank.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -58,12 +55,13 @@ public class BankServer {
     cronExecutorService.scheduleAtFixedRate(TRANSACTION_ROLLBACK_CRON, 0, 5, TimeUnit.MINUTES);
 
     // Before filter
-    before(new LoggingFilter());
+    before(new StartDateApplyingFilter());
     before("/api/*", new JsonBodyFilter());
 
     // After filters
     afterAfter(new JsonContentTypeFilter());
     afterAfter(new CORSFilter());
+    afterAfter(new LoggingFilter());
 
     // Controllers
     path(

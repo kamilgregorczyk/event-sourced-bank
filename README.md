@@ -15,17 +15,17 @@ Rolling back of unfinished transaction is implemented with a cron that finds unf
 
 | Endpoint                           | Method | URL                             |
 |------------------------------------|--------|---------------------------------|
-| [Health Check](doc/healthcheck.md) | `GET`  | `https://bank.raspicluster.pl/` |
+| [Health Check](doc/healthcheck.md) | `GET`  | https://bank.raspicluster.pl/   |
 
 ### Account Endpoints
 
-| Endpoint                                  | Method | URL                                                             |
-|-------------------------------------------|--------|-----------------------------------------------------------------|
-| [List Accounts](doc/listaccounts.md)      | `GET`  | `https://bank.raspicluster.pl/api/account`                      |
-| [Get Account](doc/getaccount.md)          | `GET`  | `https://bank.raspicluster.pl/api/account/:UUID`                |
-| [Change Full Name](doc/changefullname.md) | `PUT`  | `https://bank.raspicluster.pl/api/account/:UUID/changeFullName` |
-| [Create Account](doc/createaccount.md)    | `POST` | `https://bank.raspicluster.pl/api/account`                      |
-| [Transfer Money](doc/transfermoney.md)    | `POST` | `https://bank.raspicluster.pl/api/account/transferMoney`        |
+| Endpoint                                  | Method | URL                                                           |
+|-------------------------------------------|--------|---------------------------------------------------------------|
+| [List Accounts](doc/listaccounts.md)      | `GET`  | https://bank.raspicluster.pl/api/account                      |
+| [Get Account](doc/getaccount.md)          | `GET`  | https://bank.raspicluster.pl/api/account/:UUID                |
+| [Change Full Name](doc/changefullname.md) | `PUT`  | https://bank.raspicluster.pl/api/account/:UUID/changeFullName |
+| [Create Account](doc/createaccount.md)    | `POST` | https://bank.raspicluster.pl/api/account                      |
+| [Transfer Money](doc/transfermoney.md)    | `POST` | https://bank.raspicluster.pl/api/account/transferMoney        |
 
 ## Links
 

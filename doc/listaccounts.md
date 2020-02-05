@@ -1,6 +1,6 @@
 # List Accounts Endpoint
 
-**URL** : `https://bank.raspicluster.pl/api/account`
+**URL** : https://bank.raspicluster.pl/api/account
 
 **Method** : `GET`
 

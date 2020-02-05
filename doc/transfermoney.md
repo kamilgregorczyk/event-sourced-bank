@@ -1,6 +1,6 @@
 # Transfer Money Endpoint
 
-**URL** : `https://bank.raspicluster.pl/api/account/transferMoney`
+**URL** : https://bank.raspicluster.pl/api/account/transferMoney
 
 **Method** : `POST`
 

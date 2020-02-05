@@ -1,6 +1,6 @@
 # Health Check Endpoint
 
-**URL** : `/`
+**URL** : `https://bank.raspicluster.pl/`
 
 **Method** : `GET`
 

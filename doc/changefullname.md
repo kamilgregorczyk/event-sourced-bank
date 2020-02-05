@@ -1,6 +1,6 @@
 # Change Full Name Endpoint
 
-**URL** : `/api/account/:UUID/changeFullName`
+**URL** : `https://bank.raspicluster.pl/api/account/:UUID/changeFullName`
 
 **Method** : `PUT`
 

@@ -15,12 +15,12 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8000",
-					"protocol": "http",
+					"raw": "https://bank.raspicluster.pl",
+					"protocol": "https",
 					"host": [
-						"localhost"
+						"bank.raspicluster.pl"
 					],
-					"port": "8000"
+					"port": "443"
 				}
 			},
 			"response": []
@@ -35,12 +35,12 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/account",
-					"protocol": "http",
+					"raw": "https://bank.raspicluster.pl/api/account",
+					"protocol": "https",
 					"host": [
-						"localhost"
+						"bank.raspicluster.pl"
 					],
-					"port": "8000",
+					"port": "443",
 					"path": [
 						"api",
 						"account"
@@ -57,7 +57,7 @@
 					"script": {
 						"id": "9e4ea754-201d-48b5-ac6a-bbb580c9d3f0",
 						"exec": [
-							"pm.sendRequest(\"http://localhost:8000/api/account\", function (err, response) {",
+							"pm.sendRequest(\"https://bank.raspicluster.pl/api/account\", function (err, response) {",
 							"pm.globals.set(\"account_1\", response.json()[\"data\"][0][\"accountNumber\"]);",
 							"});"
 						],
@@ -73,12 +73,12 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/account/{{account_1}}",
-					"protocol": "http",
+					"raw": "https://bank.raspicluster.pl/api/account/{{account_1}}",
+					"protocol": "https",
 					"host": [
-						"localhost"
+						"bank.raspicluster.pl"
 					],
-					"port": "8000",
+					"port": "443",
 					"path": [
 						"api",
 						"account",
@@ -105,12 +105,12 @@
 					"raw": "{\n \"fullName\": \"John Doe\"\t\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/account",
-					"protocol": "http",
+					"raw": "https://bank.raspicluster.pl/api/account",
+					"protocol": "https",
 					"host": [
-						"localhost"
+						"bank.raspicluster.pl"
 					],
-					"port": "8000",
+					"port": "443",
 					"path": [
 						"api",
 						"account"
@@ -127,7 +127,7 @@
 					"script": {
 						"id": "18059171-53d9-423c-b709-7ee4547c310d",
 						"exec": [
-							"pm.sendRequest(\"http://localhost:8000/api/account\", function (err, response) {",
+							"pm.sendRequest(\"https://bank.raspicluster.pl/api/account\", function (err, response) {",
 							"pm.globals.set(\"account_1\", response.json()[\"data\"][0][\"accountNumber\"]);",
 							"});"
 						],
@@ -150,12 +150,12 @@
 					"raw": "{\n \"fullName\": \"Kamil Bla\"\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/account/{{account_1}}/changeFullName",
-					"protocol": "http",
+					"raw": "https://bank.raspicluster.pl/api/account/{{account_1}}/changeFullName",
+					"protocol": "https",
 					"host": [
-						"localhost"
+						"bank.raspicluster.pl"
 					],
-					"port": "8000",
+					"port": "443",
 					"path": [
 						"api",
 						"account",
@@ -174,7 +174,7 @@
 					"script": {
 						"id": "c402efc0-4d6c-4849-a0dd-3a60de88a819",
 						"exec": [
-							"pm.sendRequest(\"http://localhost:8000/api/account\", function (err, response) {",
+							"pm.sendRequest(\"https://bank.raspicluster.pl/api/account\", function (err, response) {",
 							"pm.globals.set(\"account_1\", response.json()[\"data\"][0][\"accountNumber\"]);",
 							"pm.globals.set(\"account_2\", response.json()[\"data\"][1][\"accountNumber\"]);",
 							"});"
@@ -198,12 +198,12 @@
 					"raw": "{\n    \"fromAccountNumber\": \"{{account_1}}\",\n    \"toAccountNumber\": \"{{account_2}}\",\n    \"value\": 500\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/account/transferMoney",
-					"protocol": "http",
+					"raw": "https://bank.raspicluster.pl/api/account/transferMoney",
+					"protocol": "https",
 					"host": [
-						"localhost"
+						"bank.raspicluster.pl"
 					],
-					"port": "8000",
+					"port": "443",
 					"path": [
 						"api",
 						"account",

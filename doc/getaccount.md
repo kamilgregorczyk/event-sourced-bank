@@ -1,6 +1,6 @@
 # Get Account Endpoint
 
-**URL** : `/api/account/:UUID`
+**URL** : `https://bank.raspicluster.pl/api/account/:UUID`
 
 **Method** : `GET`
 

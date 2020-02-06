@@ -1,5 +1,16 @@
 package com.kgregorczyk.bank;
 
+import static spark.Spark.afterAfter;
+import static spark.Spark.awaitInitialization;
+import static spark.Spark.before;
+import static spark.Spark.get;
+import static spark.Spark.internalServerError;
+import static spark.Spark.notFound;
+import static spark.Spark.path;
+import static spark.Spark.port;
+import static spark.Spark.post;
+import static spark.Spark.put;
+
 import com.google.common.eventbus.EventBus;
 import com.kgregorczyk.bank.aggregates.AccountEventStorage;
 import com.kgregorczyk.bank.aggregates.AccountService;
@@ -9,15 +20,17 @@ import com.kgregorczyk.bank.controllers.IndexController;
 import com.kgregorczyk.bank.controllers.dto.APIResponse;
 import com.kgregorczyk.bank.controllers.dto.APIResponse.Status;
 import com.kgregorczyk.bank.cron.TransactionRollbackCron;
-import com.kgregorczyk.bank.filters.*;
+import com.kgregorczyk.bank.filters.CORSFilter;
+import com.kgregorczyk.bank.filters.JsonBodyFilter;
+import com.kgregorczyk.bank.filters.JsonContentTypeFilter;
+import com.kgregorczyk.bank.filters.LoggingFilter;
+import com.kgregorczyk.bank.filters.StartDateApplyingFilter;
 import com.kgregorczyk.bank.utils.JsonUtils;
-import lombok.extern.slf4j.Slf4j;
-
+import java.math.BigDecimal;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import static spark.Spark.*;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Runs HTTP server on port 8000;
@@ -96,7 +109,17 @@ public class BankServer {
         (request, response) -> new APIResponse(Status.ERROR, "Internal Server Error").toJson());
 
     awaitInitialization();
+    createDummyAccounts();
     logMessage();
+  }
+
+  private static void createDummyAccounts() {
+    final var accountId1 = ACCOUNT_SERVICE.asyncCreateAccountCommand("Kamil Gregorczyk");
+    final var accountId2 = ACCOUNT_SERVICE.asyncCreateAccountCommand("John Doe");
+    final var accountId3 = ACCOUNT_SERVICE.asyncCreateAccountCommand("Piotr Kowalski");
+    ACCOUNT_SERVICE.asyncTransferMoneyCommand(accountId1, accountId2, BigDecimal.TEN);
+    ACCOUNT_SERVICE.asyncTransferMoneyCommand(accountId1, accountId2, BigDecimal.valueOf(100_000));
+    ACCOUNT_SERVICE.asyncChangeFullNameCommand(accountId3, "Jan Kowalski");
   }
 
   private static void logMessage() {

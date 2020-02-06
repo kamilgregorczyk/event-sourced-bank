@@ -1,27 +1,26 @@
 package com.kgregorczyk.bank.controllers;
 
-import com.google.gson.Gson;
-import com.kgregorczyk.bank.AbstractSparkTest;
-import com.kgregorczyk.bank.controllers.dto.APIResponse;
-import com.kgregorczyk.bank.controllers.dto.CreateAccountRequest;
-import com.kgregorczyk.bank.controllers.dto.Link;
-import com.kgregorczyk.bank.controllers.dto.TransferMoneyRequest;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.junit.jupiter.api.Test;
-
-import java.math.BigDecimal;
-import java.util.UUID;
-
 import static com.google.common.truth.Truth.assertThat;
 import static com.kgregorczyk.bank.BankServer.ACCOUNT_EVENT_STORAGE;
 import static com.kgregorczyk.bank.utils.JsonUtils.toJson;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static java.net.HttpURLConnection.HTTP_OK;
+
+import com.google.gson.Gson;
+import com.kgregorczyk.bank.AbstractSparkTest;
+import com.kgregorczyk.bank.controllers.dto.APIResponse;
+import com.kgregorczyk.bank.controllers.dto.CreateAccountRequest;
+import com.kgregorczyk.bank.controllers.dto.Link;
+import com.kgregorczyk.bank.controllers.dto.TransferMoneyRequest;
+import java.math.BigDecimal;
+import java.util.UUID;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.junit.jupiter.api.Test;
 
 public class AccountControllerTransferMoneyTest extends AbstractSparkTest {
 
@@ -60,8 +59,18 @@ public class AccountControllerTransferMoneyTest extends AbstractSparkTest {
             .put("links", Link.getLinksForAccounts())
             .toString();
     assertResponses(expectedResponse, getResponseBodyAndClose(response));
-    assertThat(ACCOUNT_EVENT_STORAGE.get(UUID.fromString(aggregateUUID1)).getBalance().compareTo(BigDecimal.valueOf(990))).isEqualTo(0);
-    assertThat(ACCOUNT_EVENT_STORAGE.get(UUID.fromString(aggregateUUID2)).getBalance().compareTo(BigDecimal.valueOf(1010))).isEqualTo(0);
+    assertThat(
+            ACCOUNT_EVENT_STORAGE
+                .get(UUID.fromString(aggregateUUID1))
+                .getBalance()
+                .compareTo(BigDecimal.valueOf(990)))
+        .isEqualTo(0);
+    assertThat(
+            ACCOUNT_EVENT_STORAGE
+                .get(UUID.fromString(aggregateUUID2))
+                .getBalance()
+                .compareTo(BigDecimal.valueOf(1010)))
+        .isEqualTo(0);
   }
 
   @Test

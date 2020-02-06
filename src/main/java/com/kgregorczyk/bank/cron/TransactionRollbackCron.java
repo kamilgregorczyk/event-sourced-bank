@@ -1,5 +1,7 @@
 package com.kgregorczyk.bank.cron;
 
+import static com.google.common.collect.ImmutableListMultimap.toImmutableListMultimap;
+
 import com.google.common.collect.ListMultimap;
 import com.kgregorczyk.bank.aggregates.AccountEventStorage;
 import com.kgregorczyk.bank.aggregates.AccountService;
@@ -7,13 +9,15 @@ import com.kgregorczyk.bank.aggregates.MoneyTransaction;
 import com.kgregorczyk.bank.aggregates.MoneyTransaction.State;
 import com.kgregorczyk.bank.aggregates.MoneyTransaction.Type;
 import com.kgregorczyk.bank.aggregates.events.MoneyTransferCancelled.Reason;
-import lombok.extern.slf4j.Slf4j;
-
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
-
-import static com.google.common.collect.ImmutableListMultimap.toImmutableListMultimap;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Finds unfinished transactions with where untouched for more than {@link
@@ -55,8 +59,7 @@ public class TransactionRollbackCron implements Runnable {
 
     // Transactions have to be grouped by it's UUID as there might be two unfinished transactions
     // of the same money transfer or one finished and 2nd one not.
-    var outDatedTransactions =
-        findOutDatedTransactions(thresholdDate);
+    var outDatedTransactions = findOutDatedTransactions(thresholdDate);
 
     for (Map.Entry<UUID, Collection<MoneyTransaction>> uuidToTransactions :
         outDatedTransactions.asMap().entrySet()) {

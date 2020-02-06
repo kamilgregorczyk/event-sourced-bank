@@ -1,12 +1,11 @@
 package com.kgregorczyk.bank.aggregates.events;
 
+import java.util.Date;
+import java.util.UUID;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import java.util.Date;
-import java.util.UUID;
 
 @Getter
 @ToString

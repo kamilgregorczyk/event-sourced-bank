@@ -1,10 +1,14 @@
 package com.kgregorczyk.bank.aggregates.events;
 
-import lombok.*;
-
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @ToString

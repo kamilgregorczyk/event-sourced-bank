@@ -4,16 +4,13 @@ import static io.vavr.collection.List.ofAll;
 
 import com.google.common.collect.ImmutableList;
 import com.kgregorczyk.bank.aggregates.events.DomainEvent;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * In-memory storage for events that make {@link AccountAggregate}.
- */
+/** In-memory storage for events that make {@link AccountAggregate}. */
 public class AccountEventStorage {
 
   private final Map<UUID, List<DomainEvent>> events = new ConcurrentHashMap<>();
@@ -40,8 +37,11 @@ public class AccountEventStorage {
   }
 
   public void save(DomainEvent domainEvent) {
-    events.compute(domainEvent.getAggregateUUID(),
-        (id, events) -> (events == null) ? ImmutableList.of(domainEvent)
-            : new ImmutableList.Builder<DomainEvent>().addAll(events).add(domainEvent).build());
+    events.compute(
+        domainEvent.getAggregateUUID(),
+        (id, events) ->
+            (events == null)
+                ? ImmutableList.of(domainEvent)
+                : new ImmutableList.Builder<DomainEvent>().addAll(events).add(domainEvent).build());
   }
 }

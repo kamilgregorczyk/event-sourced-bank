@@ -1,5 +1,6 @@
 package com.kgregorczyk.bank;
 
+import static java.lang.Integer.parseInt;
 import static spark.Spark.afterAfter;
 import static spark.Spark.awaitInitialization;
 import static spark.Spark.before;
@@ -55,10 +56,15 @@ public class BankServer {
   public static final ScheduledExecutorService cronExecutorService =
       Executors.newScheduledThreadPool(1);
 
-  private static final int PORT = 8000;
+  public static int port;
 
   public static void main(String[] args) {
-    port(PORT);
+    if (args.length == 1) {
+      port = parseInt(args[0]);
+    } else {
+      port = 8000;
+    }
+    port(port);
 
     // Registers event listener to EventBus
     EVENT_BUS.register(EVENT_MANAGER);
@@ -124,7 +130,7 @@ public class BankServer {
 
   private static void logMessage() {
     log.info("***************************************");
-    log.info("*** Bank server is running on :{} ***", PORT);
+    log.info("*** Bank server is running on :{} ***", port);
     log.info("***************************************");
   }
 }

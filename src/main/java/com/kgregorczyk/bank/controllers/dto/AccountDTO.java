@@ -1,19 +1,22 @@
 package com.kgregorczyk.bank.controllers.dto;
 
+import static com.kgregorczyk.bank.controllers.dto.Link.getLinksForAccount;
+
 import com.kgregorczyk.bank.aggregates.AccountAggregate;
 import com.kgregorczyk.bank.aggregates.MoneyTransaction.State;
 import com.kgregorczyk.bank.aggregates.MoneyTransaction.Type;
 import com.kgregorczyk.bank.aggregates.events.DomainEvent;
+import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.kgregorczyk.bank.controllers.dto.Link.getLinksForAccount;
 
 @Builder(toBuilder = true)
 @EqualsAndHashCode

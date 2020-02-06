@@ -1,5 +1,9 @@
 package com.kgregorczyk.bank.filters;
 
+import static com.google.common.truth.Truth.assertThat;
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+import static java.net.HttpURLConnection.HTTP_OK;
+
 import com.google.gson.Gson;
 import com.kgregorczyk.bank.AbstractSparkTest;
 import com.kgregorczyk.bank.controllers.dto.APIResponse;
@@ -11,10 +15,6 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.junit.jupiter.api.Test;
 import spark.utils.IOUtils;
-
-import static com.google.common.truth.Truth.assertThat;
-import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
-import static java.net.HttpURLConnection.HTTP_OK;
 
 class JsonBodyFilterTest extends AbstractSparkTest {
 

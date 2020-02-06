@@ -1,11 +1,10 @@
 package com.kgregorczyk.bank.controllers.dto;
 
 import com.kgregorczyk.bank.utils.JsonUtils;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 /** Main DTO which is used as a response to every REST request. */
 @Data

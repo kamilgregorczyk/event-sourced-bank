@@ -6,7 +6,6 @@ import com.kgregorczyk.bank.aggregates.events.FullNameChangedEvent;
 import com.kgregorczyk.bank.aggregates.events.MoneyTransferCancelled;
 import com.kgregorczyk.bank.aggregates.events.MoneyTransferCancelled.Reason;
 import com.kgregorczyk.bank.aggregates.events.MoneyTransferredEvent;
-
 import java.math.BigDecimal;
 import java.util.UUID;
 

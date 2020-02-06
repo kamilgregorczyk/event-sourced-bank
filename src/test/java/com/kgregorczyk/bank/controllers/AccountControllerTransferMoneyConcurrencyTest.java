@@ -5,7 +5,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.kgregorczyk.bank.BankServer.ACCOUNT_EVENT_STORAGE;
 import static com.kgregorczyk.bank.utils.JsonUtils.toJson;
 
-import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.kgregorczyk.bank.AbstractSparkTest;
 import com.kgregorczyk.bank.controllers.dto.APIResponse;
@@ -15,9 +14,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.stream.IntStream;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -51,28 +48,43 @@ public class AccountControllerTransferMoneyConcurrencyTest extends AbstractSpark
     var threadPool = Executors.newCachedThreadPool();
 
     // when
-    var futures = IntStream.range(1, 501).boxed()
-        .map(i -> threadPool.submit(() -> {
-          try {
-            client.execute(request).close();
-          } catch (IOException e) {
-            throw new IllegalStateException(e);
-          }
-        })).collect(toImmutableList());
+    var futures =
+        IntStream.range(1, 501)
+            .boxed()
+            .map(
+                i ->
+                    threadPool.submit(
+                        () -> {
+                          try {
+                            client.execute(request).close();
+                          } catch (IOException e) {
+                            throw new IllegalStateException(e);
+                          }
+                        }))
+            .collect(toImmutableList());
 
-    futures.forEach(future -> {
-      try {
-        future.get();
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      } catch (ExecutionException e) {
-        e.printStackTrace();
-      }
-    });
+    futures.forEach(
+        future -> {
+          try {
+            future.get();
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          } catch (ExecutionException e) {
+            e.printStackTrace();
+          }
+        });
     // assert
-    assertThat(ACCOUNT_EVENT_STORAGE.get(UUID.fromString(aggregateUUID1)).getBalance()
-        .compareTo(BigDecimal.valueOf(500))).isEqualTo(0);
-    assertThat(ACCOUNT_EVENT_STORAGE.get(UUID.fromString(aggregateUUID2)).getBalance()
-        .compareTo(BigDecimal.valueOf(1500))).isEqualTo(0);
+    assertThat(
+            ACCOUNT_EVENT_STORAGE
+                .get(UUID.fromString(aggregateUUID1))
+                .getBalance()
+                .compareTo(BigDecimal.valueOf(500)))
+        .isEqualTo(0);
+    assertThat(
+            ACCOUNT_EVENT_STORAGE
+                .get(UUID.fromString(aggregateUUID2))
+                .getBalance()
+                .compareTo(BigDecimal.valueOf(1500)))
+        .isEqualTo(0);
   }
 }

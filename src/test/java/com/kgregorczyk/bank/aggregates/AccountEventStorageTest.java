@@ -1,12 +1,11 @@
 package com.kgregorczyk.bank.aggregates;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.common.collect.ImmutableList;
 import com.kgregorczyk.bank.aggregates.events.AccountCreatedEvent;
-import org.junit.jupiter.api.Test;
-
 import java.util.UUID;
-
-import static com.google.common.truth.Truth.assertThat;
+import org.junit.jupiter.api.Test;
 
 class AccountEventStorageTest {
 

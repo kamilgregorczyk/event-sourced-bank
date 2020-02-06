@@ -1,23 +1,22 @@
 package com.kgregorczyk.bank;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import java.io.IOException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.junit.jupiter.api.BeforeAll;
 import spark.utils.IOUtils;
 
-import java.io.IOException;
-
-import static com.google.common.truth.Truth.assertThat;
-
 public abstract class AbstractSparkTest {
 
   protected static final Gson GSON = new Gson();
   protected static final JsonParser JSON_PARSER = new JsonParser();
-  protected static final String SERVER_URL = "http://localhost:8000";
+  protected static String SERVER_URL = "http://localhost:9000";
   protected static final CloseableHttpClient client = HttpClients.custom().build();
   private static final Object GUARD = new Object();
   private static boolean isRunning = false;
@@ -26,7 +25,7 @@ public abstract class AbstractSparkTest {
   public static void setUp() {
     synchronized (GUARD) {
       if (!isRunning) {
-        BankServer.main(null);
+        BankServer.main(new String[]{"9000"});
         isRunning = true;
       }
     }

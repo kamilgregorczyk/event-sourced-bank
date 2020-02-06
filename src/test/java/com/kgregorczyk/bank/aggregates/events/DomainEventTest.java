@@ -1,8 +1,8 @@
 package com.kgregorczyk.bank.aggregates.events;
 
-import org.junit.jupiter.api.Test;
-
 import static com.google.common.truth.Truth.assertThat;
+
+import org.junit.jupiter.api.Test;
 
 class DomainEventTest {
 

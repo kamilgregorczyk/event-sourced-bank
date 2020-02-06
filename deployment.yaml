@@ -16,7 +16,7 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
         - name: bank
-          image: uniqe15/event-sourced-bank
+          image: uniqe15/event-sourced-bank:v1
           ports:
             - containerPort: 8000
               name: http

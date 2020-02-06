@@ -1,13 +1,12 @@
 package com.kgregorczyk.bank.aggregates.events;
 
 import com.google.common.base.CaseFormat;
+import java.util.Date;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-
-import java.util.Date;
-import java.util.UUID;
 
 /** Base event for all the other events that mutate aggregates and that should be stored. */
 @Getter

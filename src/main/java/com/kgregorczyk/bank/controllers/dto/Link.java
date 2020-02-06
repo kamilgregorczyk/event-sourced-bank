@@ -1,12 +1,11 @@
 package com.kgregorczyk.bank.controllers.dto;
 
 import com.google.common.collect.ImmutableList;
+import java.util.List;
+import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 import spark.route.HttpMethod;
-
-import java.util.List;
-import java.util.UUID;
 
 /** Represents a link for HATEOAS responses. */
 @Getter

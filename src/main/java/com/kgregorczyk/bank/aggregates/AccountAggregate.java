@@ -1,18 +1,28 @@
 package com.kgregorczyk.bank.aggregates;
 
+import static io.vavr.API.Case;
+import static io.vavr.API.Match.Pattern0.of;
+
 import com.kgregorczyk.bank.aggregates.MoneyTransaction.State;
-import com.kgregorczyk.bank.aggregates.events.*;
+import com.kgregorczyk.bank.aggregates.events.AccountCreatedEvent;
+import com.kgregorczyk.bank.aggregates.events.AccountCreditedEvent;
+import com.kgregorczyk.bank.aggregates.events.AccountDebitedEvent;
+import com.kgregorczyk.bank.aggregates.events.DomainEvent;
+import com.kgregorczyk.bank.aggregates.events.FullNameChangedEvent;
+import com.kgregorczyk.bank.aggregates.events.MoneyTransferCancelled;
+import com.kgregorczyk.bank.aggregates.events.MoneyTransferSucceeded;
+import com.kgregorczyk.bank.aggregates.events.MoneyTransferredEvent;
 import io.vavr.API;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.UUID;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.*;
-
-import static io.vavr.API.Case;
-import static io.vavr.API.Match.Pattern0.of;
 
 /**
  * AccountAggregate is constructed based on events that are stored in {@link AccountEventStorage}.

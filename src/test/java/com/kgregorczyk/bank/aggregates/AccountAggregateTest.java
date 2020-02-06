@@ -1,17 +1,23 @@
 package com.kgregorczyk.bank.aggregates;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.kgregorczyk.bank.aggregates.MoneyTransaction.State;
-import com.kgregorczyk.bank.aggregates.events.*;
+import com.kgregorczyk.bank.aggregates.events.AccountCreatedEvent;
+import com.kgregorczyk.bank.aggregates.events.AccountCreditedEvent;
+import com.kgregorczyk.bank.aggregates.events.AccountDebitedEvent;
+import com.kgregorczyk.bank.aggregates.events.DomainEvent;
+import com.kgregorczyk.bank.aggregates.events.FullNameChangedEvent;
+import com.kgregorczyk.bank.aggregates.events.MoneyTransferCancelled;
 import com.kgregorczyk.bank.aggregates.events.MoneyTransferCancelled.Reason;
-import org.junit.jupiter.api.Test;
-
+import com.kgregorczyk.bank.aggregates.events.MoneyTransferSucceeded;
+import com.kgregorczyk.bank.aggregates.events.MoneyTransferredEvent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.UUID;
-
-import static com.google.common.truth.Truth.assertThat;
+import org.junit.jupiter.api.Test;
 
 class AccountAggregateTest {
 
@@ -151,8 +157,7 @@ class AccountAggregateTest {
   @Test
   public void moneyTransferredEventReceiver() {
     // given
-    var events =
-        ImmutableList.of(ACCOUNT_CREATED, RECEIVER_MONEY_TRANSFERRED);
+    var events = ImmutableList.of(ACCOUNT_CREATED, RECEIVER_MONEY_TRANSFERRED);
 
     // when
     var aggregate = AccountEventStorage.recreate(events);
@@ -244,8 +249,7 @@ class AccountAggregateTest {
   @Test
   public void accountCreditedEvent() {
     // given
-    var events =
-        ImmutableList.of(ACCOUNT_CREATED, RECEIVER_MONEY_TRANSFERRED, ACCOUNT_CREDITED);
+    var events = ImmutableList.of(ACCOUNT_CREATED, RECEIVER_MONEY_TRANSFERRED, ACCOUNT_CREDITED);
 
     // when
     var aggregate = AccountEventStorage.recreate(events);

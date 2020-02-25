@@ -56,14 +56,8 @@ public class BankServer {
   public static final ScheduledExecutorService cronExecutorService =
       Executors.newScheduledThreadPool(1);
 
-  public static int port;
-
   public static void main(String[] args) {
-    if (args.length == 1) {
-      port = parseInt(args[0]);
-    } else {
-      port = 8000;
-    }
+    final var port = args.length == 1 ? parseInt(args[0]) : 8000;
     port(port);
 
     // Registers event listener to EventBus
@@ -116,7 +110,7 @@ public class BankServer {
 
     awaitInitialization();
     createDummyAccounts();
-    logMessage();
+    logMessage(port);
   }
 
   private static void createDummyAccounts() {
@@ -128,7 +122,7 @@ public class BankServer {
     ACCOUNT_SERVICE.asyncChangeFullNameCommand(accountId3, "Jan Kowalski");
   }
 
-  private static void logMessage() {
+  private static void logMessage(int port) {
     log.info("***************************************");
     log.info("*** Bank server is running on :{} ***", port);
     log.info("***************************************");

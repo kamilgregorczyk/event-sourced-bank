@@ -37,7 +37,7 @@ public class AccountControllerTransferMoneyConcurrencyTest extends AbstractSpark
   }
 
   @Test
-  public void transferMoneyValid() throws Exception {
+  public void concurrencyTestFromAtoB() throws Exception {
     // given
     var aggregateUUID1 = extractUUIDFromResponseAndClose(createAccount());
     var aggregateUUID2 = extractUUIDFromResponseAndClose(createAccount());
@@ -49,7 +49,7 @@ public class AccountControllerTransferMoneyConcurrencyTest extends AbstractSpark
 
     // when
     var futures =
-        IntStream.range(1, 501)
+        IntStream.range(0, 500)
             .boxed()
             .map(
                 i ->
@@ -86,5 +86,58 @@ public class AccountControllerTransferMoneyConcurrencyTest extends AbstractSpark
                 .getBalance()
                 .compareTo(BigDecimal.valueOf(1500)))
         .isEqualTo(0);
+  }
+
+  @Test
+  public void concurrencyTestFromAtoBAndBtoA() throws Exception {
+    // given
+    var aggregateUUID1 = extractUUIDFromResponseAndClose(createAccount());
+    var aggregateUUID2 = extractUUIDFromResponseAndClose(createAccount());
+    var request1 = new HttpPost(SERVER_URL + "/api/account/transferMoney");
+    request1.setEntity(
+        new StringEntity(
+            toJson(new TransferMoneyRequest(aggregateUUID1, aggregateUUID2, BigDecimal.ONE))));
+
+    var request2 = new HttpPost(SERVER_URL + "/api/account/transferMoney");
+    request2.setEntity(
+        new StringEntity(
+            toJson(new TransferMoneyRequest(aggregateUUID2, aggregateUUID1, BigDecimal.ONE))));
+    var threadPool = Executors.newCachedThreadPool();
+
+    // when
+    var futures =
+        IntStream.range(0, 1000)
+            .boxed()
+            .map(
+                i ->
+                    threadPool.submit(
+                        () -> {
+                          try {
+                            if (i % 2 == 0) {
+                              client.execute(request1).close();
+                            } else {
+                              client.execute(request2).close();
+                            }
+                          } catch (IOException e) {
+                            throw new IllegalStateException(e);
+                          }
+                        }))
+            .collect(toImmutableList());
+
+    futures.forEach(
+        future -> {
+          try {
+            future.get();
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          } catch (ExecutionException e) {
+            e.printStackTrace();
+          }
+        });
+    // assert
+    assertThat(ACCOUNT_EVENT_STORAGE.get(UUID.fromString(aggregateUUID1)).getBalance().longValue())
+        .isEqualTo(1000);
+    assertThat(ACCOUNT_EVENT_STORAGE.get(UUID.fromString(aggregateUUID2)).getBalance().longValue())
+        .isEqualTo(1000);
   }
 }

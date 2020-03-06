@@ -1,5 +1,8 @@
 package com.kgregorczyk.bank.aggregates;
 
+import static com.kgregorczyk.bank.utils.LockingService.lock;
+import static com.kgregorczyk.bank.utils.LockingService.unlock;
+
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.kgregorczyk.bank.aggregates.events.AccountCreatedEvent;
@@ -11,6 +14,7 @@ import com.kgregorczyk.bank.aggregates.events.MoneyTransferCancelled;
 import com.kgregorczyk.bank.aggregates.events.MoneyTransferCancelled.Reason;
 import com.kgregorczyk.bank.aggregates.events.MoneyTransferSucceeded;
 import com.kgregorczyk.bank.aggregates.events.MoneyTransferredEvent;
+import com.kgregorczyk.bank.utils.LockingService;
 import lombok.extern.slf4j.Slf4j;
 
 /** Listener and dispatcher of events in whole system. It contains dependencies between events. */
@@ -64,6 +68,7 @@ public class EventManager {
    */
   @Subscribe
   void handle(MoneyTransferredEvent event) {
+    lock(event.getToUUID(), event.getFromUUID());
     logEvent(event);
     persistIfAggregateExists(event);
     eventBus.post(
@@ -146,12 +151,14 @@ public class EventManager {
   void handle(MoneyTransferSucceeded event) {
     logEvent(event);
     persistIfAggregateExists(event);
+    unlock(event.getToUUID(), event.getFromUUID());
   }
 
   @Subscribe
   void handle(MoneyTransferCancelled event) {
     logEvent(event);
     persistIfAggregateExists(event);
+    unlock(event.getToUUID(), event.getFromUUID());
   }
 
   private void logEvent(DomainEvent event) {

@@ -21,7 +21,7 @@ import lombok.ToString;
 @Builder(toBuilder = true)
 @EqualsAndHashCode
 @ToString
-public class AccountDTO {
+public class AccountResponse {
 
   private String fullName;
   private UUID accountNumber;
@@ -33,27 +33,26 @@ public class AccountDTO {
   private Date lastUpdatedAt;
   private List<Link> links;
 
-  public static AccountDTO from(AccountAggregate aggregate) {
-    return AccountDTO.builder()
+  public static AccountResponse from(AccountAggregate aggregate) {
+    return AccountResponse.builder()
         .accountNumber(aggregate.getUuid())
         .fullName(aggregate.getFullName())
         .balance(aggregate.getBalance())
         .transactionToReservedBalance(aggregate.getTransactionToReservedBalance())
         .events(aggregate.getDomainEvents())
         .transactions(
-            aggregate.getTransactions().entrySet().stream()
+            aggregate.getTransactions().values().stream()
                 .map(
-                    uuidToTransaction ->
-                        MoneyTransactionDTO.builder()
-                            .transactionUUID(uuidToTransaction.getValue().getTransactionUUID())
-                            .fromAccountUUID(uuidToTransaction.getValue().getFromUUID())
-                            .toAccountUUID(uuidToTransaction.getValue().getToUUID())
-                            .value(uuidToTransaction.getValue().getValue())
-                            .state(uuidToTransaction.getValue().getState())
-                            .type(uuidToTransaction.getValue().getType())
-                            .lastUpdatedAt(uuidToTransaction.getValue().getLastUpdatedAt())
-                            .createdAt(uuidToTransaction.getValue().getCreatedAt())
-                            .build())
+                    moneyTransaction -> MoneyTransactionDTO.builder()
+                        .transactionUUID(moneyTransaction.getTransactionUUID())
+                        .fromAccountUUID(moneyTransaction.getFromUUID())
+                        .toAccountUUID(moneyTransaction.getToUUID())
+                        .value(moneyTransaction.getValue())
+                        .state(moneyTransaction.getState())
+                        .type(moneyTransaction.getType())
+                        .lastUpdatedAt(moneyTransaction.getLastUpdatedAt())
+                        .createdAt(moneyTransaction.getCreatedAt())
+                        .build())
                 .collect(
                     Collectors.toMap(
                         MoneyTransactionDTO::getTransactionUUID,

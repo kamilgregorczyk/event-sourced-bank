@@ -16,7 +16,7 @@ import com.kgregorczyk.bank.aggregates.AccountEventStorage;
 import com.kgregorczyk.bank.aggregates.AccountService;
 import com.kgregorczyk.bank.controllers.dto.APIResponse;
 import com.kgregorczyk.bank.controllers.dto.APIResponse.Status;
-import com.kgregorczyk.bank.controllers.dto.AccountDTO;
+import com.kgregorczyk.bank.controllers.dto.AccountResponse;
 import com.kgregorczyk.bank.controllers.dto.ChangeFullNameRequest;
 import com.kgregorczyk.bank.controllers.dto.CreateAccountRequest;
 import com.kgregorczyk.bank.controllers.dto.TransferMoneyRequest;
@@ -86,19 +86,19 @@ public class AccountController {
   /**
    * Handles GET requests on `/api/account/listAccounts`
    *
-   * @return A list of {@link AccountDTO} of all registered accounts.
+   * @return A list of {@link AccountResponse} of all registered accounts.
    */
   public Route listAccounts() {
     return (request, response) ->
         new APIResponse(
-            eventStorage.findAll().stream().map(AccountDTO::from).collect(toImmutableList()),
+            eventStorage.findAll().stream().map(AccountResponse::from).collect(toImmutableList()),
             getLinksForAccounts());
   }
 
   /**
    * Handles GET requests on `/api/account/getAccount/VALID_UUID`
    *
-   * @return {@link AccountDTO} for specified account.
+   * @return {@link AccountResponse} for specified account.
    */
   public Route getAccount() {
     return (request, response) -> {
@@ -115,7 +115,7 @@ public class AccountController {
       // Verifies if requested aggregate exists
       if (eventStorage.exists(aggregateUUID)) {
         return new APIResponse(
-            AccountDTO.from(eventStorage.get(aggregateUUID)), getLinksForAccount(aggregateUUID));
+            AccountResponse.from(eventStorage.get(aggregateUUID)), getLinksForAccount(aggregateUUID));
       } else {
         response.status(HTTP_NOT_FOUND);
         return new APIResponse(

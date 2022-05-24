@@ -1,15 +1,10 @@
-FROM maven:3.8.5-eclipse-temurin-11-alpine
+FROM eclipse-temurin:11-jdk
 ARG VCS_REF
-
-RUN export MAVEN_OPTS="$MAVEN_OPTS -Djavax.net.debug=ssl"
 
 RUN mkdir /app
 WORKDIR /app
-ADD pom.xml pom.xml
-RUN mvn dependency:resolve
-
-ADD src src
-RUN mvn clean install -DskipTests=true
+COPY . .
+RUN ./gradlew shadowJar
 
 EXPOSE 8000
-ENTRYPOINT ["java", "-jar", "target/bank-1.0-SNAPSHOT-jar-with-dependencies.jar"]
+ENTRYPOINT ["java", "-jar", "build/libs/bank-1.0-SNAPSHOT-all.jar"]

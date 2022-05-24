@@ -4,8 +4,9 @@ ARG VCS_REF
 RUN mkdir /app
 WORKDIR /app
 ADD pom.xml pom.xml
-ADD mvnw mvnw
 ADD .mvn .mvn
+ADD mvnw mvnw
+ADD mvnw.cmd mvnw.cmd
 RUN ./mvnw dependency:resolve
 
 ADD src src

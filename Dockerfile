@@ -1,4 +1,4 @@
-FROM eclipse-temurin:11-jdk-alpine
+FROM eclipse-temurin:11-jdk
 ARG VCS_REF
 
 RUN mkdir /app

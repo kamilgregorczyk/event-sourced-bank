@@ -64,7 +64,6 @@ public class BankServer {
     EVENT_BUS.register(EVENT_MANAGER);
 
     // Schedules TransactionRollbackCron
-
     cronExecutorService.scheduleAtFixedRate(TRANSACTION_ROLLBACK_CRON, 0, 5, TimeUnit.MINUTES);
 
     // Before filter

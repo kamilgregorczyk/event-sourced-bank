@@ -17,19 +17,19 @@ modified within last 30 minutes and cancels them.
 
 ### Metric Endpoints
 
-| Endpoint                           | Method | URL                             |
-|------------------------------------|--------|---------------------------------|
-| [Health Check](doc/healthcheck.md) | `GET`  | https://bank.exposee.app/   |
+| Endpoint                           | Method | URL                            |
+|------------------------------------|--------|--------------------------------|
+| [Health Check](doc/healthcheck.md) | `GET`  | https://bank.exposee.app/      |
 
 ### Account Endpoints
 
-| Endpoint                                  | Method | URL                                                           |
-|-------------------------------------------|--------|---------------------------------------------------------------|
-| [List Accounts](doc/listaccounts.md)      | `GET`  | https://bank.exposee.app/api/account                      |
-| [Get Account](doc/getaccount.md)          | `GET`  | https://bank.exposee.app/api/account/:UUID                |
-| [Change Full Name](doc/changefullname.md) | `PUT`  | https://bank.exposee.app/api/account/:UUID/changeFullName |
-| [Create Account](doc/createaccount.md)    | `POST` | https://bank.exposee.app/api/account                      |
-| [Transfer Money](doc/transfermoney.md)    | `POST` | https://bank.exposee.app/api/account/transferMoney        |
+| Endpoint                                  | Method | URL                                                        |
+|-------------------------------------------|--------|------------------------------------------------------------|
+| [List Accounts](doc/listaccounts.md)      | `GET`  | https://bank.exposee.app/api/account                       |
+| [Get Account](doc/getaccount.md)          | `GET`  | https://bank.exposee.app/api/account/:UUID                 |
+| [Change Full Name](doc/changefullname.md) | `PUT`  | https://bank.exposee.app/api/account/:UUID/changeFullName  |
+| [Create Account](doc/createaccount.md)    | `POST` | https://bank.exposee.app/api/account                       |
+| [Transfer Money](doc/transfermoney.md)    | `POST` | https://bank.exposee.app/api/account/transferMoney         |
 
 ## Links
 

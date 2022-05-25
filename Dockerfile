@@ -6,5 +6,5 @@ WORKDIR /app
 COPY . .
 RUN ./gradlew shadowJar
 
-EXPOSE 8000
+EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "build/libs/bank-1.0-SNAPSHOT-all.jar"]

@@ -58,7 +58,7 @@ public class BankServer {
         Executors.newScheduledThreadPool(1);
 
     public static void main(String[] args) {
-        final var port = args.length == 1 ? parseInt(args[0]) : 8000;
+        final var port = args.length == 1 ? parseInt(args[0]) : 8080;
         port(port);
 
         // Registers event listener to EventBus

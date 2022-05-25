@@ -81,6 +81,7 @@ public class BankServer {
             "",
             () -> {
                 get("/", IndexController.healthCheck(), JsonUtils::toJson);
+                get("/healthcheck", IndexController.healthCheck(), JsonUtils::toJson);
                 path(
                     "/api",
                     () ->
